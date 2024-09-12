@@ -15,7 +15,23 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/example/helloworld": {
+        "/example/hello": {
+            "get": {
+                "description": "just hello",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "example"
+                ],
+                "summary": "ping example",
+                "responses": {}
+            }
+        },
+        "/example/ping": {
             "get": {
                 "description": "do ping",
                 "consumes": [

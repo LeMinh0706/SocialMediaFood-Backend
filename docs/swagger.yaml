@@ -2,7 +2,18 @@ basePath: /api/v1
 info:
   contact: {}
 paths:
-  /example/helloworld:
+  /example/hello:
+    get:
+      consumes:
+      - application/json
+      description: just hello
+      produces:
+      - application/json
+      responses: {}
+      summary: ping example
+      tags:
+      - example
+  /example/ping:
     get:
       consumes:
       - application/json
