@@ -13,7 +13,7 @@ func NewHelloService() *HelloService {
 }
 
 func (hs *HelloService) GetName(name string) string {
-	return hs.helloRepo.GetName(name)
+	return "Hello " + hs.helloRepo.GetName(name)
 }
 
 func (hs *HelloService) GetId(id int) int {

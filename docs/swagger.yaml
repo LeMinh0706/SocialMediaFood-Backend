@@ -17,7 +17,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: just hello
+      description: check query
       parameters:
       - description: Name in query
         in: query
@@ -47,11 +47,11 @@ paths:
       summary: hello example
       tags:
       - example
-  /example/hello/{name}:
+  /example/hi/{name}:
     get:
       consumes:
       - application/json
-      description: just hello
+      description: check param
       parameters:
       - description: Name
         in: path

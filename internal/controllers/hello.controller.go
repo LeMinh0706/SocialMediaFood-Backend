@@ -1,10 +1,9 @@
 package controllers
 
 import (
-	"net/http"
-
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/repo"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/services"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,26 +20,26 @@ func NewHelloController() *HelloController {
 // HelloExample godoc
 // @Summary hello example
 // @Schemes
-// @Description just hello
+// @Description check param
 // @Tags example
 // @Accept json
 // @Produce json
 // @Param name path string true "Name"
-// @Router /example/hello/{name} [get]
+// @Router /example/hi/{name} [get]
 func (hc *HelloController) GetHelloParam(g *gin.Context) {
 	name := g.Param("name")
-	// id := g.Query("id")
-	g.JSON(http.StatusOK, gin.H{
-		"message": "Hello " + hc.helloService.GetName(name),
-		// "id":      id,
-		"status": "200",
-	})
+	if name == "" {
+		response.ErrorResponse(g, 400, "Input your name on param")
+		return
+	}
+	data := hc.helloService.GetName(name)
+	response.SuccessResponse(g, 201, data)
 }
 
 // HelloExample godoc
 // @Summary hello example
 // @Schemes
-// @Description just hello
+// @Description check query
 // @Tags example
 // @Accept json
 // @Produce json
@@ -50,17 +49,16 @@ func (hc *HelloController) GetHelloQuery(g *gin.Context) {
 	name := g.Query("name")
 
 	if name == "" {
-		g.JSON(http.StatusBadRequest, gin.H{
-			"message": "name is required",
-			"code":    400,
-		})
+		response.ErrorResponse(g, 400, "Name is required")
 		return
 	}
 	// id := g.Query("id")
-	g.JSON(http.StatusOK, gin.H{
-		"message": "Hello " + hc.helloService.GetName(name),
-		"status":  "200",
-	})
+	// g.JSON(http.StatusOK, gin.H{
+	// 	"message": "Hello " + hc.helloService.GetName(name),
+	// 	"status":  "200",
+	// })
+	data := hc.helloService.GetName(name)
+	response.SuccessResponse(g, 200, data)
 }
 
 type BodyRequest struct {
@@ -80,18 +78,16 @@ type BodyRequest struct {
 func (hc *HelloController) PostHelloBody(g *gin.Context) {
 	var body repo.Hello
 	if err := g.ShouldBindJSON(&body); err != nil {
-		g.JSON(http.StatusBadRequest, gin.H{
-			"error":  err.Error(),
-			"status": 400,
-		})
+		response.ErrorResponse(g, 400, err.Error())
 		return
 	}
 
 	hello := hc.helloService.GetInfo(body.Name, body.Id)
 
-	g.JSON(http.StatusOK, gin.H{
-		"Message": "Hello " + hello.Name,
-		"Id":      hello.Id,
-		"status":  200,
-	})
+	response.SuccessResponse(g, 200, hello)
+	// g.JSON(http.StatusOK, gin.H{
+	// 	"Message": "Hello " + hello.Name,
+	// 	"Id":      hello.Id,
+	// 	"status":  200,
+	// })
 }

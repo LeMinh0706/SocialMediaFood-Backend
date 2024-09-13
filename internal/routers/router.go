@@ -38,7 +38,7 @@ func NewRouter() *gin.Engine {
 	{
 		eg := v1.Group("/example")
 		{
-			eg.GET("/hello/:name", c.NewHelloController().GetHelloParam)
+			eg.GET("/hi/:name", c.NewHelloController().GetHelloParam)
 			eg.GET("/hello", c.NewHelloController().GetHelloQuery)
 			eg.POST("/hello", c.NewHelloController().PostHelloBody)
 		}

@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/example/hello": {
             "get": {
-                "description": "just hello",
+                "description": "check query",
                 "consumes": [
                     "application/json"
                 ],
@@ -65,9 +65,9 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/example/hello/{name}": {
+        "/example/hi/{name}": {
             "get": {
-                "description": "just hello",
+                "description": "check param",
                 "consumes": [
                     "application/json"
                 ],
