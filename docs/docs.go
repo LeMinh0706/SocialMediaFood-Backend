@@ -15,9 +15,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/example/hello": {
+        "/example/hello/{name}": {
             "get": {
-                "description": "just hello",
+                "description": "just say hello",
                 "consumes": [
                     "application/json"
                 ],
@@ -27,13 +27,27 @@ const docTemplate = `{
                 "tags": [
                     "example"
                 ],
-                "summary": "ping example",
+                "summary": "hello example",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {}
             }
         },
-        "/example/ping": {
+        "/pop/ping": {
             "get": {
-                "description": "do ping",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "do pong",
                 "consumes": [
                     "application/json"
                 ],
@@ -41,9 +55,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "example"
+                    "pong"
                 ],
-                "summary": "ping example",
+                "summary": "ping pop",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -61,7 +75,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "",
 	Host:             "",
-	BasePath:         "/api/v1",
+	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "",
 	Description:      "",
