@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/docs"
+	c "github.com/LeMinh0706/SocialMediaFood-Backend/internal/controllers"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files" // swagger embed files
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -29,23 +30,6 @@ func Pong(g *gin.Context) {
 	})
 }
 
-// HelloExample godoc
-// @Summary hello example
-// @Schemes
-// @Description just say hello
-// @Tags example
-// @Accept json
-// @Produce json
-// @Param name path string true "Name"
-// @Router /example/hello/{name} [get]
-func Hello(g *gin.Context) {
-	name := g.Param("name")
-	g.JSON(http.StatusOK, gin.H{
-		"message": "Hello " + name,
-		"status":  "200",
-	})
-}
-
 func NewRouter() *gin.Engine {
 
 	r := gin.Default()
@@ -54,7 +38,9 @@ func NewRouter() *gin.Engine {
 	{
 		eg := v1.Group("/example")
 		{
-			eg.GET("/hello/:name", Hello)
+			eg.GET("/hello/:name", c.NewHelloController().GetHelloParam)
+			eg.GET("/hello", c.NewHelloController().GetHelloQuery)
+			eg.POST("/hello", c.NewHelloController().PostHelloBody)
 		}
 
 		ag := v1.Group("/pop")

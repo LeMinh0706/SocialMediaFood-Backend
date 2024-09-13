@@ -1,11 +1,57 @@
+definitions:
+  repo.Hello:
+    properties:
+      id:
+        type: integer
+      name:
+        example: Hiro
+        type: string
+    required:
+    - id
+    - name
+    type: object
 info:
   contact: {}
 paths:
+  /example/hello:
+    get:
+      consumes:
+      - application/json
+      description: just hello
+      parameters:
+      - description: Name in query
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: hello example
+      tags:
+      - example
+    post:
+      consumes:
+      - application/json
+      description: Check Hello struct on repo
+      parameters:
+      - description: ID and Name here
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/repo.Hello'
+      produces:
+      - application/json
+      responses: {}
+      summary: hello example
+      tags:
+      - example
   /example/hello/{name}:
     get:
       consumes:
       - application/json
-      description: just say hello
+      description: just hello
       parameters:
       - description: Name
         in: path

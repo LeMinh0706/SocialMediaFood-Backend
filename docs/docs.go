@@ -15,9 +15,59 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/example/hello": {
+            "get": {
+                "description": "just hello",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "example"
+                ],
+                "summary": "hello example",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name in query",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            },
+            "post": {
+                "description": "Check Hello struct on repo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "example"
+                ],
+                "summary": "hello example",
+                "parameters": [
+                    {
+                        "description": "ID and Name here",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/repo.Hello"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/example/hello/{name}": {
             "get": {
-                "description": "just say hello",
+                "description": "just hello",
                 "consumes": [
                     "application/json"
                 ],
@@ -65,6 +115,24 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "repo.Hello": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Hiro"
                 }
             }
         }
