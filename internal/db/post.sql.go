@@ -10,6 +10,44 @@ import (
 	"database/sql"
 )
 
+const createComment = `-- name: CreateComment :one
+INSERT INTO posts(
+    post_type_id,
+    user_id,
+    post_top_id,
+    description,
+    date_create_post
+) VALUES (
+    2, $1, $2, $3, $4
+) RETURNING id, post_type_id, user_id, post_top_id, description, date_create_post
+`
+
+type CreateCommentParams struct {
+	UserID         int64          `json:"user_id"`
+	PostTopID      sql.NullInt64  `json:"post_top_id"`
+	Description    sql.NullString `json:"description"`
+	DateCreatePost int64          `json:"date_create_post"`
+}
+
+func (q *Queries) CreateComment(ctx context.Context, arg CreateCommentParams) (Post, error) {
+	row := q.db.QueryRowContext(ctx, createComment,
+		arg.UserID,
+		arg.PostTopID,
+		arg.Description,
+		arg.DateCreatePost,
+	)
+	var i Post
+	err := row.Scan(
+		&i.ID,
+		&i.PostTypeID,
+		&i.UserID,
+		&i.PostTopID,
+		&i.Description,
+		&i.DateCreatePost,
+	)
+	return i, err
+}
+
 const createPost = `-- name: CreatePost :one
 INSERT INTO posts(
     post_type_id,
@@ -38,6 +76,103 @@ func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (Post, e
 		arg.Description,
 		arg.DateCreatePost,
 	)
+	var i Post
+	err := row.Scan(
+		&i.ID,
+		&i.PostTypeID,
+		&i.UserID,
+		&i.PostTopID,
+		&i.Description,
+		&i.DateCreatePost,
+	)
+	return i, err
+}
+
+const deletePost = `-- name: DeletePost :exec
+DELETE FROM posts
+WHERE id = $1
+`
+
+func (q *Queries) DeletePost(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deletePost, id)
+	return err
+}
+
+const getPost = `-- name: GetPost :one
+SELECT id, post_type_id, user_id, post_top_id, description, date_create_post FROM posts
+WHERE id = $1 LIMIT 1
+`
+
+func (q *Queries) GetPost(ctx context.Context, id int64) (Post, error) {
+	row := q.db.QueryRowContext(ctx, getPost, id)
+	var i Post
+	err := row.Scan(
+		&i.ID,
+		&i.PostTypeID,
+		&i.UserID,
+		&i.PostTopID,
+		&i.Description,
+		&i.DateCreatePost,
+	)
+	return i, err
+}
+
+const listPost = `-- name: ListPost :many
+SELECT id, post_type_id, user_id, post_top_id, description, date_create_post FROM posts
+ORDER BY id DESC
+LIMIT $1
+OFFSET $2
+`
+
+type ListPostParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) ListPost(ctx context.Context, arg ListPostParams) ([]Post, error) {
+	rows, err := q.db.QueryContext(ctx, listPost, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Post{}
+	for rows.Next() {
+		var i Post
+		if err := rows.Scan(
+			&i.ID,
+			&i.PostTypeID,
+			&i.UserID,
+			&i.PostTopID,
+			&i.Description,
+			&i.DateCreatePost,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updatePost = `-- name: UpdatePost :one
+UPDATE posts
+SET description = $2
+WHERE id = $1
+RETURNING id, post_type_id, user_id, post_top_id, description, date_create_post
+`
+
+type UpdatePostParams struct {
+	ID          int64          `json:"id"`
+	Description sql.NullString `json:"description"`
+}
+
+func (q *Queries) UpdatePost(ctx context.Context, arg UpdatePostParams) (Post, error) {
+	row := q.db.QueryRowContext(ctx, updatePost, arg.ID, arg.Description)
 	var i Post
 	err := row.Scan(
 		&i.ID,
