@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE "postType" (
-  "id" bigserial PRIMARY KEY,
+  "id" int PRIMARY KEY,
   "name" varchar
 );
 

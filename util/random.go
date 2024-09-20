@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"math/rand"
 	"strings"
 	"time"
@@ -30,8 +31,12 @@ func RandomDescription() string {
 	return RandomString(int(RandomInt(2, 5))) + " " + RandomString(int(RandomInt(2, 5))) + " " + RandomString(int(RandomInt(2, 5))) + " " + RandomString(int(RandomInt(2, 5)))
 }
 
-func RandomType() int64 {
-	types := []int64{1, 3}
-	n := int64(len(types))
-	return types[rand.Int63n(n)]
+func RandomType() int32 {
+	types := []int32{1, 3}
+	n := len(types)
+	return types[rand.Intn(n)]
+}
+
+func RandomEmail() string {
+	return RandomString(6) + fmt.Sprint(RandomInt(1000, 9999)) + "@gmail.com"
 }

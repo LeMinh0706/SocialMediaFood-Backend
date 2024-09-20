@@ -1,4 +1,4 @@
-package test
+package dump
 
 import (
 	"database/sql"

@@ -60,7 +60,7 @@ INSERT INTO posts(
 `
 
 type CreatePostParams struct {
-	PostTypeID     int64          `json:"post_type_id"`
+	PostTypeID     int32          `json:"post_type_id"`
 	UserID         int64          `json:"user_id"`
 	Description    sql.NullString `json:"description"`
 	DateCreatePost int64          `json:"date_create_post"`

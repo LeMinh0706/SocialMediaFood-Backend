@@ -8,16 +8,52 @@ import (
 	"database/sql"
 )
 
+type Follower struct {
+	FollowRequest sql.NullInt64 `json:"follow_request"`
+	FollowAccept  sql.NullInt64 `json:"follow_accept"`
+}
+
 type Post struct {
 	ID             int64          `json:"id"`
-	PostTypeID     int64          `json:"post_type_id"`
+	PostTypeID     int32          `json:"post_type_id"`
 	UserID         int64          `json:"user_id"`
 	PostTopID      sql.NullInt64  `json:"post_top_id"`
 	Description    sql.NullString `json:"description"`
 	DateCreatePost int64          `json:"date_create_post"`
 }
 
+type PostImage struct {
+	ID       int64          `json:"id"`
+	UrlImage sql.NullString `json:"url_image"`
+	PostID   sql.NullInt64  `json:"post_id"`
+}
+
 type PostType struct {
-	ID   int64          `json:"id"`
+	ID   int32          `json:"id"`
 	Name sql.NullString `json:"name"`
+}
+
+type ReactPost struct {
+	ID     int64         `json:"id"`
+	PostID sql.NullInt64 `json:"post_id"`
+	UserID sql.NullInt64 `json:"user_id"`
+}
+
+type Role struct {
+	ID   int32          `json:"id"`
+	Name sql.NullString `json:"name"`
+}
+
+type User struct {
+	ID                   int64          `json:"id"`
+	Email                sql.NullString `json:"email"`
+	HashPashword         string         `json:"hash_pashword"`
+	Fullname             string         `json:"fullname"`
+	Gender               int32          `json:"gender"`
+	Country              sql.NullString `json:"country"`
+	Language             sql.NullString `json:"language"`
+	UrlAvatar            sql.NullString `json:"url_avatar"`
+	RoleID               int32          `json:"role_id"`
+	UrlBackgroundProfile sql.NullString `json:"url_background_profile"`
+	DateCreateAccount    int64          `json:"date_create_account"`
 }
