@@ -28,13 +28,3 @@ RETURNING *;
 DELETE FROM posts
 WHERE id = $1;
 
--- name: CreateComment :one
-INSERT INTO posts(
-    post_type_id,
-    user_id,
-    post_top_id,
-    description,
-    date_create_post
-) VALUES (
-    2, $1, $2, $3, $4
-) RETURNING *;

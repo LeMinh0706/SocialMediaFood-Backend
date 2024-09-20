@@ -12,9 +12,11 @@ import (
 )
 
 func createRandomPost(t *testing.T) db.Post {
+	user := createRandomUser(t)
+
 	arg := db.CreatePostParams{
 		PostTypeID:     util.RandomType(),
-		UserID:         util.RandomInt(1, 10),
+		UserID:         user.ID,
 		Description:    sql.NullString{String: util.RandomDescription(), Valid: true},
 		DateCreatePost: time.Now().Unix(),
 	}
@@ -24,7 +26,7 @@ func createRandomPost(t *testing.T) db.Post {
 
 	require.Equal(t, arg.PostTypeID, post.PostTypeID)
 	require.Equal(t, arg.Description, post.Description)
-	require.Equal(t, arg.UserID, post.UserID)
+	require.Equal(t, user.ID, post.UserID)
 	require.Equal(t, arg.DateCreatePost, post.DateCreatePost)
 	require.NotZero(t, post.ID)
 

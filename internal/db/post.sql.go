@@ -10,44 +10,6 @@ import (
 	"database/sql"
 )
 
-const createComment = `-- name: CreateComment :one
-INSERT INTO posts(
-    post_type_id,
-    user_id,
-    post_top_id,
-    description,
-    date_create_post
-) VALUES (
-    2, $1, $2, $3, $4
-) RETURNING id, post_type_id, user_id, post_top_id, description, date_create_post
-`
-
-type CreateCommentParams struct {
-	UserID         int64          `json:"user_id"`
-	PostTopID      sql.NullInt64  `json:"post_top_id"`
-	Description    sql.NullString `json:"description"`
-	DateCreatePost int64          `json:"date_create_post"`
-}
-
-func (q *Queries) CreateComment(ctx context.Context, arg CreateCommentParams) (Post, error) {
-	row := q.db.QueryRowContext(ctx, createComment,
-		arg.UserID,
-		arg.PostTopID,
-		arg.Description,
-		arg.DateCreatePost,
-	)
-	var i Post
-	err := row.Scan(
-		&i.ID,
-		&i.PostTypeID,
-		&i.UserID,
-		&i.PostTopID,
-		&i.Description,
-		&i.DateCreatePost,
-	)
-	return i, err
-}
-
 const createPost = `-- name: CreatePost :one
 INSERT INTO posts(
     post_type_id,

@@ -6,6 +6,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 )
 
 type Querier interface {
@@ -13,9 +14,11 @@ type Querier interface {
 	CreatePost(ctx context.Context, arg CreatePostParams) (Post, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeletePost(ctx context.Context, id int64) error
+	GetComment(ctx context.Context, postTopID sql.NullInt64) (Post, error)
 	GetListUser(ctx context.Context, arg GetListUserParams) ([]GetListUserRow, error)
 	GetPost(ctx context.Context, id int64) (Post, error)
 	GetUser(ctx context.Context, id int64) (GetUserRow, error)
+	ListComment(ctx context.Context, arg ListCommentParams) ([]Post, error)
 	ListPost(ctx context.Context, arg ListPostParams) ([]Post, error)
 	UpdatePost(ctx context.Context, arg UpdatePostParams) (Post, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (UpdateUserRow, error)
