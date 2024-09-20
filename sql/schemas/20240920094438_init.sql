@@ -71,28 +71,20 @@ ALTER TABLE "posts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 -- +goose Down
 -- +goose StatementBegin
-ALTER TABLE "users" DROP CONSTRAINT IF EXISTS users_role_id_fkey;
+ALTER TABLE "users" DROP CONSTRAINT IF EXISTS "users_role_id_fkey";
 
-ALTER TABLE "postImage" DROP CONSTRAINT IF EXISTS postImage_post_id_fkey;
+ALTER TABLE "users" DROP CONSTRAINT IF EXISTS "users_role_id_fkey";
+ALTER TABLE "postImage" DROP CONSTRAINT IF EXISTS "postImage_post_id_fkey";
+ALTER TABLE "reactPost" DROP CONSTRAINT IF EXISTS "reactPost_post_id_fkey";
+ALTER TABLE "reactPost" DROP CONSTRAINT IF EXISTS "reactPost_user_id_fkey";
+ALTER TABLE "follower" DROP CONSTRAINT IF EXISTS "follower_follow_request_fkey";
+ALTER TABLE "follower" DROP CONSTRAINT IF EXISTS "follower_follow_accept_fkey";
+ALTER TABLE "posts" DROP CONSTRAINT IF EXISTS "posts_user_id_fkey";
 
-ALTER TABLE "reactPost" DROP CONSTRAINT IF EXISTS reactPost_post_id_fkey;
-
-ALTER TABLE "reactPost" DROP CONSTRAINT IF EXISTS reactPost_user_id_fkey;
-
-ALTER TABLE "follower" DROP CONSTRAINT IF EXISTS follower_follow_request_fkey;
-
-ALTER TABLE "follower" DROP CONSTRAINT IF EXISTS follower_follow_accept_fkey;
-
-ALTER TABLE "post" DROP CONSTRAINT IF EXISTS posta_user_id_fkey;
-
-DROP TABLE IF EXISTS "users"
-
-DROP TABLE IF EXISTS "role"
-
-DROP TABLE IF EXISTS "postImage"
-
-DROP TABLE IF EXISTS "reactPost"
-
-DROP TABLE IF EXISTS "follower"
+DROP TABLE IF EXISTS "users";
+DROP TABLE IF EXISTS "role";
+DROP TABLE IF EXISTS "postImage";
+DROP TABLE IF EXISTS "reactPost";
+DROP TABLE IF EXISTS "follower";
 
 -- +goose StatementEnd

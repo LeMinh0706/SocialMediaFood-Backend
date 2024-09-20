@@ -13,9 +13,12 @@ type Querier interface {
 	CreatePost(ctx context.Context, arg CreatePostParams) (Post, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeletePost(ctx context.Context, id int64) error
+	GetListUser(ctx context.Context, arg GetListUserParams) ([]GetListUserRow, error)
 	GetPost(ctx context.Context, id int64) (Post, error)
+	GetUser(ctx context.Context, id int64) (GetUserRow, error)
 	ListPost(ctx context.Context, arg ListPostParams) ([]Post, error)
 	UpdatePost(ctx context.Context, arg UpdatePostParams) (Post, error)
+	UpdateUser(ctx context.Context, arg UpdateUserParams) (UpdateUserRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

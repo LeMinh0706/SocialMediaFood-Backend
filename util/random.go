@@ -40,3 +40,9 @@ func RandomType() int32 {
 func RandomEmail() string {
 	return RandomString(6) + fmt.Sprint(RandomInt(1000, 9999)) + "@gmail.com"
 }
+
+func RandomGender() int32 {
+	genders := []int32{0, 1}
+	n := len(genders)
+	return genders[rand.Intn(n)]
+}
