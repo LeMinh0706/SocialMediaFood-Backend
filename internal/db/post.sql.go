@@ -52,18 +52,16 @@ const createPost = `-- name: CreatePost :one
 INSERT INTO posts(
     post_type_id,
     user_id,
-    post_top_id,
     description,
     date_create_post
 ) VALUES (
-    $1, $2, $3, $4, $5
+    $1, $2, $3, $4
 ) RETURNING id, post_type_id, user_id, post_top_id, description, date_create_post
 `
 
 type CreatePostParams struct {
 	PostTypeID     int64          `json:"post_type_id"`
 	UserID         int64          `json:"user_id"`
-	PostTopID      sql.NullInt64  `json:"post_top_id"`
 	Description    sql.NullString `json:"description"`
 	DateCreatePost int64          `json:"date_create_post"`
 }
@@ -72,7 +70,6 @@ func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (Post, e
 	row := q.db.QueryRowContext(ctx, createPost,
 		arg.PostTypeID,
 		arg.UserID,
-		arg.PostTopID,
 		arg.Description,
 		arg.DateCreatePost,
 	)

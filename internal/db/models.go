@@ -16,3 +16,8 @@ type Post struct {
 	Description    sql.NullString `json:"description"`
 	DateCreatePost int64          `json:"date_create_post"`
 }
+
+type PostType struct {
+	ID   int64          `json:"id"`
+	Name sql.NullString `json:"name"`
+}

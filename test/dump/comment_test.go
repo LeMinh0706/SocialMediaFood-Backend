@@ -14,7 +14,7 @@ import (
 func createRandomComment(t *testing.T) db.Post {
 	arg := db.CreateCommentParams{
 		UserID:         util.RandomInt(1, 10),
-		PostTopID:      sql.NullInt64{Int64: util.RandomInt(1, 50), Valid: true},
+		PostTopID:      sql.NullInt64{Int64: util.RandomInt(1, 10), Valid: true},
 		Description:    sql.NullString{String: util.RandomDescription(), Valid: true},
 		DateCreatePost: time.Now().Unix(),
 	}
@@ -32,5 +32,8 @@ func createRandomComment(t *testing.T) db.Post {
 }
 
 func TestCreateComment(t *testing.T) {
+	// for i := 0; i < 10; i++ {
+	// 	createRandomComment(t)
+	// }
 	createRandomComment(t)
 }

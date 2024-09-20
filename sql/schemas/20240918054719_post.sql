@@ -6,7 +6,8 @@ CREATE TABLE "posts" (
   "user_id" bigint NOT NULL,
   "post_top_id" bigint,
   "description" varchar,
-  "date_create_post" bigint NOT NULL
+  "date_create_post" bigint NOT NULL,
+  FOREIGN KEY (post_top_id) REFERENCES posts(id)
 );
 -- +goose StatementEnd
 
