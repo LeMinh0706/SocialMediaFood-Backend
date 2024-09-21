@@ -23,9 +23,9 @@ type Post struct {
 }
 
 type PostImage struct {
-	ID       int64          `json:"id"`
-	UrlImage sql.NullString `json:"url_image"`
-	PostID   sql.NullInt64  `json:"post_id"`
+	ID       int64  `json:"id"`
+	UrlImage string `json:"url_image"`
+	PostID   int64  `json:"post_id"`
 }
 
 type PostType struct {

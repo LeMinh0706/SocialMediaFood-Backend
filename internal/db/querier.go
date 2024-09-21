@@ -11,10 +11,12 @@ import (
 
 type Querier interface {
 	CreateComment(ctx context.Context, arg CreateCommentParams) (Post, error)
+	CreateImagePost(ctx context.Context, arg CreateImagePostParams) (PostImage, error)
 	CreatePost(ctx context.Context, arg CreatePostParams) (Post, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeletePost(ctx context.Context, id int64) error
 	GetComment(ctx context.Context, postTopID sql.NullInt64) (Post, error)
+	GetImagePost(ctx context.Context, arg GetImagePostParams) (PostImage, error)
 	GetListUser(ctx context.Context, arg GetListUserParams) ([]GetListUserRow, error)
 	GetPost(ctx context.Context, id int64) (Post, error)
 	GetUser(ctx context.Context, id int64) (GetUserRow, error)

@@ -19,10 +19,10 @@ CREATE TABLE "role" (
   "name" varchar
 );
 
-CREATE TABLE "postImage" (
+CREATE TABLE "post_image" (
   "id" bigserial PRIMARY KEY,
-  "url_image" varchar,
-  "post_id" bigint
+  "url_image" varchar NOT NULL,
+  "post_id" bigint NOT NULL
 );
 
 CREATE TABLE "reactPost" (
@@ -40,7 +40,7 @@ CREATE INDEX ON "users" ("fullname");
 
 CREATE INDEX ON "users" ("email");
 
-CREATE INDEX ON "postImage" ("post_id");
+CREATE INDEX ON "post_image" ("post_id");
 
 CREATE INDEX ON "reactPost" ("post_id");
 
@@ -54,7 +54,7 @@ CREATE INDEX ON "follower" ("follow_accept");
 
 ALTER TABLE "users" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id");
 
-ALTER TABLE "postImage" ADD FOREIGN KEY ("post_id") REFERENCES "posts" ("id");
+ALTER TABLE "post_image" ADD FOREIGN KEY ("post_id") REFERENCES "posts" ("id");
 
 ALTER TABLE "reactPost" ADD FOREIGN KEY ("post_id") REFERENCES "posts" ("id");
 
@@ -74,7 +74,7 @@ ALTER TABLE "posts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 ALTER TABLE "users" DROP CONSTRAINT IF EXISTS "users_role_id_fkey";
 
 ALTER TABLE "users" DROP CONSTRAINT IF EXISTS "users_role_id_fkey";
-ALTER TABLE "postImage" DROP CONSTRAINT IF EXISTS "postImage_post_id_fkey";
+ALTER TABLE "post_image" DROP CONSTRAINT IF EXISTS "post_image_post_id_fkey";
 ALTER TABLE "reactPost" DROP CONSTRAINT IF EXISTS "reactPost_post_id_fkey";
 ALTER TABLE "reactPost" DROP CONSTRAINT IF EXISTS "reactPost_user_id_fkey";
 ALTER TABLE "follower" DROP CONSTRAINT IF EXISTS "follower_follow_request_fkey";
@@ -83,7 +83,7 @@ ALTER TABLE "posts" DROP CONSTRAINT IF EXISTS "posts_user_id_fkey";
 
 DROP TABLE IF EXISTS "users";
 DROP TABLE IF EXISTS "role";
-DROP TABLE IF EXISTS "postImage";
+DROP TABLE IF EXISTS "post_image";
 DROP TABLE IF EXISTS "reactPost";
 DROP TABLE IF EXISTS "follower";
 
