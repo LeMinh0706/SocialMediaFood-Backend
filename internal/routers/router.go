@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/docs"
-	c "github.com/LeMinh0706/SocialMediaFood-Backend/internal/controllers"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files" // swagger embed files
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -36,17 +35,8 @@ func NewRouter() *gin.Engine {
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := r.Group("/api/v1")
 	{
-		eg := v1.Group("/example")
-		{
-			eg.GET("/hi/:name", c.NewHelloController().GetHelloParam)
-			eg.GET("/hello", c.NewHelloController().GetHelloQuery)
-			eg.POST("/hello", c.NewHelloController().PostHelloBody)
-		}
 
-		ag := v1.Group("/pop")
-		{
-			ag.GET("/ping", Pong)
-		}
+		NewPostRouter(v1)
 	}
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	return r
