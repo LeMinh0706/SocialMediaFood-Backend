@@ -4,6 +4,7 @@ CREATE TABLE "users" (
   "id" bigserial PRIMARY KEY,
   "email" varchar UNIQUE,
   "hash_pashword" varchar NOT NULL,
+  "username" varchar NOT NULL,
   "fullname" varchar NOT NULL,
   "gender" int NOT NULL,
   "country" varchar,

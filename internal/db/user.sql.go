@@ -14,18 +14,20 @@ const createUser = `-- name: CreateUser :one
 INSERT INTO users(
     email,
     hash_pashword,
+    username,
     fullname,
     gender,
     role_id,
     date_create_account
 ) VALUES (
-    $1, $2, $3, $4, $5, $6
-) RETURNING id, email, hash_pashword, fullname, gender, country, language, url_avatar, role_id, url_background_profile, date_create_account
+    $1, $2, $3, $4, $5, $6, $7
+) RETURNING id, email, hash_pashword, username, fullname, gender, country, language, url_avatar, role_id, url_background_profile, date_create_account
 `
 
 type CreateUserParams struct {
 	Email             sql.NullString `json:"email"`
 	HashPashword      string         `json:"hash_pashword"`
+	Username          string         `json:"username"`
 	Fullname          string         `json:"fullname"`
 	Gender            int32          `json:"gender"`
 	RoleID            int32          `json:"role_id"`
@@ -36,6 +38,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	row := q.db.QueryRowContext(ctx, createUser,
 		arg.Email,
 		arg.HashPashword,
+		arg.Username,
 		arg.Fullname,
 		arg.Gender,
 		arg.RoleID,
@@ -46,6 +49,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.ID,
 		&i.Email,
 		&i.HashPashword,
+		&i.Username,
 		&i.Fullname,
 		&i.Gender,
 		&i.Country,

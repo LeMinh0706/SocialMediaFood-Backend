@@ -48,6 +48,7 @@ type User struct {
 	ID                   int64          `json:"id"`
 	Email                sql.NullString `json:"email"`
 	HashPashword         string         `json:"hash_pashword"`
+	Username             string         `json:"username"`
 	Fullname             string         `json:"fullname"`
 	Gender               int32          `json:"gender"`
 	Country              sql.NullString `json:"country"`

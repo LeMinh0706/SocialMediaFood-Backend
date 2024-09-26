@@ -13,6 +13,7 @@ import (
 
 func createRandomUser(t *testing.T) db.User {
 	arg := db.CreateUserParams{
+		Username:          util.RandomString(8),
 		Email:             sql.NullString{String: util.RandomEmail(), Valid: true},
 		HashPashword:      "kocanpass",
 		Fullname:          util.RandomString(7),

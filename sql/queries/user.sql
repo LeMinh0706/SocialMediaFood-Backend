@@ -2,12 +2,13 @@
 INSERT INTO users(
     email,
     hash_pashword,
+    username,
     fullname,
     gender,
     role_id,
     date_create_account
 ) VALUES (
-    $1, $2, $3, $4, $5, $6
+    $1, $2, $3, $4, $5, $6, $7
 ) RETURNING *;
 
 -- name: GetUser :one 
