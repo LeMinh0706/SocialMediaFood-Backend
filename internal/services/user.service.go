@@ -6,6 +6,7 @@ import (
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/repo"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 )
 
 type UserService struct {
@@ -23,7 +24,11 @@ func NewUserService() *UserService {
 }
 
 func (us *UserService) Register(ctx context.Context, username, password string) (db.User, error) {
-	user, err := us.userRepo.CreateUser(ctx, username, password, 3)
+	hashPassword, err := util.HashPashword(password)
+	if err != nil {
+		return db.User{}, err
+	}
+	user, err := us.userRepo.CreateUser(ctx, username, hashPassword, 3)
 	if err != nil {
 		return db.User{}, err
 	}
