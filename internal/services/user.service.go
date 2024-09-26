@@ -30,6 +30,14 @@ func (us *UserService) Register(ctx context.Context, username, password string) 
 	return user, nil
 }
 
+func (us *UserService) UserExist(ctx context.Context, username string) error {
+	_, err := us.userRepo.UserExist(ctx, username)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (us *UserService) GetUser(ctx context.Context, id int64) (db.GetUserRow, error) {
 	user, err := us.userRepo.GetUser(ctx, id)
 	if err != nil {

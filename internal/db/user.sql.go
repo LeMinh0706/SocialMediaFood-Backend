@@ -177,3 +177,14 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (UpdateU
 	)
 	return i, err
 }
+
+const userExist = `-- name: UserExist :one
+SELECT username FROM users
+WHERE username LIKE $1
+`
+
+func (q *Queries) UserExist(ctx context.Context, username string) (string, error) {
+	row := q.db.QueryRowContext(ctx, userExist, username)
+	err := row.Scan(&username)
+	return username, err
+}

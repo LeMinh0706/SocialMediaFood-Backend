@@ -37,3 +37,7 @@ func (repo *UserRepository) CreateUser(ctx context.Context, username, password s
 func (repo *UserRepository) GetUser(ctx context.Context, id int64) (db.GetUserRow, error) {
 	return repo.queries.GetUser(ctx, id)
 }
+
+func (repo *UserRepository) UserExist(ctx context.Context, username string) (string, error) {
+	return repo.queries.UserExist(ctx, username)
+}

@@ -4,7 +4,7 @@ CREATE TABLE "users" (
   "id" bigserial PRIMARY KEY,
   "email" varchar UNIQUE,
   "hash_pashword" varchar NOT NULL,
-  "username" varchar NOT NULL,
+  "username" varchar UNIQUE NOT NULL,
   "fullname" varchar NOT NULL,
   "gender" int NOT NULL,
   "country" varchar,
@@ -38,6 +38,8 @@ CREATE TABLE "follower" (
 );
 
 CREATE INDEX ON "users" ("fullname");
+
+CREATE INDEX ON "users" ("username");
 
 CREATE INDEX ON "users" ("email");
 

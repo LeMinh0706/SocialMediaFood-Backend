@@ -27,3 +27,7 @@ SET fullname = $2,
 gender = $3
 WHERE id = $1
 RETURNING id, email, fullname, gender, role_id, date_create_account;
+
+-- name: UserExist :one
+SELECT username FROM users
+WHERE username LIKE $1;
