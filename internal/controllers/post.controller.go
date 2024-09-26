@@ -34,6 +34,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 		response.ErrorResponse(g, 500, "Failed to create post")
 		return
 	}
+
 	res := response.PostResponse{ID: post.ID, PostTypeID: post.PostTypeID, UserID: post.UserID, Description: post.Description.String, DateCreatePost: post.DateCreatePost}
 
 	response.SuccessResponse(g, 200, res)

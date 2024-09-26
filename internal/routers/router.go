@@ -35,8 +35,8 @@ func NewRouter() *gin.Engine {
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := r.Group("/api/v1")
 	{
-
 		NewPostRouter(v1)
+		NewUserRouter(v1)
 	}
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	return r
