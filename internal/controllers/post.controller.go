@@ -20,7 +20,7 @@ func NewPostController() *PostController {
 
 func (pc *PostController) CreatePost(g *gin.Context) {
 	var req struct {
-		Description string `json:"description" binding:"required"`
+		Description string `json:"description"`
 		UserId      int64  `json:"user_id" binding:"required"`
 	}
 
@@ -34,5 +34,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 		response.ErrorResponse(g, 500, "Failed to create post")
 		return
 	}
-	response.SuccessResponse(g, 200, post)
+	res := response.PostResponse{ID: post.ID, PostTypeID: post.PostTypeID, UserID: post.UserID, Description: post.Description.String, DateCreatePost: post.DateCreatePost}
+
+	response.SuccessResponse(g, 200, res)
 }
