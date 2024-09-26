@@ -23,9 +23,17 @@ func NewUserService() *UserService {
 }
 
 func (us *UserService) Register(ctx context.Context, username, password string) (db.User, error) {
-	user, err := us.userRepo.CreateUser(username, password, 3)
+	user, err := us.userRepo.CreateUser(ctx, username, password, 3)
 	if err != nil {
 		return db.User{}, err
+	}
+	return user, nil
+}
+
+func (us *UserService) GetUser(ctx context.Context, id int64) (db.GetUserRow, error) {
+	user, err := us.userRepo.GetUser(ctx, id)
+	if err != nil {
+		return db.GetUserRow{}, err
 	}
 	return user, nil
 }

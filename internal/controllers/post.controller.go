@@ -29,13 +29,19 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 		return
 	}
 
+	user, err := services.NewUserService().GetUser(g.Request.Context(), req.UserId)
+	if err != nil {
+		response.ErrorResponse(g, 404, "Can't find user to create post")
+		return
+	}
 	post, err := pc.postService.CreatePost(g.Request.Context(), req.Description, req.UserId)
 	if err != nil {
 		response.ErrorResponse(g, 500, "Failed to create post")
 		return
 	}
 
-	res := response.PostResponse{ID: post.ID, PostTypeID: post.PostTypeID, UserID: post.UserID, Description: post.Description.String, DateCreatePost: post.DateCreatePost}
+	userRes := response.UserForPost{ID: user.ID, Fullname: user.Fullname, RoleID: user.RoleID}
+	res := response.PostResponse{ID: post.ID, PostTypeID: post.PostTypeID, User: userRes, Description: post.Description.String, DateCreatePost: post.DateCreatePost}
 
 	response.SuccessResponse(g, 200, res)
 }

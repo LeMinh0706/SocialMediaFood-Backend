@@ -8,6 +8,7 @@ import (
 func NewUserRouter(router *gin.RouterGroup) {
 	userGroup := router.Group("/account")
 	{
+		userGroup.GET(":id", controllers.NewUserController().GetById)
 		userGroup.POST("", controllers.NewUserController().Register)
 	}
 }

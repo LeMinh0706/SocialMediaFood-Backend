@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/services"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
@@ -34,6 +35,28 @@ func (uc *UserController) Register(g *gin.Context) {
 		return
 	}
 
-	res := response.UserResponse{ID: user.ID, Email: user.Email.String, Fullname: user.Fullname, Username: user.Username, Gender: user.Gender, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
+	res := response.RegisterResponse{ID: user.ID, Email: user.Email.String, Fullname: user.Fullname, Username: user.Username, Gender: user.Gender, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
 	response.SuccessResponse(g, 201, res)
+}
+
+func (uc *UserController) GetById(g *gin.Context) {
+	var req struct {
+		Id int64 `json:"id" binding:"required"`
+	}
+	idParam := g.Param("id")
+	id, err := strconv.ParseInt(idParam, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 400, fmt.Sprintf("Bad request: %v", err))
+		return
+	}
+
+	req.Id = id
+
+	user, err := uc.userService.GetUser(g.Request.Context(), req.Id)
+	if err != nil {
+		response.ErrorResponse(g, 404, "Cant not found user!")
+	}
+
+	res := response.UserResponse{ID: user.ID, Fullname: user.Fullname, Gender: user.Gender, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
+	response.SuccessResponse(g, 200, res)
 }
