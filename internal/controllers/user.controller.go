@@ -22,14 +22,21 @@ func NewUserController() *UserController {
 func (uc *UserController) Register(g *gin.Context) {
 	var req response.RequestResponse
 	if err := g.ShouldBindJSON(&req); err != nil {
-		response.ErrorResponse(g, 400, fmt.Sprintf("Can not signup, error: %v", err))
+		if err.Error() == "Key: 'RequestResponse.Password' Error:Field validation for 'Password' failed on the 'min' tag" {
+			response.ErrorResponse(g, 400, "Password too short, must be more than 6 character")
+			return
+		} else if err.Error() == "Key: 'RequestResponse.Password' Error:Field validation for 'Password' failed on the 'max' tag" {
+			response.ErrorResponse(g, 400, "Password too short, must be less than 18 characters")
+			return
+		}
+		response.ErrorResponse(g, 400, "Bad request")
 		return
 	}
 
 	user, err := uc.userService.Register(g.Request.Context(), req.Username, req.Password)
 	if err != nil {
 		if err.Error() == "pq: duplicate key value violates unique constraint \"users_username_key\"" {
-			response.ErrorResponse(g, 401, "User exist")
+			response.ErrorResponse(g, 409, "User already exist")
 			return
 		}
 		response.ErrorResponse(g, 500, fmt.Sprint(err.Error()))

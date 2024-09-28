@@ -10,6 +10,6 @@ func NewUserRouter(router *gin.RouterGroup) {
 	{
 		userGroup.GET(":id", controllers.NewUserController().GetById)
 		userGroup.POST("register", controllers.NewUserController().Register)
-		userGroup.GET("login", controllers.NewUserController().Login)
+		userGroup.POST("login", controllers.NewUserController().Login)
 	}
 }
