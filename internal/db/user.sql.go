@@ -141,6 +141,31 @@ func (q *Queries) GetUser(ctx context.Context, id int64) (GetUserRow, error) {
 	return i, err
 }
 
+const login = `-- name: Login :one
+SELECT id, email, hash_pashword, username, fullname, gender, country, language, url_avatar, role_id, url_background_profile, date_create_account FROM users
+WHERE username LIKE $1 LIMIT 1
+`
+
+func (q *Queries) Login(ctx context.Context, username string) (User, error) {
+	row := q.db.QueryRowContext(ctx, login, username)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.HashPashword,
+		&i.Username,
+		&i.Fullname,
+		&i.Gender,
+		&i.Country,
+		&i.Language,
+		&i.UrlAvatar,
+		&i.RoleID,
+		&i.UrlBackgroundProfile,
+		&i.DateCreateAccount,
+	)
+	return i, err
+}
+
 const updateUser = `-- name: UpdateUser :one
 UPDATE users 
 SET fullname = $2,
@@ -176,15 +201,4 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (UpdateU
 		&i.DateCreateAccount,
 	)
 	return i, err
-}
-
-const userExist = `-- name: UserExist :one
-SELECT username FROM users
-WHERE username LIKE $1
-`
-
-func (q *Queries) UserExist(ctx context.Context, username string) (string, error) {
-	row := q.db.QueryRowContext(ctx, userExist, username)
-	err := row.Scan(&username)
-	return username, err
 }

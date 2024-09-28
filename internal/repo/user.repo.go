@@ -38,6 +38,6 @@ func (repo *UserRepository) GetUser(ctx context.Context, id int64) (db.GetUserRo
 	return repo.queries.GetUser(ctx, id)
 }
 
-func (repo *UserRepository) UserExist(ctx context.Context, username string) (string, error) {
-	return repo.queries.UserExist(ctx, username)
+func (repo *UserRepository) Login(ctx context.Context, username string) (db.User, error) {
+	return repo.queries.Login(ctx, username)
 }

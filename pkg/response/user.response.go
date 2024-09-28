@@ -10,6 +10,12 @@ type RegisterResponse struct {
 	DateCreateAccount int64  `json:"date_create_account"`
 }
 
+type RequestResponse struct {
+	Username string `json:"username" binding:"required,alphanum"`
+	// Password string `json:"password" binding:"required,min=6,max=18"`
+	Password string `json:"password" binding:"required,min=6,max=18,regexp=^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+$"`
+}
+
 type UserForPost struct {
 	ID       int64  `json:"id"`
 	Fullname string `json:"fullname"`

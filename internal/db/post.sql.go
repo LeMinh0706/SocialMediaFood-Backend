@@ -59,7 +59,7 @@ func (q *Queries) DeletePost(ctx context.Context, id int64) error {
 
 const getPost = `-- name: GetPost :one
 SELECT id, post_type_id, user_id, post_top_id, description, date_create_post FROM posts
-WHERE id = $1 LIMIT 1
+WHERE id = $1 AND post_type_id != 2 LIMIT 1
 `
 
 func (q *Queries) GetPost(ctx context.Context, id int64) (Post, error) {
@@ -78,6 +78,7 @@ func (q *Queries) GetPost(ctx context.Context, id int64) (Post, error) {
 
 const listPost = `-- name: ListPost :many
 SELECT id, post_type_id, user_id, post_top_id, description, date_create_post FROM posts
+WHERE post_type_id != 2
 ORDER BY id DESC
 LIMIT $1
 OFFSET $2

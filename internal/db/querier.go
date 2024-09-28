@@ -22,9 +22,9 @@ type Querier interface {
 	GetUser(ctx context.Context, id int64) (GetUserRow, error)
 	ListComment(ctx context.Context, arg ListCommentParams) ([]Post, error)
 	ListPost(ctx context.Context, arg ListPostParams) ([]Post, error)
+	Login(ctx context.Context, username string) (User, error)
 	UpdatePost(ctx context.Context, arg UpdatePostParams) (Post, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (UpdateUserRow, error)
-	UserExist(ctx context.Context, username string) (string, error)
 }
 
 var _ Querier = (*Queries)(nil)

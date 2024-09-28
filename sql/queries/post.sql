@@ -10,10 +10,11 @@ INSERT INTO posts(
 
 -- name: GetPost :one
 SELECT * FROM posts
-WHERE id = $1 LIMIT 1;
+WHERE id = $1 AND post_type_id != 2 LIMIT 1;
 
 -- name: ListPost :many
 SELECT * FROM posts
+WHERE post_type_id != 2
 ORDER BY id DESC
 LIMIT $1
 OFFSET $2;

@@ -69,21 +69,4 @@ paths:
       summary: hello example
       tags:
       - example
-  /pop/ping:
-    get:
-      consumes:
-      - application/json
-      description: do pong
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-      security:
-      - Bearer: []
-      summary: ping pop
-      tags:
-      - pong
 swagger: "2.0"

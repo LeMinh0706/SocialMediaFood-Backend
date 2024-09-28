@@ -20,10 +20,7 @@ func NewUserController() *UserController {
 }
 
 func (uc *UserController) Register(g *gin.Context) {
-	var req struct {
-		Username string `json:"username" binding:"required"`
-		Password string `json:"password" binding:"required"`
-	}
+	var req response.RequestResponse
 	if err := g.ShouldBindJSON(&req); err != nil {
 		response.ErrorResponse(g, 400, fmt.Sprintf("Can not signup, error: %v", err))
 		return
@@ -41,6 +38,33 @@ func (uc *UserController) Register(g *gin.Context) {
 
 	res := response.RegisterResponse{ID: user.ID, Email: user.Email.String, Fullname: user.Fullname, Username: user.Username, Gender: user.Gender, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
 	response.SuccessResponse(g, 201, res)
+}
+
+func (uc *UserController) Login(g *gin.Context) {
+	var req response.RequestResponse
+
+	if err := g.ShouldBindJSON(&req); err != nil {
+		response.ErrorResponse(g, 400, err.Error())
+		return
+	}
+
+	user, err := uc.userService.Login(g, req.Username, req.Password)
+
+	if err != nil {
+		if err.Error() == "sql: no rows in result set" {
+			response.ErrorResponse(g, 404, "Wrong username")
+			return
+		} else if err.Error() == "crypto/bcrypt: hashedPassword is not the hash of the given password" {
+			response.ErrorResponse(g, 404, "Wrong password")
+			return
+		}
+		response.ErrorResponse(g, 404, err.Error())
+		return
+	}
+
+	res := response.UserResponse{ID: user.ID, Fullname: user.Username, Gender: user.Gender, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
+
+	response.SuccessResponse(g, 200, res)
 }
 
 func (uc *UserController) GetById(g *gin.Context) {
