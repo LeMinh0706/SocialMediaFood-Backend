@@ -8,6 +8,7 @@ import (
 
 var pgd *sql.DB
 
+// Get connection để tương tác dưới db, ở repo khỏi phải viết lại nguyên hàm
 func getDBConnection() (*sql.DB, error) {
 	if pgd == nil {
 		config, err := util.LoadConfig("../..")
