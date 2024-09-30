@@ -28,7 +28,7 @@ func AuthorizeMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 
 		fields := strings.Fields(authorizationHeader)
 		if len(fields) < 2 {
-			err := errors.New("Invalid Token")
+			err := errors.New("Invalid token")
 			response.ErrorResponse(ctx, 401, err.Error())
 			ctx.Abort()
 			return
