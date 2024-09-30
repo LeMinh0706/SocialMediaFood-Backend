@@ -14,9 +14,10 @@ func (server *Server) NewRouter() {
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := r.Group("/api/v1")
 	{
-		routers.NewPostRouter(v1)
+		routers.NewPostRouter(v1, server.tokenMaker)
 		routers.NewUserRouter(v1, server.tokenMaker)
 	}
+
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	server.router = r
 }

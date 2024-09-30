@@ -10,9 +10,8 @@ import (
 var TokenOutDate = errors.New("Token is out of date")
 
 type Payload struct {
-	Id       uuid.UUID `json:"id"`
-	Username string    `json:"username"`
-
+	Id        uuid.UUID `json:"id"`
+	Username  string    `json:"username"`
 	IssuedAt  time.Time `json:"issued_at"`
 	ExpiredAt time.Time `json:"expired_at"`
 }
