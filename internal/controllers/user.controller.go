@@ -3,19 +3,23 @@ package controllers
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/services"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/gin-gonic/gin"
 )
 
 type UserController struct {
 	userService *services.UserService
+	tokenMaker  token.Maker
 }
 
-func NewUserController() *UserController {
+func NewUserController(tokenMaker token.Maker) *UserController {
 	return &UserController{
 		userService: services.NewUserService(),
+		tokenMaker:  tokenMaker,
 	}
 }
 
@@ -69,7 +73,15 @@ func (uc *UserController) Login(g *gin.Context) {
 		return
 	}
 
-	res := response.UserResponse{ID: user.ID, Fullname: user.Username, Gender: user.Gender, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
+	token, err := uc.tokenMaker.CreateToken(user.Username, 15*time.Minute)
+
+	if err != nil {
+		response.ErrorResponse(g, 500, err.Error())
+		return
+	}
+
+	userRes := response.UserResponse{ID: user.ID, Fullname: user.Username, Gender: user.Gender, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
+	res := response.LoginResponse{AccessToken: token, User: userRes}
 
 	response.SuccessResponse(g, 200, res)
 }

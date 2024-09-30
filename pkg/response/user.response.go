@@ -28,3 +28,8 @@ type UserResponse struct {
 	RoleID            int32  `json:"role_id"`
 	DateCreateAccount int64  `json:"date_create_account"`
 }
+
+type LoginResponse struct {
+	AccessToken string       `json:"access_token"`
+	User        UserResponse `json:"user"`
+}

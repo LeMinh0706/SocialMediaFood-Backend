@@ -21,6 +21,7 @@ func createRandomPost(t *testing.T) db.Post {
 		DateCreatePost: time.Now().Unix(),
 	}
 	post, err := testQueries.CreatePost(context.Background(), arg)
+
 	require.NoError(t, err)
 	require.NotEmpty(t, post)
 
