@@ -114,40 +114,12 @@ func (q *Queries) GetListUser(ctx context.Context, arg GetListUserParams) ([]Get
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, email, fullname, gender, role_id, date_create_account FROM users 
-WHERE id = $1
-`
-
-type GetUserRow struct {
-	ID                int64          `json:"id"`
-	Email             sql.NullString `json:"email"`
-	Fullname          string         `json:"fullname"`
-	Gender            int32          `json:"gender"`
-	RoleID            int32          `json:"role_id"`
-	DateCreateAccount int64          `json:"date_create_account"`
-}
-
-func (q *Queries) GetUser(ctx context.Context, id int64) (GetUserRow, error) {
-	row := q.db.QueryRowContext(ctx, getUser, id)
-	var i GetUserRow
-	err := row.Scan(
-		&i.ID,
-		&i.Email,
-		&i.Fullname,
-		&i.Gender,
-		&i.RoleID,
-		&i.DateCreateAccount,
-	)
-	return i, err
-}
-
-const login = `-- name: Login :one
 SELECT id, email, hash_pashword, username, fullname, gender, country, language, url_avatar, role_id, url_background_profile, date_create_account FROM users
 WHERE username LIKE $1 LIMIT 1
 `
 
-func (q *Queries) Login(ctx context.Context, username string) (User, error) {
-	row := q.db.QueryRowContext(ctx, login, username)
+func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUser, username)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -163,6 +135,24 @@ func (q *Queries) Login(ctx context.Context, username string) (User, error) {
 		&i.UrlBackgroundProfile,
 		&i.DateCreateAccount,
 	)
+	return i, err
+}
+
+const getUserById = `-- name: GetUserById :one
+SELECT id, fullname, role_id FROM users 
+WHERE id = $1 LIMIT 1
+`
+
+type GetUserByIdRow struct {
+	ID       int64  `json:"id"`
+	Fullname string `json:"fullname"`
+	RoleID   int32  `json:"role_id"`
+}
+
+func (q *Queries) GetUserById(ctx context.Context, id int64) (GetUserByIdRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserById, id)
+	var i GetUserByIdRow
+	err := row.Scan(&i.ID, &i.Fullname, &i.RoleID)
 	return i, err
 }
 

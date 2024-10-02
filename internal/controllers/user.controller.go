@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/services"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
@@ -86,24 +86,14 @@ func (uc *UserController) Login(g *gin.Context) {
 	response.SuccessResponse(g, 200, res)
 }
 
-func (uc *UserController) GetById(g *gin.Context) {
-	var req struct {
-		Id int64 `json:"id" binding:"required"`
-	}
-	idParam := g.Param("id")
-	id, err := strconv.ParseInt(idParam, 10, 64)
-	if err != nil {
-		response.ErrorResponse(g, 400, fmt.Sprintf("Bad request: %v", err))
-		return
-	}
+func (uc *UserController) GetMe(g *gin.Context) {
 
-	req.Id = id
+	authPayload := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 
-	user, err := uc.userService.GetUser(g.Request.Context(), req.Id)
+	me, err := uc.userService.GetMe(g.Request.Context(), authPayload.Username)
 	if err != nil {
 		response.ErrorResponse(g, 404, "Cant not found user!")
 	}
 
-	res := response.UserResponse{ID: user.ID, Fullname: user.Fullname, Gender: user.Gender, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
-	response.SuccessResponse(g, 200, res)
+	response.SuccessResponse(g, 200, me)
 }

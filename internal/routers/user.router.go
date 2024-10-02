@@ -12,7 +12,7 @@ func NewUserRouter(router *gin.RouterGroup, token token.Maker) {
 	uc := controllers.NewUserController(token)
 	{
 		auth := userGroup.Group("/").Use(middlewares.AuthorizeMiddleware(token))
-		auth.GET(":id", uc.GetById)
+		auth.GET("me", uc.GetMe)
 		userGroup.POST("register", uc.Register)
 		userGroup.POST("login", uc.Login)
 	}

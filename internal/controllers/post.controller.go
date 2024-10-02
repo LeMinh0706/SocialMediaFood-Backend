@@ -40,8 +40,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 		return
 	}
 
-	userRes := response.UserForPost{ID: user.ID, Fullname: user.Fullname, RoleID: user.RoleID}
-	res := response.PostResponse{ID: post.ID, PostTypeID: post.PostTypeID, User: userRes, Description: post.Description.String, DateCreatePost: post.DateCreatePost}
+	res := response.PostResponse{ID: post.ID, PostTypeID: post.PostTypeID, User: user, Description: post.Description.String, DateCreatePost: post.DateCreatePost}
 
 	response.SuccessResponse(g, 200, res)
 }

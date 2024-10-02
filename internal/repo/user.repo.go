@@ -34,10 +34,10 @@ func (repo *UserRepository) CreateUser(ctx context.Context, username, password s
 	})
 }
 
-func (repo *UserRepository) GetUser(ctx context.Context, id int64) (db.GetUserRow, error) {
-	return repo.queries.GetUser(ctx, id)
+func (repo *UserRepository) GetUser(ctx context.Context, username string) (db.User, error) {
+	return repo.queries.GetUser(ctx, username)
 }
 
-func (repo *UserRepository) Login(ctx context.Context, username string) (db.User, error) {
-	return repo.queries.Login(ctx, username)
+func (repo *UserRepository) GetUserById(ctx context.Context, id int64) (db.GetUserByIdRow, error) {
+	return repo.queries.GetUserById(ctx, id)
 }

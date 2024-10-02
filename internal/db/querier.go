@@ -19,10 +19,10 @@ type Querier interface {
 	GetImagePost(ctx context.Context, arg GetImagePostParams) (PostImage, error)
 	GetListUser(ctx context.Context, arg GetListUserParams) ([]GetListUserRow, error)
 	GetPost(ctx context.Context, id int64) (Post, error)
-	GetUser(ctx context.Context, id int64) (GetUserRow, error)
+	GetUser(ctx context.Context, username string) (User, error)
+	GetUserById(ctx context.Context, id int64) (GetUserByIdRow, error)
 	ListComment(ctx context.Context, arg ListCommentParams) ([]Post, error)
 	ListPost(ctx context.Context, arg ListPostParams) ([]Post, error)
-	Login(ctx context.Context, username string) (User, error)
 	UpdatePost(ctx context.Context, arg UpdatePostParams) (Post, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (UpdateUserRow, error)
 }

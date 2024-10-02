@@ -44,7 +44,7 @@ func TestCreateUser(t *testing.T) {
 func TestGetUser(t *testing.T) {
 	user1 := createRandomUser(t)
 
-	user2, err := testQueries.GetUser(context.Background(), user1.ID)
+	user2, err := testQueries.GetUser(context.Background(), user1.Username)
 	require.NoError(t, err)
 	require.NotEmpty(t, user2)
 
@@ -92,21 +92,4 @@ func TestListUser(t *testing.T) {
 	for _, user := range users {
 		require.NotEmpty(t, user)
 	}
-}
-
-func TestLoginUser(t *testing.T) {
-	user1 := createRandomUser(t)
-
-	user2, err := testQueries.Login(context.Background(), user1.Username)
-
-	require.NoError(t, err)
-	require.NotEmpty(t, user2)
-
-	require.Equal(t, user1.ID, user2.ID)
-	require.Equal(t, user1.Fullname, user2.Fullname)
-	require.Equal(t, user1.HashPashword, user2.HashPashword)
-	require.Equal(t, user1.Gender, user2.Gender)
-	require.Equal(t, user1.DateCreateAccount, user2.DateCreateAccount)
-	require.Equal(t, user1.RoleID, user2.RoleID)
-	require.Equal(t, user1.Email, user2.Email)
 }

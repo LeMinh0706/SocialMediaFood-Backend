@@ -11,14 +11,14 @@ import (
 )
 
 const (
-	authorizationHeaderKey  = "authorization"
-	authorizationTypeBearer = "bearer"
-	authorizationPayloadKey = "authorization_payload"
+	AuthorizationHeaderKey  = "authorization"
+	AuthorizationTypeBearer = "bearer"
+	AuthorizationPayloadKey = "authorization_payload"
 )
 
 func AuthorizeMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		authorizationHeader := ctx.GetHeader(authorizationHeaderKey)
+		authorizationHeader := ctx.GetHeader(AuthorizationHeaderKey)
 		if len(authorizationHeader) == 0 {
 			err := errors.New("Unauthorize")
 			response.ErrorResponse(ctx, 401, err.Error())
@@ -35,7 +35,7 @@ func AuthorizeMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		}
 
 		authorizationType := strings.ToLower(fields[0])
-		if authorizationType != authorizationTypeBearer {
+		if authorizationType != AuthorizationTypeBearer {
 			err := fmt.Errorf("Unsupported authorization type %s", authorizationType)
 			response.ErrorResponse(ctx, 401, err.Error())
 			ctx.Abort()
@@ -49,7 +49,7 @@ func AuthorizeMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
-		ctx.Set(authorizationPayloadKey, payload)
+		ctx.Set(AuthorizationPayloadKey, payload)
 		ctx.Next()
 	}
 }
