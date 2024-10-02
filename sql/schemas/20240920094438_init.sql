@@ -26,7 +26,7 @@ CREATE TABLE "post_image" (
   "post_id" bigint NOT NULL
 );
 
-CREATE TABLE "reactPost" (
+CREATE TABLE "react_post" (
   "id" bigserial PRIMARY KEY,
   "post_id" bigint,
   "user_id" bigint
@@ -45,11 +45,11 @@ CREATE INDEX ON "users" ("email");
 
 CREATE INDEX ON "post_image" ("post_id");
 
-CREATE INDEX ON "reactPost" ("post_id");
+CREATE INDEX ON "react_post" ("post_id");
 
-CREATE INDEX ON "reactPost" ("user_id");
+CREATE INDEX ON "react_post" ("user_id");
 
-CREATE UNIQUE INDEX ON "reactPost" ("post_id", "user_id");
+CREATE UNIQUE INDEX ON "react_post" ("post_id", "user_id");
 
 CREATE INDEX ON "follower" ("follow_request");
 
@@ -59,9 +59,9 @@ ALTER TABLE "users" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id");
 
 ALTER TABLE "post_image" ADD FOREIGN KEY ("post_id") REFERENCES "posts" ("id");
 
-ALTER TABLE "reactPost" ADD FOREIGN KEY ("post_id") REFERENCES "posts" ("id");
+ALTER TABLE "react_post" ADD FOREIGN KEY ("post_id") REFERENCES "posts" ("id");
 
-ALTER TABLE "reactPost" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ALTER TABLE "react_post" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "follower" ADD FOREIGN KEY ("follow_request") REFERENCES "users" ("id");
 
@@ -78,8 +78,8 @@ ALTER TABLE "users" DROP CONSTRAINT IF EXISTS "users_role_id_fkey";
 
 ALTER TABLE "users" DROP CONSTRAINT IF EXISTS "users_role_id_fkey";
 ALTER TABLE "post_image" DROP CONSTRAINT IF EXISTS "post_image_post_id_fkey";
-ALTER TABLE "reactPost" DROP CONSTRAINT IF EXISTS "reactPost_post_id_fkey";
-ALTER TABLE "reactPost" DROP CONSTRAINT IF EXISTS "reactPost_user_id_fkey";
+ALTER TABLE "react_post" DROP CONSTRAINT IF EXISTS "react_post_post_id_fkey";
+ALTER TABLE "react_post" DROP CONSTRAINT IF EXISTS "react_post_user_id_fkey";
 ALTER TABLE "follower" DROP CONSTRAINT IF EXISTS "follower_follow_request_fkey";
 ALTER TABLE "follower" DROP CONSTRAINT IF EXISTS "follower_follow_accept_fkey";
 ALTER TABLE "posts" DROP CONSTRAINT IF EXISTS "posts_user_id_fkey";
@@ -87,7 +87,7 @@ ALTER TABLE "posts" DROP CONSTRAINT IF EXISTS "posts_user_id_fkey";
 DROP TABLE IF EXISTS "users";
 DROP TABLE IF EXISTS "role";
 DROP TABLE IF EXISTS "post_image";
-DROP TABLE IF EXISTS "reactPost";
+DROP TABLE IF EXISTS "react_post";
 DROP TABLE IF EXISTS "follower";
 
 -- +goose StatementEnd

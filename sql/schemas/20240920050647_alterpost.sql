@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-ALTER TABLE "posts" ADD FOREIGN KEY ("post_type_id") REFERENCES "postType" ("id");
+ALTER TABLE "posts" ADD FOREIGN KEY ("post_type_id") REFERENCES "post_type" ("id");
 ALTER TABLE posts
 ADD CONSTRAINT check_post_top_id CHECK (
     (post_top_id IS NOT NULL AND post_type_id = 2) OR

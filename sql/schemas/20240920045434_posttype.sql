@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE "postType" (
+CREATE TABLE "post_type" (
   "id" int PRIMARY KEY,
   "name" varchar
 );
@@ -10,5 +10,5 @@ CREATE TABLE "postType" (
 -- +goose Down
 -- +goose StatementBegin
 -- ALTER TABLE "posts" DROP CONSTRAINT IF EXISTS "posts_post_type_id_fkey";
-DROP TABLE IF EXISTS "postType"
+DROP TABLE IF EXISTS "post_type"
 -- +goose StatementEnd
