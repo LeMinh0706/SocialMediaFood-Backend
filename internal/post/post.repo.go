@@ -1,11 +1,11 @@
-package repo
+package post
 
 import (
 	"context"
 	"database/sql"
 	"time"
 
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 )
 
 type PostRepository struct {
@@ -13,7 +13,7 @@ type PostRepository struct {
 }
 
 func NewPostRepo() (*PostRepository, error) {
-	pg, err := getDBConnection()
+	pg, err := db.GetDBConnection()
 	if err != nil {
 		return nil, err
 	}

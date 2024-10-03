@@ -1,20 +1,20 @@
-package controllers
+package post
 
 import (
 	"fmt"
 
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/services"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/user"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/gin-gonic/gin"
 )
 
 type PostController struct {
-	postService *services.PostService
+	postService *PostService
 }
 
 func NewPostController() *PostController {
 	return &PostController{
-		postService: services.NewPostService(),
+		postService: NewPostService(),
 	}
 }
 
@@ -29,7 +29,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 		return
 	}
 
-	user, err := services.NewUserService().GetUser(g.Request.Context(), req.UserId)
+	user, err := user.NewUserService().GetUser(g.Request.Context(), req.UserId)
 	if err != nil {
 		response.ErrorResponse(g, 404, "Can't find user to create post")
 		return

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
 )
 

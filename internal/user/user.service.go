@@ -1,21 +1,20 @@
-package services
+package user
 
 import (
 	"context"
 	"log"
 
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/db"
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/repo"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 )
 
 type UserService struct {
-	userRepo *repo.UserRepository
+	userRepo *UserRepository
 }
 
 func NewUserService() *UserService {
-	repo, err := repo.NewUserRepo()
+	repo, err := NewUserRepo()
 	if err != nil {
 		log.Fatal("Error:", err)
 	}

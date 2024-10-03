@@ -1,4 +1,4 @@
-package controllers
+package user
 
 import (
 	"fmt"
@@ -6,20 +6,19 @@ import (
 	"time"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/services"
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
 )
 
 type UserController struct {
-	userService *services.UserService
+	userService *UserService
 	tokenMaker  token.Maker
 }
 
 func NewUserController(tokenMaker token.Maker) *UserController {
 	return &UserController{
-		userService: services.NewUserService(),
+		userService: NewUserService(),
 		tokenMaker:  tokenMaker,
 	}
 }

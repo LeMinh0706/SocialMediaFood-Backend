@@ -3,7 +3,7 @@ package server
 import (
 	"fmt"
 
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/token"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/gin-gonic/gin"
 )

@@ -1,6 +1,6 @@
 basePath: /api/v1
 definitions:
-  repo.Hello:
+  hello.Hello:
     properties:
       id:
         type: integer
@@ -45,7 +45,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/repo.Hello'
+          $ref: '#/definitions/hello.Hello'
       produces:
       - application/json
       responses: {}

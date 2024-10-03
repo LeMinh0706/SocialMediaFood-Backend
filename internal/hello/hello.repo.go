@@ -1,4 +1,4 @@
-package repo
+package hello
 
 type HelloRepo struct{}
 

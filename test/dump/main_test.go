@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 
 	_ "github.com/lib/pq"

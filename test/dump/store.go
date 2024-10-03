@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	d "github.com/LeMinh0706/SocialMediaFood-Backend/internal/db"
+	d "github.com/LeMinh0706/SocialMediaFood-Backend/db"
 )
 
 type Store struct {

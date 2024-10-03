@@ -58,7 +58,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/repo.Hello"
+                            "$ref": "#/definitions/hello.Hello"
                         }
                     }
                 ],
@@ -92,7 +92,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "repo.Hello": {
+        "hello.Hello": {
             "type": "object",
             "required": [
                 "id",

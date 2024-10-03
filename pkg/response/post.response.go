@@ -1,6 +1,6 @@
 package response
 
-import "github.com/LeMinh0706/SocialMediaFood-Backend/internal/db"
+import "github.com/LeMinh0706/SocialMediaFood-Backend/db"
 
 type PostResponse struct {
 	ID             int64             `json:"id"`

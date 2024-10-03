@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/stretchr/testify/require"
 )

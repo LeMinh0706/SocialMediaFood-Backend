@@ -1,19 +1,18 @@
-package services
+package post
 
 import (
 	"context"
 	"log"
 
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/db"
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/repo"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 )
 
 type PostService struct {
-	postRepo *repo.PostRepository
+	postRepo *PostRepository
 }
 
 func NewPostService() *PostService {
-	repo, err := repo.NewPostRepo()
+	repo, err := NewPostRepo()
 	if err != nil {
 		log.Fatal("Error:", err)
 	}
