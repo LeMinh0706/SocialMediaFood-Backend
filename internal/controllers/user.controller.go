@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
@@ -96,4 +97,25 @@ func (uc *UserController) GetMe(g *gin.Context) {
 	}
 
 	response.SuccessResponse(g, 200, me)
+}
+
+func (uc *UserController) GetById(g *gin.Context) {
+	var req struct {
+		Id int64 `json:"id" binding:"required"`
+	}
+	idParam := g.Param("id")
+	id, err := strconv.ParseInt(idParam, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 400, fmt.Sprintf("Bad request: %v", err))
+		return
+	}
+
+	req.Id = id
+
+	user, err := uc.userService.GetUser(g.Request.Context(), req.Id)
+	if err != nil {
+		response.ErrorResponse(g, 404, "Cant not found user!")
+	}
+
+	response.SuccessResponse(g, 200, user)
 }
