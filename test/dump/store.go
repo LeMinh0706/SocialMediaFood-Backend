@@ -81,3 +81,5 @@ func (store *Store) CreatePostTx(ctx context.Context, arg PostTxParams, imageNam
 	})
 	return result, err
 }
+
+//Cant use, but dont need :))))

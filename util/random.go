@@ -46,3 +46,13 @@ func RandomGender() int32 {
 	n := len(genders)
 	return genders[rand.Intn(n)]
 }
+
+func RandomTypeImage() string {
+	image := []string{".png", ".jpg"}
+	n := len(image)
+	return image[rand.Intn(n)]
+}
+
+func RandomImage() string {
+	return fmt.Sprintf("%v", RandomInt(1700000000, 1800000000)) + RandomTypeImage()
+}
