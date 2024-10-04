@@ -2,8 +2,9 @@ package post
 
 import (
 	"fmt"
+	"strconv"
+	"time"
 
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/user"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/gin-gonic/gin"
 )
@@ -19,28 +20,46 @@ func NewPostController() *PostController {
 }
 
 func (pc *PostController) CreatePost(g *gin.Context) {
-	var req struct {
-		Description string `json:"description"`
-		UserId      int64  `json:"user_id" binding:"required"`
-	}
+	// var req response.PostRequest
 
-	if err := g.ShouldBindJSON(&req); err != nil {
+	description := g.PostForm("description")
+	userId := g.PostForm("user_id")
+	uid, err := strconv.ParseInt(userId, 10, 64)
+
+	if err != nil {
 		response.ErrorResponse(g, 400, fmt.Sprintf("Error: %v", err.Error()))
 		return
 	}
 
-	user, err := user.NewUserService().GetUser(g.Request.Context(), req.UserId)
+	form, err := g.MultipartForm()
 	if err != nil {
-		response.ErrorResponse(g, 404, "Can't find user to create post")
+		response.ErrorResponse(g, 400, fmt.Sprintf("Error %v", err.Error()))
 		return
 	}
-	post, err := pc.postService.CreatePost(g.Request.Context(), req.Description, req.UserId)
+
+	var images []string
+	if form != nil {
+		files := form.File["images"]
+		for _, file := range files {
+			filename := fmt.Sprintf("upload/%d_%s", time.Now().Unix(), file.Filename)
+			if err := g.SaveUploadedFile(file, filename); err != nil {
+				response.ErrorResponse(g, 500, fmt.Sprintf("Error, %v", err.Error()))
+				return
+			}
+			images = append(images, filename)
+		}
+	}
+
+	if description == "" && len(images) == 0 {
+		response.ErrorResponse(g, 400, "description or images can not empty")
+		return
+	}
+
+	post, err := pc.postService.CreatePost(g.Request.Context(), description, uid, images)
 	if err != nil {
 		response.ErrorResponse(g, 500, "Failed to create post")
 		return
 	}
 
-	res := response.PostResponse{ID: post.ID, PostTypeID: post.PostTypeID, User: user, Description: post.Description.String, DateCreatePost: post.DateCreatePost}
-
-	response.SuccessResponse(g, 200, res)
+	response.SuccessResponse(g, 200, post)
 }

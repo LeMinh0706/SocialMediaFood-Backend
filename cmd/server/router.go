@@ -13,6 +13,7 @@ import (
 func (server *Server) NewRouter() {
 
 	r := gin.Default()
+	r.Static("upload", "./upload")
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := r.Group("/api/v1")
 	{

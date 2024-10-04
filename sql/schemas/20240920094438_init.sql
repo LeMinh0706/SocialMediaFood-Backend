@@ -69,13 +69,13 @@ ALTER TABLE "follower" ADD FOREIGN KEY ("follow_accept") REFERENCES "users" ("id
 
 ALTER TABLE "posts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
+INSERT INTO "role" (id, name) VALUES (1, 'Admin'),(2, 'Vip'),(3, 'User');
+INSERT INTO "post_type" VALUES (1, 'Normal'),(2, 'Comment');
 
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-ALTER TABLE "users" DROP CONSTRAINT IF EXISTS "users_role_id_fkey";
-
 ALTER TABLE "users" DROP CONSTRAINT IF EXISTS "users_role_id_fkey";
 ALTER TABLE "post_image" DROP CONSTRAINT IF EXISTS "post_image_post_id_fkey";
 ALTER TABLE "react_post" DROP CONSTRAINT IF EXISTS "react_post_post_id_fkey";
@@ -84,10 +84,13 @@ ALTER TABLE "follower" DROP CONSTRAINT IF EXISTS "follower_follow_request_fkey";
 ALTER TABLE "follower" DROP CONSTRAINT IF EXISTS "follower_follow_accept_fkey";
 ALTER TABLE "posts" DROP CONSTRAINT IF EXISTS "posts_user_id_fkey";
 
+DELETE FROM "role" WHERE id IN (1,2,3);
+
 DROP TABLE IF EXISTS "users";
 DROP TABLE IF EXISTS "role";
 DROP TABLE IF EXISTS "post_image";
 DROP TABLE IF EXISTS "react_post";
 DROP TABLE IF EXISTS "follower";
+
 
 -- +goose StatementEnd
