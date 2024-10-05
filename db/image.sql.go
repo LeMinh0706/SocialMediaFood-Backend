@@ -30,20 +30,30 @@ func (q *Queries) CreateImagePost(ctx context.Context, arg CreateImagePostParams
 	return i, err
 }
 
-const getImagePost = `-- name: GetImagePost :one
+const getImagePost = `-- name: GetImagePost :many
 SELECT id, url_image, post_id FROM post_image
-WHERE post_id = $1 AND url_image = $2
-LIMIT 1
+WHERE post_id = $1
 `
 
-type GetImagePostParams struct {
-	PostID   int64  `json:"post_id"`
-	UrlImage string `json:"url_image"`
-}
-
-func (q *Queries) GetImagePost(ctx context.Context, arg GetImagePostParams) (PostImage, error) {
-	row := q.db.QueryRowContext(ctx, getImagePost, arg.PostID, arg.UrlImage)
-	var i PostImage
-	err := row.Scan(&i.ID, &i.UrlImage, &i.PostID)
-	return i, err
+func (q *Queries) GetImagePost(ctx context.Context, postID int64) ([]PostImage, error) {
+	rows, err := q.db.QueryContext(ctx, getImagePost, postID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []PostImage{}
+	for rows.Next() {
+		var i PostImage
+		if err := rows.Scan(&i.ID, &i.UrlImage, &i.PostID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

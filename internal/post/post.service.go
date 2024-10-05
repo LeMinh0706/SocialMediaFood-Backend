@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/user"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 )
@@ -38,7 +39,7 @@ func (p *PostService) CreatePost(ctx context.Context, description string, user_i
 		return response.PostResponse{}, err
 	}
 
-	var imgRes []response.ImageResponse
+	var imgRes []db.PostImage
 
 	for _, image := range images {
 		i, err := p.postRepo.CreateImagePost(ctx, post.ID, image)
@@ -46,10 +47,10 @@ func (p *PostService) CreatePost(ctx context.Context, description string, user_i
 			return response.PostResponse{}, err
 		}
 
-		imgRes = append(imgRes, response.ImageResponse{
+		imgRes = append(imgRes, db.PostImage{
 			ID:       i.ID,
 			UrlImage: image,
-			PostId:   post.ID,
+			PostID:   post.ID,
 		})
 
 	}
@@ -57,4 +58,33 @@ func (p *PostService) CreatePost(ctx context.Context, description string, user_i
 	postRes := response.PostRes(post, imgRes, user, post.DateCreatePost)
 
 	return postRes, nil
+}
+
+func (p *PostService) GetPost(ctx context.Context, post_id int64) (response.PostResponse, error) {
+
+	post, err := p.postRepo.GetPost(ctx, post_id)
+	if err != nil {
+		if err.Error() == "sql: no rows in result set" {
+			return response.PostResponse{}, fmt.Errorf("NotFound")
+		}
+		return response.PostResponse{}, err
+	}
+
+	images, err := p.postRepo.GetImagePost(ctx, post_id)
+	if err != nil {
+		return response.PostResponse{}, err
+	}
+
+	user, err := user.NewUserService().GetUser(ctx, post.UserID)
+	if err != nil {
+		return response.PostResponse{}, err
+	}
+
+	res := response.PostRes(post, images, user, post.DateCreatePost)
+	return res, nil
+
+}
+
+func (p *PostService) GetListPost(ctx context.Context, page, pageSize int32) (response.PostResponse, error) {
+	return response.PostResponse{}, nil
 }

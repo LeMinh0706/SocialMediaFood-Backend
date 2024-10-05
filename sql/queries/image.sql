@@ -6,7 +6,6 @@ INSERT INTO post_image(
     $1, $2
 ) RETURNING *;
 
--- name: GetImagePost :one 
+-- name: GetImagePost :many
 SELECT * FROM post_image
-WHERE post_id = $1 AND url_image = $2
-LIMIT 1;
+WHERE post_id = $1;

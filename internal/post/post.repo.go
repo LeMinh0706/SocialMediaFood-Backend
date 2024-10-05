@@ -39,3 +39,18 @@ func (repo *PostRepository) CreateImagePost(ctx context.Context, post_id int64, 
 		UrlImage: imageUrl,
 	})
 }
+
+func (repo *PostRepository) GetImagePost(ctx context.Context, post_id int64) ([]db.PostImage, error) {
+	return repo.queries.GetImagePost(ctx, post_id)
+}
+
+func (repo *PostRepository) GetPost(ctx context.Context, id int64) (db.Post, error) {
+	return repo.queries.GetPost(ctx, id)
+}
+
+func (repo *PostRepository) GetListPost(ctx context.Context, page, pageSize int32) ([]db.Post, error) {
+	return repo.queries.ListPost(ctx, db.ListPostParams{
+		Limit:  pageSize,
+		Offset: page*pageSize - (pageSize - 1),
+	})
+}

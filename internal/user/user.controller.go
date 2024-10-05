@@ -101,8 +101,8 @@ func (uc *UserController) GetById(g *gin.Context) {
 	var req struct {
 		Id int64 `json:"id" binding:"required"`
 	}
-	idParam := g.Param("id")
-	id, err := strconv.ParseInt(idParam, 10, 64)
+	param := g.Param("id")
+	id, err := strconv.ParseInt(param, 10, 64)
 	if err != nil {
 		response.ErrorResponse(g, 400, fmt.Sprintf("Bad request: %v", err))
 		return
@@ -113,6 +113,7 @@ func (uc *UserController) GetById(g *gin.Context) {
 	user, err := uc.userService.GetUser(g.Request.Context(), req.Id)
 	if err != nil {
 		response.ErrorResponse(g, 404, "Cant not found user!")
+		return
 	}
 
 	response.SuccessResponse(g, 200, user)

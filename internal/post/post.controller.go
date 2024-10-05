@@ -69,3 +69,25 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 
 	response.SuccessResponse(g, 200, post)
 }
+
+func (pc *PostController) GetPostById(g *gin.Context) {
+	var req struct {
+		Id int64 `json:"id" binding:"required, min=1"`
+	}
+	param := g.Param("id")
+	id, err := strconv.ParseInt(param, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 400, "Bad request")
+		return
+	}
+	req.Id = id
+	post, err := pc.postService.GetPost(g, req.Id)
+	if err != nil {
+		if err.Error() == "NotFound" {
+			response.ErrorResponse(g, 404, "Can not found this post")
+			return
+		}
+		response.ErrorResponse(g, 401, err.Error())
+	}
+	response.SuccessResponse(g, 200, post)
+}
