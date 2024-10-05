@@ -56,19 +56,19 @@ func RandomTypeImage() string {
 //Dai ac
 
 func RandomImage() string {
-	images := []string{"/upload/post/1702208792550.jpg", "/upload/post/Clerics Do It With Protection Tabletop RPG by pixeptional.jpg", "/upload/post/Golang Garbage Collector Wall And Art Print.jpg",
-		"/upload/post/wallpapersden.com_linux-retro_1920x1080.jpg", "/upload/post/f9a95cc71b8e5e7581aa049ed79eaf67.jpg"}
+	images := []string{"upload/post/1702208792550.jpg", "upload/post/Clerics Do It With Protection Tabletop RPG by pixeptional.jpg", "upload/post/Golang Garbage Collector Wall And Art Print.jpg",
+		"upload/post/wallpapersden.com_linux-retro_1920x1080.jpg", "upload/post/f9a95cc71b8e5e7581aa049ed79eaf67.jpg"}
 	n := len(images)
 	return images[rand.Intn(n)]
 }
 
 func RandomAvatar(gender int32) string {
 	if gender == 0 {
-		women := []string{"/upload/avatar/avatar_women_1.jpg", "/upload/avatar/avatar_women_2.jpg", "/upload/avatar/avatar_women_3.jpg", "/upload/avatar/avatar_women_4.jpg"}
+		women := []string{"upload/avatar/avatar_women_1.jpg", "upload/avatar/avatar_women_2.jpg", "upload/avatar/avatar_women_3.jpg", "upload/avatar/avatar_women_4.jpg"}
 		n := len(women)
 		return women[rand.Intn(n)]
 	} else {
-		men := []string{"/upload/avatar/avatar_men_1.jpg", "/upload/avatar/avatar_men_2.jpg", "/upload/avatar/avatar_men_3.jpg", "/upload/avatar/avatar_men_4.jpg"}
+		men := []string{"upload/avatar/avatar_men_1.jpg", "upload/avatar/avatar_men_2.jpg", "upload/avatar/avatar_men_3.jpg", "upload/avatar/avatar_men_4.jpg"}
 		n := len(men)
 		return men[rand.Intn(n)]
 	}

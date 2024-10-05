@@ -8,7 +8,7 @@ import (
 
 var (
 	pgd        *sql.DB
-	background = "/upload/background/background_1.jpg"
+	background = "upload/background/background_1.jpg"
 )
 
 // Get connection để tương tác dưới db, ở repo khỏi phải viết lại nguyên hàm
