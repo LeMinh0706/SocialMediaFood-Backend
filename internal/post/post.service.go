@@ -54,15 +54,7 @@ func (p *PostService) CreatePost(ctx context.Context, description string, user_i
 
 	}
 
-	postRes := response.PostResponse{
-		ID:             post.ID,
-		PostTypeID:     post.PostTypeID,
-		UserID:         user_id,
-		Description:    description,
-		Images:         imgRes,
-		User:           user,
-		DateCreatePost: post.DateCreatePost,
-	}
+	postRes := response.PostRes(post, imgRes, user, post.DateCreatePost)
 
 	return postRes, nil
 }
