@@ -18,7 +18,7 @@ SELECT * FROM users
 WHERE username LIKE $1 LIMIT 1;
 
 -- name: GetUserById :one
-SELECT id, fullname, role_id FROM users 
+SELECT id, fullname, url_avatar, url_background_profile,role_id FROM users 
 WHERE id = $1 LIMIT 1;
 
 -- name: GetListUser :many

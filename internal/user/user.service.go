@@ -38,24 +38,24 @@ func (us *UserService) Register(ctx context.Context, username, password string, 
 func (us *UserService) GetMe(ctx context.Context, username string) (response.UserResponse, error) {
 	user, err := us.userRepo.GetUser(ctx, username)
 	if err != nil {
-		return response.UserResponse{}, err
+		return response.UserRes(user), err
 	}
-	res := response.UserResponse{ID: user.ID, Fullname: user.Fullname, Gender: user.Gender, UrlAvatar: user.UrlAvatar, UrlBackground: user.UrlBackgroundProfile, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
+	res := response.UserRes(user)
 	return res, nil
 }
 
-func (us *UserService) Login(ctx context.Context, username, password string) (db.User, error) {
+func (us *UserService) Login(ctx context.Context, username, password string) (response.UserResponse, error) {
 	user, err := us.userRepo.GetUser(ctx, username)
 
 	if err != nil {
-		return db.User{}, err
+		return response.UserRes(user), err
 	}
 
 	if err := util.CheckPassword(password, user.HashPashword); err != nil {
-		return db.User{}, err
+		return response.UserRes(user), err
 	}
-
-	return user, nil
+	res := response.UserRes(user)
+	return res, nil
 }
 
 func (us *UserService) GetUser(ctx context.Context, id int64) (db.GetUserByIdRow, error) {

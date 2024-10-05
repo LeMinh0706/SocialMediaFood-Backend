@@ -145,20 +145,28 @@ func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
 }
 
 const getUserById = `-- name: GetUserById :one
-SELECT id, fullname, role_id FROM users 
+SELECT id, fullname, url_avatar, url_background_profile,role_id FROM users 
 WHERE id = $1 LIMIT 1
 `
 
 type GetUserByIdRow struct {
-	ID       int64  `json:"id"`
-	Fullname string `json:"fullname"`
-	RoleID   int32  `json:"role_id"`
+	ID                   int64  `json:"id"`
+	Fullname             string `json:"fullname"`
+	UrlAvatar            string `json:"url_avatar"`
+	UrlBackgroundProfile string `json:"url_background_profile"`
+	RoleID               int32  `json:"role_id"`
 }
 
 func (q *Queries) GetUserById(ctx context.Context, id int64) (GetUserByIdRow, error) {
 	row := q.db.QueryRowContext(ctx, getUserById, id)
 	var i GetUserByIdRow
-	err := row.Scan(&i.ID, &i.Fullname, &i.RoleID)
+	err := row.Scan(
+		&i.ID,
+		&i.Fullname,
+		&i.UrlAvatar,
+		&i.UrlBackgroundProfile,
+		&i.RoleID,
+	)
 	return i, err
 }
 
