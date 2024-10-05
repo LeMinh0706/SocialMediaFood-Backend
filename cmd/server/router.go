@@ -14,9 +14,7 @@ func (server *Server) NewRouter() {
 
 	r := gin.Default()
 	docs.SwaggerInfo.BasePath = "/api/v1"
-	r.Static("upload/post", "./upload/post")
-	r.Static("upload/avatar", "./upload/avatar")
-	r.Static("upload/background", "./upload/background")
+	Static(r)
 	v1 := r.Group("/api/v1")
 	{
 		post.NewPostRouter(v1, server.tokenMaker)

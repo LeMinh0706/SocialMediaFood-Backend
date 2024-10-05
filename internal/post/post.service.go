@@ -2,8 +2,8 @@ package post
 
 import (
 	"context"
+	"fmt"
 	"log"
-	"time"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/user"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
@@ -24,6 +24,10 @@ func NewPostService() *PostService {
 }
 
 func (p *PostService) CreatePost(ctx context.Context, description string, user_id int64, images []string) (response.PostResponse, error) {
+	if description == "" && len(images) == 0 {
+		return response.PostResponse{}, fmt.Errorf("Description or image can't empty")
+	}
+
 	post, err := p.postRepo.CreatePost(ctx, description, user_id)
 	if err != nil {
 		return response.PostResponse{}, err
@@ -57,7 +61,7 @@ func (p *PostService) CreatePost(ctx context.Context, description string, user_i
 		Description:    description,
 		Images:         imgRes,
 		User:           user,
-		DateCreatePost: time.Now().Unix(),
+		DateCreatePost: post.DateCreatePost,
 	}
 
 	return postRes, nil

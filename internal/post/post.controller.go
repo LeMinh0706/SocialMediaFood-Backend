@@ -28,17 +28,17 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 
 	authPayload := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 
-	description := g.PostForm("description")
 	userId := g.PostForm("user_id")
+	description := g.PostForm("description")
 	uid, err := strconv.ParseInt(userId, 10, 64)
-
-	if uid != authPayload.UserId {
-		response.ErrorResponse(g, 401, "It's not your, can't create post")
-		return
-	}
 
 	if err != nil {
 		response.ErrorResponse(g, 400, fmt.Sprintf("Error: %v", err.Error()))
+		return
+	}
+
+	if uid != authPayload.UserId {
+		response.ErrorResponse(g, 400, "It's not your, you cant create post for others")
 		return
 	}
 
@@ -61,14 +61,9 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 		}
 	}
 
-	if description == "" && len(images) == 0 {
-		response.ErrorResponse(g, 400, "description or images can not empty")
-		return
-	}
-
 	post, err := pc.postService.CreatePost(g.Request.Context(), description, uid, images)
 	if err != nil {
-		response.ErrorResponse(g, 500, err.Error())
+		response.ErrorResponse(g, 401, err.Error())
 		return
 	}
 
