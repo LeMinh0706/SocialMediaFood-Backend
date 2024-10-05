@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 )
 
 type UserRepository struct {
@@ -22,15 +23,17 @@ func NewUserRepo() (*UserRepository, error) {
 	}, nil
 }
 
-func (repo *UserRepository) CreateUser(ctx context.Context, username, password string, role_id int32) (db.User, error) {
+func (repo *UserRepository) CreateUser(ctx context.Context, username, password string, gender int32, role_id int32) (db.User, error) {
 	return repo.queries.CreateUser(ctx, db.CreateUserParams{
-		Username:          username,
-		Fullname:          username,
-		HashPashword:      password,
-		Email:             sql.NullString{Valid: false},
-		Gender:            0,
-		RoleID:            role_id,
-		DateCreateAccount: time.Now().Unix(),
+		Username:             username,
+		Fullname:             username,
+		HashPashword:         password,
+		Email:                sql.NullString{Valid: false},
+		Gender:               gender,
+		UrlAvatar:            util.RandomAvatar(gender),
+		UrlBackgroundProfile: db.GetBackground(),
+		RoleID:               role_id,
+		DateCreateAccount:    time.Now().Unix(),
 	})
 }
 

@@ -23,12 +23,12 @@ func NewUserService() *UserService {
 	}
 }
 
-func (us *UserService) Register(ctx context.Context, username, password string) (db.User, error) {
+func (us *UserService) Register(ctx context.Context, username, password string, gender int32) (db.User, error) {
 	hashPassword, err := util.HashPashword(password)
 	if err != nil {
 		return db.User{}, err
 	}
-	user, err := us.userRepo.CreateUser(ctx, username, hashPassword, 3)
+	user, err := us.userRepo.CreateUser(ctx, username, hashPassword, gender, 3)
 	if err != nil {
 		return db.User{}, err
 	}
@@ -40,7 +40,7 @@ func (us *UserService) GetMe(ctx context.Context, username string) (response.Use
 	if err != nil {
 		return response.UserResponse{}, err
 	}
-	res := response.UserResponse{ID: user.ID, Fullname: user.Fullname, Gender: user.Gender, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
+	res := response.UserResponse{ID: user.ID, Fullname: user.Fullname, Gender: user.Gender, UrlAvatar: user.UrlAvatar, UrlBackground: user.UrlBackgroundProfile, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
 	return res, nil
 }
 

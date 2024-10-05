@@ -22,7 +22,7 @@ func createRandomUser(t *testing.T) db.User {
 		Fullname:             util.RandomString(7),
 		Gender:               gender,
 		UrlAvatar:            util.RandomAvatar(gender),
-		UrlBackgroundProfile: "/upload/background/background_1.jpg",
+		UrlBackgroundProfile: db.GetBackground(),
 		RoleID:               1,
 		DateCreateAccount:    time.Now().Unix(),
 	}

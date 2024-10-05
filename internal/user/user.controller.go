@@ -37,7 +37,7 @@ func (uc *UserController) Register(g *gin.Context) {
 		return
 	}
 
-	user, err := uc.userService.Register(g.Request.Context(), req.Username, req.Password)
+	user, err := uc.userService.Register(g.Request.Context(), req.Username, req.Password, req.Gender)
 	if err != nil {
 		if err.Error() == "pq: duplicate key value violates unique constraint \"users_username_key\"" {
 			response.ErrorResponse(g, 409, "User already exist")
@@ -52,7 +52,7 @@ func (uc *UserController) Register(g *gin.Context) {
 }
 
 func (uc *UserController) Login(g *gin.Context) {
-	var req response.RequestResponse
+	var req response.RequestLogin
 
 	if err := g.ShouldBindJSON(&req); err != nil {
 		response.ErrorResponse(g, 400, err.Error())
@@ -80,7 +80,7 @@ func (uc *UserController) Login(g *gin.Context) {
 		return
 	}
 
-	userRes := response.UserResponse{ID: user.ID, Fullname: user.Username, Gender: user.Gender, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
+	userRes := response.UserResponse{ID: user.ID, Fullname: user.Username, Gender: user.Gender, UrlAvatar: user.UrlAvatar, UrlBackground: user.UrlBackgroundProfile, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
 	res := response.LoginResponse{AccessToken: token, User: userRes}
 
 	response.SuccessResponse(g, 200, res)

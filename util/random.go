@@ -57,7 +57,7 @@ func RandomTypeImage() string {
 
 func RandomImage() string {
 	images := []string{"/upload/post/1702208792550.jpg", "/upload/post/Clerics Do It With Protection Tabletop RPG by pixeptional.jpg", "/upload/post/Golang Garbage Collector Wall And Art Print.jpg",
-		"/upload/post/wallpapersden.com_linux-retro_1920x1080.jpg", "f9a95cc71b8e5e7581aa049ed79eaf67.jpg"}
+		"/upload/post/wallpapersden.com_linux-retro_1920x1080.jpg", "/upload/post/f9a95cc71b8e5e7581aa049ed79eaf67.jpg"}
 	n := len(images)
 	return images[rand.Intn(n)]
 }
