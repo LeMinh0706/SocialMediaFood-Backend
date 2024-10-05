@@ -85,6 +85,33 @@ func (p *PostService) GetPost(ctx context.Context, post_id int64) (response.Post
 
 }
 
-func (p *PostService) GetListPost(ctx context.Context, page, pageSize int32) (response.PostResponse, error) {
-	return response.PostResponse{}, nil
+func (p *PostService) GetListPost(ctx context.Context, page, pageSize int64) ([]response.PostResponse, error) {
+
+	posts, err := p.postRepo.GetListPost(ctx, int32(page), int32(pageSize))
+	if err != nil {
+		if err.Error() == "pq: OFFSET must not be negative" {
+			return []response.PostResponse{}, fmt.Errorf("Cannot input zero here")
+		}
+		return []response.PostResponse{}, err
+	}
+
+	var res []response.PostResponse
+
+	for _, post := range posts {
+		images, err := p.postRepo.GetImagePost(ctx, post.ID)
+		if err != nil {
+			return []response.PostResponse{}, err
+		}
+
+		user, err := user.NewUserService().GetUser(ctx, post.UserID)
+		if err != nil {
+			return []response.PostResponse{}, err
+		}
+		posRes := response.PostRes(post, images, user, post.DateCreatePost)
+		res = append(res, posRes)
+	}
+	if len(res) == 0 {
+		return []response.PostResponse{}, nil
+	}
+	return res, nil
 }

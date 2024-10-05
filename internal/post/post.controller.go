@@ -91,3 +91,26 @@ func (pc *PostController) GetPostById(g *gin.Context) {
 	}
 	response.SuccessResponse(g, 200, post)
 }
+
+func (pc *PostController) GetListPost(g *gin.Context) {
+	pageStr := g.Query("page")
+	pageSizeStr := g.Query("page_size")
+	page, err := strconv.ParseInt(pageStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 400, "Bad request, page should be number")
+		return
+	}
+	pageSize, err := strconv.ParseInt(pageSizeStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 400, "Bad request, page_size should be number")
+		return
+	}
+
+	posts, err := pc.postService.GetListPost(g, page, pageSize)
+	if err != nil {
+		response.ErrorResponse(g, 401, err.Error())
+		return
+	}
+
+	response.SuccessResponse(g, 200, posts)
+}
