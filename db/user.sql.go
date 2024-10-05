@@ -17,21 +17,25 @@ INSERT INTO users(
     username,
     fullname,
     gender,
+    url_avatar,
+    url_background_profile,
     role_id,
     date_create_account
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
-) RETURNING id, email, hash_pashword, username, fullname, gender, country, language, url_avatar, role_id, url_background_profile, date_create_account
+    $1, $2, $3, $4, $5, $6, $7, $8, $9
+) RETURNING id, email, hash_pashword, username, fullname, gender, country, language, url_avatar, url_background_profile, role_id, date_create_account
 `
 
 type CreateUserParams struct {
-	Email             sql.NullString `json:"email"`
-	HashPashword      string         `json:"hash_pashword"`
-	Username          string         `json:"username"`
-	Fullname          string         `json:"fullname"`
-	Gender            int32          `json:"gender"`
-	RoleID            int32          `json:"role_id"`
-	DateCreateAccount int64          `json:"date_create_account"`
+	Email                sql.NullString `json:"email"`
+	HashPashword         string         `json:"hash_pashword"`
+	Username             string         `json:"username"`
+	Fullname             string         `json:"fullname"`
+	Gender               int32          `json:"gender"`
+	UrlAvatar            string         `json:"url_avatar"`
+	UrlBackgroundProfile string         `json:"url_background_profile"`
+	RoleID               int32          `json:"role_id"`
+	DateCreateAccount    int64          `json:"date_create_account"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -41,6 +45,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.Username,
 		arg.Fullname,
 		arg.Gender,
+		arg.UrlAvatar,
+		arg.UrlBackgroundProfile,
 		arg.RoleID,
 		arg.DateCreateAccount,
 	)
@@ -55,8 +61,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Country,
 		&i.Language,
 		&i.UrlAvatar,
-		&i.RoleID,
 		&i.UrlBackgroundProfile,
+		&i.RoleID,
 		&i.DateCreateAccount,
 	)
 	return i, err
@@ -114,7 +120,7 @@ func (q *Queries) GetListUser(ctx context.Context, arg GetListUserParams) ([]Get
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, email, hash_pashword, username, fullname, gender, country, language, url_avatar, role_id, url_background_profile, date_create_account FROM users
+SELECT id, email, hash_pashword, username, fullname, gender, country, language, url_avatar, url_background_profile, role_id, date_create_account FROM users
 WHERE username LIKE $1 LIMIT 1
 `
 
@@ -131,8 +137,8 @@ func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
 		&i.Country,
 		&i.Language,
 		&i.UrlAvatar,
-		&i.RoleID,
 		&i.UrlBackgroundProfile,
+		&i.RoleID,
 		&i.DateCreateAccount,
 	)
 	return i, err

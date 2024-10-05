@@ -9,9 +9,9 @@ CREATE TABLE "users" (
   "gender" int NOT NULL,
   "country" varchar,
   "language" varchar,
-  "url_avatar" varchar,
+  "url_avatar" varchar NOT NULL,
+  "url_background_profile" varchar NOT NULL,
   "role_id" int NOT NULL DEFAULT 1,
-  "url_background_profile" varchar,
   "date_create_account" bigint NOT NULL
 );
 
@@ -70,7 +70,8 @@ ALTER TABLE "follower" ADD FOREIGN KEY ("follow_accept") REFERENCES "users" ("id
 ALTER TABLE "posts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 INSERT INTO "role" (id, name) VALUES (1, 'Admin'),(2, 'Vip'),(3, 'User');
-INSERT INTO "post_type" VALUES (1, 'Normal'),(2, 'Comment');
+
+INSERT INTO "post_type" VALUES (1, 'Normal'),(2, 'Comment'),(3, 'Prime');
 
 -- +goose StatementEnd
 

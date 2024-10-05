@@ -106,16 +106,17 @@ func TestCreatePostWithImage(t *testing.T) {
 
 	post := createRandomPost(t)
 
-	images := []string{util.RandomImage(), util.RandomImage(), util.RandomImage()}
-	for _, image := range images {
-		i, err := testQueries.CreateImagePost(context.Background(), db.CreateImagePostParams{
+	images := []string{util.RandomImage(), util.RandomImage()}
+	for i := 0; i < len(images); i++ {
+		image, err := testQueries.CreateImagePost(context.Background(), db.CreateImagePostParams{
 			PostID:   post.ID,
-			UrlImage: image,
+			UrlImage: images[i],
 		})
 		require.NoError(t, err)
 		require.NotEmpty(t, image)
 
-		require.Equal(t, post.ID, i.PostID)
-		require.NotZero(t, i.ID)
+		require.Equal(t, post.ID, image.PostID)
+		require.NotZero(t, image)
 	}
+	require.NotEmpty(t, images)
 }

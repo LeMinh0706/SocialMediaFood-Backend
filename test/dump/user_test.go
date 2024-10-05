@@ -14,14 +14,17 @@ import (
 func createRandomUser(t *testing.T) db.User {
 	hashPassword, err := util.HashPashword("kocanpass")
 	require.NoError(t, err)
+	gender := util.RandomGender()
 	arg := db.CreateUserParams{
-		Username:          util.RandomString(8),
-		Email:             sql.NullString{String: util.RandomEmail(), Valid: true},
-		HashPashword:      hashPassword,
-		Fullname:          util.RandomString(7),
-		Gender:            util.RandomGender(),
-		RoleID:            1,
-		DateCreateAccount: time.Now().Unix(),
+		Username:             util.RandomString(8),
+		Email:                sql.NullString{String: util.RandomEmail(), Valid: true},
+		HashPashword:         hashPassword,
+		Fullname:             util.RandomString(7),
+		Gender:               gender,
+		UrlAvatar:            util.RandomAvatar(gender),
+		UrlBackgroundProfile: "/upload/background/background_1.jpg",
+		RoleID:               1,
+		DateCreateAccount:    time.Now().Unix(),
 	}
 	user, err := testQueries.CreateUser(context.Background(), arg)
 	require.NoError(t, err)
@@ -51,6 +54,8 @@ func TestGetUser(t *testing.T) {
 	require.Equal(t, user1.Email, user2.Email)
 	require.Equal(t, user1.Fullname, user2.Fullname)
 	require.Equal(t, user1.Gender, user2.Gender)
+	require.Equal(t, user1.UrlAvatar, user2.UrlAvatar)
+	require.Equal(t, user1.UrlBackgroundProfile, user2.UrlBackgroundProfile)
 	require.Equal(t, user1.RoleID, user2.RoleID)
 	require.Equal(t, user1.DateCreateAccount, user2.DateCreateAccount)
 }

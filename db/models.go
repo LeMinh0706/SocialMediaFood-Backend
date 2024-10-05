@@ -53,8 +53,8 @@ type User struct {
 	Gender               int32          `json:"gender"`
 	Country              sql.NullString `json:"country"`
 	Language             sql.NullString `json:"language"`
-	UrlAvatar            sql.NullString `json:"url_avatar"`
+	UrlAvatar            string         `json:"url_avatar"`
+	UrlBackgroundProfile string         `json:"url_background_profile"`
 	RoleID               int32          `json:"role_id"`
-	UrlBackgroundProfile sql.NullString `json:"url_background_profile"`
 	DateCreateAccount    int64          `json:"date_create_account"`
 }

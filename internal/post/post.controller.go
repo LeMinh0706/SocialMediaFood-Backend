@@ -41,7 +41,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 	if form != nil {
 		files := form.File["images"]
 		for _, file := range files {
-			filename := fmt.Sprintf("upload/%d_%s", time.Now().Unix(), file.Filename)
+			filename := fmt.Sprintf("upload/post/%d_%s", time.Now().Unix(), file.Filename)
 			if err := g.SaveUploadedFile(file, filename); err != nil {
 				response.ErrorResponse(g, 500, fmt.Sprintf("Error, %v", err.Error()))
 				return
@@ -57,7 +57,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 
 	post, err := pc.postService.CreatePost(g.Request.Context(), description, uid, images)
 	if err != nil {
-		response.ErrorResponse(g, 500, "Failed to create post")
+		response.ErrorResponse(g, 500, err.Error())
 		return
 	}
 

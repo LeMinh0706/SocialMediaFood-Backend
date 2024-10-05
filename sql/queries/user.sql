@@ -5,10 +5,12 @@ INSERT INTO users(
     username,
     fullname,
     gender,
+    url_avatar,
+    url_background_profile,
     role_id,
     date_create_account
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
+    $1, $2, $3, $4, $5, $6, $7, $8, $9
 ) RETURNING *;
 
 -- name: GetUser :one
