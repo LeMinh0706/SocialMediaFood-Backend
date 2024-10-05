@@ -73,7 +73,7 @@ func (uc *UserController) Login(g *gin.Context) {
 		return
 	}
 
-	token, err := uc.tokenMaker.CreateToken(user.Username, 5*time.Minute)
+	token, err := uc.tokenMaker.CreateToken(user.ID, user.RoleID, user.Username, 5*time.Minute)
 
 	if err != nil {
 		response.ErrorResponse(g, 500, err.Error())
