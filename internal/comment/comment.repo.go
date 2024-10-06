@@ -30,3 +30,11 @@ func (c *CommentRepository) CreateComment(ctx context.Context, description strin
 		DateCreatePost: time.Now().Unix(),
 	})
 }
+
+func (c *CommentRepository) ListComment(ctx context.Context, post_id int64, page, pageSize int32) ([]db.Post, error) {
+	return c.queries.ListComment(ctx, db.ListCommentParams{
+		PostTopID: sql.NullInt64{Int64: post_id, Valid: true},
+		Limit:     pageSize,
+		Offset:    page*pageSize - (pageSize - 1),
+	})
+}

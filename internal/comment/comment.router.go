@@ -11,5 +11,6 @@ func NewCommentRouter(router *gin.RouterGroup, token token.Maker) {
 	{
 		// auth := commentGroup.Group("/").Use(middlewares.AuthorizeMiddleware(token))
 		commentGroup.POST("", cc.CreateComment)
+		commentGroup.GET("", cc.ListComment)
 	}
 }

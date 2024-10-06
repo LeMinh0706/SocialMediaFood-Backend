@@ -1,6 +1,8 @@
 package comment
 
 import (
+	"strconv"
+
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
@@ -33,4 +35,32 @@ func (cc *CommentController) CreateComment(g *gin.Context) {
 	}
 
 	response.SuccessResponse(g, 201, res)
+}
+
+func (cc *CommentController) ListComment(g *gin.Context) {
+	postIdStr := g.Query("post_id")
+	pageStr := g.Query("page")
+	pageSizeStr := g.Query("page_size")
+	postId, err := strconv.ParseInt(postIdStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 404, "Bad request")
+		return
+	}
+	page, err := strconv.ParseInt(pageStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 404, "Bad request")
+		return
+	}
+	pageSize, err := strconv.ParseInt(pageSizeStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 404, "Bad request")
+		return
+	}
+
+	comments, err := cc.commentService.ListComment(g, postId, page, pageSize)
+	if err != nil {
+		response.ErrorResponse(g, 401, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 200, comments)
 }

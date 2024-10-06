@@ -50,3 +50,24 @@ func (cs *CommentService) CreateComment(ctx context.Context, description string,
 
 	return res, nil
 }
+
+func (cs *CommentService) ListComment(ctx context.Context, post_id, page, pageSize int64) ([]response.CommentResponse, error) {
+	comments, err := cs.commentRepo.ListComment(ctx, post_id, int32(page), int32(pageSize))
+
+	var res []response.CommentResponse
+	if err != nil {
+		return res, err
+	}
+	for _, comment := range comments {
+		user, err := user.NewUserService().GetUser(ctx, comment.UserID)
+		if err != nil {
+			return res, err
+		}
+		commentRes := response.CommentRes(comment, user)
+		res = append(res, commentRes)
+	}
+	if len(res) == 0 {
+		return []response.CommentResponse{}, nil
+	}
+	return res, nil
+}
