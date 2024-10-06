@@ -66,41 +66,44 @@ func (p *PostService) CreatePost(ctx context.Context, description string, user_i
 }
 
 func (p *PostService) GetPost(ctx context.Context, post_id int64) (response.PostResponse, error) {
-
+	var res response.PostResponse
 	post, err := p.postRepo.GetPost(ctx, post_id)
 	if err != nil {
 		if err.Error() == "sql: no rows in result set" {
-			return response.PostResponse{}, fmt.Errorf("NotFound")
+			return res, fmt.Errorf("NotFound")
 		}
-		return response.PostResponse{}, err
+		return res, err
 	}
 
 	images, err := p.postRepo.GetImagePost(ctx, post_id)
 	if err != nil {
-		return response.PostResponse{}, err
+		return res, err
 	}
 
 	user, err := user.NewUserService().GetUser(ctx, post.UserID)
 	if err != nil {
-		return response.PostResponse{}, err
+		return res, err
 	}
 
-	res := response.PostRes(post, images, user, post.DateCreatePost)
+	res = response.PostRes(post, images, user, post.DateCreatePost)
 	return res, nil
 
 }
 
 func (p *PostService) GetListPost(ctx context.Context, page, pageSize int64) ([]response.PostResponse, error) {
-
+	var res []response.PostResponse
+	switch {
+	case page <= 0:
+		return res, fmt.Errorf("page need 1 or higher")
+	case pageSize <= 0:
+		return res, fmt.Errorf("page_size need 1 or higher")
+	case pageSize > 10:
+		return res, fmt.Errorf("page_size is lower than 10")
+	}
 	posts, err := p.postRepo.GetListPost(ctx, int32(page), int32(pageSize))
 	if err != nil {
-		if err.Error() == "pq: OFFSET must not be negative" {
-			return []response.PostResponse{}, fmt.Errorf("Cannot input zero here")
-		}
 		return []response.PostResponse{}, err
 	}
-
-	var res []response.PostResponse
 
 	for _, post := range posts {
 		images, err := p.postRepo.GetImagePost(ctx, post.ID)

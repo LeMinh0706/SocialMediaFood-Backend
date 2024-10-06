@@ -12,7 +12,7 @@ func NewPostRouter(r *gin.Engine, router *gin.RouterGroup, token token.Maker) {
 	{
 		auth := postGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
 		auth.POST("", pc.CreatePost)
-		postGroup.GET(":id", pc.GetPostById)
+		// postGroup.GET(":id", pc.GetPostById)
 		postGroup.GET("", pc.GetListPost)
 	}
 }
