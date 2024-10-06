@@ -1,13 +1,19 @@
 package middlewares
 
+import (
+	"path/filepath"
+	"strings"
+)
+
 var AllowedType = map[string]bool{
 	".png":  true,
 	".jpg":  true,
 	".jpeg": true,
+	".gif":  true,
 }
 
-// Allow mime
-var AllowedMimeTypes = map[string]bool{
-	"image/png":  true,
-	"image/jpeg": true,
+func FileUploadCheck(image string) bool {
+	ext := strings.ToLower(filepath.Ext(image))
+
+	return AllowedType[ext]
 }

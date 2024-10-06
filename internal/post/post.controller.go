@@ -41,6 +41,10 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 
 	for _, file := range files {
 		filename := fmt.Sprintf("upload/post/%d_%s", time.Now().Unix(), file.Filename)
+		if !middlewares.FileUploadCheck(filename) {
+			response.ErrorResponse(g, 400, "Can only use file .png, .jpg, .jpeg, .gif")
+			return
+		}
 		if err := g.SaveUploadedFile(file, filename); err != nil {
 			response.ErrorResponse(g, 500, err.Error())
 			return
@@ -53,7 +57,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 		return
 	}
 
-	response.SuccessResponse(g, 200, post)
+	response.SuccessResponse(g, 201, post)
 }
 
 func (pc *PostController) GetPostById(g *gin.Context) {

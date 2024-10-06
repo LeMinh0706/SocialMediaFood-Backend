@@ -16,7 +16,7 @@ func (server *Server) NewRouter() {
 	r := gin.Default()
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	Static(r)
-	r.MaxMultipartMemory = 32 << 20
+	r.MaxMultipartMemory = 2 << 20
 	v1 := r.Group("/api/v1")
 	{
 		post.NewPostRouter(r, v1, server.tokenMaker)
