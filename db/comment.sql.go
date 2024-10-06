@@ -50,6 +50,16 @@ func (q *Queries) CreateComment(ctx context.Context, arg CreateCommentParams) (P
 	return i, err
 }
 
+const deleteComment = `-- name: DeleteComment :exec
+DELETE FROM posts 
+WHERE post_type_id = 2 AND id = $1
+`
+
+func (q *Queries) DeleteComment(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteComment, id)
+	return err
+}
+
 const getComment = `-- name: GetComment :one
 SELECT id, post_type_id, user_id, post_top_id, description, date_create_post, is_banned, is_deleted FROM posts 
 WHERE post_type_id = 2 AND
@@ -59,6 +69,29 @@ LIMIT 1
 
 func (q *Queries) GetComment(ctx context.Context, postTopID sql.NullInt64) (Post, error) {
 	row := q.db.QueryRowContext(ctx, getComment, postTopID)
+	var i Post
+	err := row.Scan(
+		&i.ID,
+		&i.PostTypeID,
+		&i.UserID,
+		&i.PostTopID,
+		&i.Description,
+		&i.DateCreatePost,
+		&i.IsBanned,
+		&i.IsDeleted,
+	)
+	return i, err
+}
+
+const getCommentById = `-- name: GetCommentById :one
+SELECT id, post_type_id, user_id, post_top_id, description, date_create_post, is_banned, is_deleted FROM posts 
+WHERE post_type_id = 2 AND
+id = $1
+LIMIT 1
+`
+
+func (q *Queries) GetCommentById(ctx context.Context, id int64) (Post, error) {
+	row := q.db.QueryRowContext(ctx, getCommentById, id)
 	var i Post
 	err := row.Scan(
 		&i.ID,
@@ -117,4 +150,32 @@ func (q *Queries) ListComment(ctx context.Context, arg ListCommentParams) ([]Pos
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateComment = `-- name: UpdateComment :one
+UPDATE posts 
+SET description = $2
+WHERE post_type_id = 2 AND id = $1
+RETURNING id, post_type_id, user_id, post_top_id, description, date_create_post, is_banned, is_deleted
+`
+
+type UpdateCommentParams struct {
+	ID          int64          `json:"id"`
+	Description sql.NullString `json:"description"`
+}
+
+func (q *Queries) UpdateComment(ctx context.Context, arg UpdateCommentParams) (Post, error) {
+	row := q.db.QueryRowContext(ctx, updateComment, arg.ID, arg.Description)
+	var i Post
+	err := row.Scan(
+		&i.ID,
+		&i.PostTypeID,
+		&i.UserID,
+		&i.PostTopID,
+		&i.Description,
+		&i.DateCreatePost,
+		&i.IsBanned,
+		&i.IsDeleted,
+	)
+	return i, err
 }

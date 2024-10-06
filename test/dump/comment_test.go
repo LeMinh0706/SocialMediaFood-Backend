@@ -74,3 +74,35 @@ func TestListComment(t *testing.T) {
 		require.NotEmpty(t, comment)
 	}
 }
+
+func TestUpdateComment(t *testing.T) {
+	post := createRandomPost(t)
+	comment1 := createRandomComment(t, post.ID)
+
+	arg := db.UpdateCommentParams{
+		ID:          comment1.ID,
+		Description: sql.NullString{String: util.RandomDescription(), Valid: true},
+	}
+
+	comment2, err := testQueries.UpdateComment(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, comment2)
+
+	require.Equal(t, comment1.ID, comment2.ID)
+	require.NotEqual(t, comment1.Description, comment2.Description)
+	require.Equal(t, comment1.PostTopID, comment2.PostTopID)
+	require.Equal(t, comment1.PostTypeID, comment2.PostTypeID)
+	require.Equal(t, comment1.UserID, comment2.UserID)
+	require.Equal(t, comment1.DateCreatePost, comment2.DateCreatePost)
+}
+
+func TestDeleteComment(t *testing.T) {
+	post := createRandomPost(t)
+	comment1 := createRandomComment(t, post.ID)
+	err := testQueries.DeleteComment(context.Background(), comment1.ID)
+	require.NoError(t, err)
+	comment2, err := testQueries.GetCommentById(context.Background(), comment1.ID)
+	require.Error(t, err)
+	require.EqualError(t, err, sql.ErrNoRows.Error())
+	require.Empty(t, comment2)
+}

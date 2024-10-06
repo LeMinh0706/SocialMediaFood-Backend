@@ -39,12 +39,19 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 
 	files := form.File["images"]
 
+	const maxSize = 6 << 20
+
 	for _, file := range files {
+		if file.Size > maxSize {
+			response.ErrorResponse(g, 401, "File too large, only allowed 8MB")
+			return
+		}
 		filename := fmt.Sprintf("upload/post/%d_%s", time.Now().Unix(), file.Filename)
 		if !middlewares.FileUploadCheck(filename) {
 			response.ErrorResponse(g, 400, "Can only use file .png, .jpg, .jpeg, .gif")
 			return
 		}
+
 		if err := g.SaveUploadedFile(file, filename); err != nil {
 			response.ErrorResponse(g, 500, err.Error())
 			return
