@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewUserRouter(router *gin.RouterGroup, token token.Maker) {
-	userGroup := router.Group("/accounts")
+func NewUserRouter(r *gin.Engine, router *gin.RouterGroup, token token.Maker) {
+	userGroup := r.Group(router.BasePath() + "/accounts")
 	uc := NewUserController(token)
 	{
 		auth := userGroup.Group("/").Use(middlewares.AuthorizeMiddleware(token))

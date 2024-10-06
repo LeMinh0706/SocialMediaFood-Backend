@@ -7,11 +7,14 @@ CREATE TABLE "posts" (
   "post_top_id" bigint,
   "description" varchar,
   "date_create_post" bigint NOT NULL,
-  FOREIGN KEY (post_top_id) REFERENCES posts(id)
+  "is_banned" bool NOT NULL DEFAULT false,
+  "is_deleted" bool NOT NULL DEFAULT false
 );
 CREATE INDEX ON "posts" ("user_id");
 
 CREATE INDEX ON "posts" ("post_top_id");
+
+ALTER TABLE "posts" ADD FOREIGN KEY ("post_top_id") REFERENCES "posts" ("id");
 
 -- +goose StatementEnd
 

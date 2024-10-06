@@ -6,11 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewPostRouter(router *gin.RouterGroup, token token.Maker) {
-	postGroup := router.Group("/post")
+func NewPostRouter(r *gin.Engine, router *gin.RouterGroup, token token.Maker) {
+	postGroup := r.Group(router.BasePath() + "/post")
 	pc := NewPostController(token)
 	{
-		auth := postGroup.Group("/").Use(middlewares.AuthorizeMiddleware(token))
+		auth := postGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
 		auth.POST("", pc.CreatePost)
 		postGroup.GET(":id", pc.GetPostById)
 		postGroup.GET("", pc.GetListPost)

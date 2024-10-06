@@ -10,11 +10,11 @@ INSERT INTO posts(
 
 -- name: GetPost :one
 SELECT * FROM posts
-WHERE id = $1 AND post_type_id != 2 LIMIT 1;
+WHERE id = $1 AND post_type_id != 2 AND (is_banned != true AND is_deleted != true) LIMIT 1;
 
 -- name: ListPost :many
 SELECT * FROM posts
-WHERE post_type_id != 2
+WHERE post_type_id != 2 AND is_banned = false AND is_deleted = false
 ORDER BY id DESC
 LIMIT $1
 OFFSET $2;

@@ -16,7 +16,7 @@ func createRandomUser(t *testing.T) db.User {
 	require.NoError(t, err)
 	gender := util.RandomGender()
 	arg := db.CreateUserParams{
-		Username:             util.RandomString(8),
+		Username:             util.RandomString(6),
 		Email:                sql.NullString{String: util.RandomEmail(), Valid: true},
 		HashPashword:         hashPassword,
 		Fullname:             util.RandomString(7),

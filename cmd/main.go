@@ -23,7 +23,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Cannot create server:", err)
 	}
-
 	server.Start(config.ServerAddress)
 
 }

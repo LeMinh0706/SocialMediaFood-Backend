@@ -59,6 +59,10 @@ func (cc *CommentController) ListComment(g *gin.Context) {
 
 	comments, err := cc.commentService.ListComment(g, postId, page, pageSize)
 	if err != nil {
+		if err.Error() == "NotFound" {
+			response.ErrorResponse(g, 404, "Can not found post or post was deleted")
+			return
+		}
 		response.ErrorResponse(g, 401, err.Error())
 		return
 	}

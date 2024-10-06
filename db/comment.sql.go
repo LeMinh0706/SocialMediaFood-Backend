@@ -19,7 +19,7 @@ INSERT INTO posts(
     date_create_post
 ) VALUES (
     2, $1, $2, $3, $4
-) RETURNING id, post_type_id, user_id, post_top_id, description, date_create_post
+) RETURNING id, post_type_id, user_id, post_top_id, description, date_create_post, is_banned, is_deleted
 `
 
 type CreateCommentParams struct {
@@ -44,12 +44,14 @@ func (q *Queries) CreateComment(ctx context.Context, arg CreateCommentParams) (P
 		&i.PostTopID,
 		&i.Description,
 		&i.DateCreatePost,
+		&i.IsBanned,
+		&i.IsDeleted,
 	)
 	return i, err
 }
 
 const getComment = `-- name: GetComment :one
-SELECT id, post_type_id, user_id, post_top_id, description, date_create_post FROM posts 
+SELECT id, post_type_id, user_id, post_top_id, description, date_create_post, is_banned, is_deleted FROM posts 
 WHERE post_type_id = 2 AND
 post_top_id = $1
 LIMIT 1
@@ -65,12 +67,14 @@ func (q *Queries) GetComment(ctx context.Context, postTopID sql.NullInt64) (Post
 		&i.PostTopID,
 		&i.Description,
 		&i.DateCreatePost,
+		&i.IsBanned,
+		&i.IsDeleted,
 	)
 	return i, err
 }
 
 const listComment = `-- name: ListComment :many
-SELECT id, post_type_id, user_id, post_top_id, description, date_create_post FROM posts 
+SELECT id, post_type_id, user_id, post_top_id, description, date_create_post, is_banned, is_deleted FROM posts 
 WHERE post_type_id = 2 AND 
 post_top_id = $1
 LIMIT $2
@@ -99,6 +103,8 @@ func (q *Queries) ListComment(ctx context.Context, arg ListCommentParams) ([]Pos
 			&i.PostTopID,
 			&i.Description,
 			&i.DateCreatePost,
+			&i.IsBanned,
+			&i.IsDeleted,
 		); err != nil {
 			return nil, err
 		}

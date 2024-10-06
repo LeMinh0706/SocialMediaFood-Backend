@@ -5,8 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewCommentRouter(router *gin.RouterGroup, token token.Maker) {
-	commentGroup := router.Group("/comment")
+func NewCommentRouter(r *gin.Engine, router *gin.RouterGroup, token token.Maker) {
+	commentGroup := r.Group(router.BasePath() + "/comment")
 	cc := NewCommentController(token)
 	{
 		// auth := commentGroup.Group("/").Use(middlewares.AuthorizeMiddleware(token))

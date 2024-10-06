@@ -20,6 +20,8 @@ type Post struct {
 	PostTopID      sql.NullInt64  `json:"post_top_id"`
 	Description    sql.NullString `json:"description"`
 	DateCreatePost int64          `json:"date_create_post"`
+	IsBanned       bool           `json:"is_banned"`
+	IsDeleted      bool           `json:"is_deleted"`
 }
 
 type PostImage struct {

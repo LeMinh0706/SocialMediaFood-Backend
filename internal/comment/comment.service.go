@@ -25,7 +25,7 @@ func NewCommentService() *CommentService {
 }
 
 func (cs *CommentService) CreateComment(ctx context.Context, description string, user_id, post_top_id int64) (response.CommentResponse, error) {
-
+	var res response.CommentResponse
 	user, err := user.NewUserService().GetUser(ctx, user_id)
 	if err != nil {
 		return response.CommentResponse{}, err
@@ -46,18 +46,23 @@ func (cs *CommentService) CreateComment(ctx context.Context, description string,
 		return response.CommentResponse{}, err
 	}
 
-	res := response.CommentRes(comment, user)
+	res = response.CommentRes(comment, user)
 
 	return res, nil
 }
 
 func (cs *CommentService) ListComment(ctx context.Context, post_id, page, pageSize int64) ([]response.CommentResponse, error) {
-	comments, err := cs.commentRepo.ListComment(ctx, post_id, int32(page), int32(pageSize))
 
 	var res []response.CommentResponse
+	post, err := post.NewPostService().GetPost(ctx, post_id)
 	if err != nil {
 		return res, err
 	}
+	comments, err := cs.commentRepo.ListComment(ctx, post.ID, int32(page), int32(pageSize))
+	if err != nil {
+		return res, err
+	}
+
 	for _, comment := range comments {
 		user, err := user.NewUserService().GetUser(ctx, comment.UserID)
 		if err != nil {

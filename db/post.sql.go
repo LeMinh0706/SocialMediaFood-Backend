@@ -18,7 +18,7 @@ INSERT INTO posts(
     date_create_post
 ) VALUES (
     $1, $2, $3, $4
-) RETURNING id, post_type_id, user_id, post_top_id, description, date_create_post
+) RETURNING id, post_type_id, user_id, post_top_id, description, date_create_post, is_banned, is_deleted
 `
 
 type CreatePostParams struct {
@@ -43,6 +43,8 @@ func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (Post, e
 		&i.PostTopID,
 		&i.Description,
 		&i.DateCreatePost,
+		&i.IsBanned,
+		&i.IsDeleted,
 	)
 	return i, err
 }
@@ -58,8 +60,8 @@ func (q *Queries) DeletePost(ctx context.Context, id int64) error {
 }
 
 const getPost = `-- name: GetPost :one
-SELECT id, post_type_id, user_id, post_top_id, description, date_create_post FROM posts
-WHERE id = $1 AND post_type_id != 2 LIMIT 1
+SELECT id, post_type_id, user_id, post_top_id, description, date_create_post, is_banned, is_deleted FROM posts
+WHERE id = $1 AND post_type_id != 2 AND (is_banned != true AND is_deleted != true) LIMIT 1
 `
 
 func (q *Queries) GetPost(ctx context.Context, id int64) (Post, error) {
@@ -72,13 +74,15 @@ func (q *Queries) GetPost(ctx context.Context, id int64) (Post, error) {
 		&i.PostTopID,
 		&i.Description,
 		&i.DateCreatePost,
+		&i.IsBanned,
+		&i.IsDeleted,
 	)
 	return i, err
 }
 
 const listPost = `-- name: ListPost :many
-SELECT id, post_type_id, user_id, post_top_id, description, date_create_post FROM posts
-WHERE post_type_id != 2
+SELECT id, post_type_id, user_id, post_top_id, description, date_create_post, is_banned, is_deleted FROM posts
+WHERE post_type_id != 2 AND is_banned = false AND is_deleted = false
 ORDER BY id DESC
 LIMIT $1
 OFFSET $2
@@ -105,6 +109,8 @@ func (q *Queries) ListPost(ctx context.Context, arg ListPostParams) ([]Post, err
 			&i.PostTopID,
 			&i.Description,
 			&i.DateCreatePost,
+			&i.IsBanned,
+			&i.IsDeleted,
 		); err != nil {
 			return nil, err
 		}
@@ -123,7 +129,7 @@ const updatePost = `-- name: UpdatePost :one
 UPDATE posts
 SET description = $2
 WHERE id = $1
-RETURNING id, post_type_id, user_id, post_top_id, description, date_create_post
+RETURNING id, post_type_id, user_id, post_top_id, description, date_create_post, is_banned, is_deleted
 `
 
 type UpdatePostParams struct {
@@ -141,6 +147,8 @@ func (q *Queries) UpdatePost(ctx context.Context, arg UpdatePostParams) (Post, e
 		&i.PostTopID,
 		&i.Description,
 		&i.DateCreatePost,
+		&i.IsBanned,
+		&i.IsDeleted,
 	)
 	return i, err
 }

@@ -25,18 +25,23 @@ func NewPostService() *PostService {
 }
 
 func (p *PostService) CreatePost(ctx context.Context, description string, user_id int64, images []string) (response.PostResponse, error) {
+	var res response.PostResponse
 	if description == "" && len(images) == 0 {
 		return response.PostResponse{}, fmt.Errorf("Description or image can't empty")
 	}
 
+	if len(images) > 4 {
+		return res, fmt.Errorf("Number of image can't more than 4")
+	}
+
 	post, err := p.postRepo.CreatePost(ctx, description, user_id)
 	if err != nil {
-		return response.PostResponse{}, err
+		return res, err
 	}
 
 	user, err := user.NewUserService().GetUser(ctx, user_id)
 	if err != nil {
-		return response.PostResponse{}, err
+		return res, err
 	}
 
 	var imgRes []db.PostImage
@@ -44,7 +49,7 @@ func (p *PostService) CreatePost(ctx context.Context, description string, user_i
 	for _, image := range images {
 		i, err := p.postRepo.CreateImagePost(ctx, post.ID, image)
 		if err != nil {
-			return response.PostResponse{}, err
+			return res, err
 		}
 
 		imgRes = append(imgRes, db.PostImage{
@@ -55,9 +60,9 @@ func (p *PostService) CreatePost(ctx context.Context, description string, user_i
 
 	}
 
-	postRes := response.PostRes(post, imgRes, user, post.DateCreatePost)
+	res = response.PostRes(post, imgRes, user, post.DateCreatePost)
 
-	return postRes, nil
+	return res, nil
 }
 
 func (p *PostService) GetPost(ctx context.Context, post_id int64) (response.PostResponse, error) {

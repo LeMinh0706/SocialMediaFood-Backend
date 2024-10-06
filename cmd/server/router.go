@@ -16,15 +16,17 @@ func (server *Server) NewRouter() {
 	r := gin.Default()
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	Static(r)
+	r.MaxMultipartMemory = 32 << 20
 	v1 := r.Group("/api/v1")
 	{
-		post.NewPostRouter(v1, server.tokenMaker)
-		user.NewUserRouter(v1, server.tokenMaker)
-		comment.NewCommentRouter(v1, server.tokenMaker)
+		post.NewPostRouter(r, v1, server.tokenMaker)
+		user.NewUserRouter(r, v1, server.tokenMaker)
+		comment.NewCommentRouter(r, v1, server.tokenMaker)
 		hello.NewHelloRouter(v1)
 	}
 
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
 	server.router = r
 }
 
