@@ -111,7 +111,7 @@ func (p *PostService) GetListPost(ctx context.Context, page, pageSize int64) ([]
 		res = append(res, posRes)
 	}
 	if len(res) == 0 {
-		return []response.PostResponse{}, nil
+		return []response.PostResponse{}, nil //Đẹp trai ác
 	}
 	return res, nil
 }

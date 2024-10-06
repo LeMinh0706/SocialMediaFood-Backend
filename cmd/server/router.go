@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/docs"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/comment"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/hello"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/post"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/user"
@@ -19,6 +20,7 @@ func (server *Server) NewRouter() {
 	{
 		post.NewPostRouter(v1, server.tokenMaker)
 		user.NewUserRouter(v1, server.tokenMaker)
+		comment.NewCommentRouter(v1, server.tokenMaker)
 		hello.NewHelloRouter(v1)
 	}
 

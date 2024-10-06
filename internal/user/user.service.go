@@ -2,6 +2,8 @@ package user
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
 	"log"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
@@ -61,8 +63,8 @@ func (us *UserService) Login(ctx context.Context, username, password string) (re
 func (us *UserService) GetUser(ctx context.Context, id int64) (db.GetUserByIdRow, error) {
 	user, err := us.userRepo.GetUserById(ctx, id)
 
-	if err != nil {
-		return db.GetUserByIdRow{}, err
+	if err == sql.ErrNoRows {
+		return db.GetUserByIdRow{}, fmt.Errorf("User does not exist")
 	}
 	return user, nil
 }
