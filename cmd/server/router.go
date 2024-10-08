@@ -20,7 +20,7 @@ func (server *Server) NewRouter() {
 	v1 := r.Group("/api/v1")
 	{
 		post.NewPostRouter(r, v1, server.tokenMaker)
-		user.NewUserRouter(r, v1, server.tokenMaker)
+		user.NewUserRouter(r, v1, server.tokenMaker, server.config)
 		comment.NewCommentRouter(r, v1, server.tokenMaker)
 		hello.NewHelloRouter(v1)
 	}

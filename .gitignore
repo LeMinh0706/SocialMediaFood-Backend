@@ -2,5 +2,3 @@ Makefile
 .env
 app.env
 upload
-avatar
-background

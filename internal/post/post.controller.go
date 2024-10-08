@@ -32,7 +32,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 
 	form, err := g.MultipartForm()
 	if err != nil {
-		response.ErrorResponse(g, 400, err.Error())
+		response.ErrorNonKnow(g, 400, err.Error())
 		return
 	}
 	var images []string
@@ -43,24 +43,24 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 
 	for _, file := range files {
 		if file.Size > maxSize {
-			response.ErrorResponse(g, 401, "File too large, only allowed 8MB")
+			response.ErrorResponse(g, 413, 41300)
 			return
 		}
 		filename := fmt.Sprintf("upload/post/%d_%s", time.Now().Unix(), file.Filename)
 		if !middlewares.FileUploadCheck(filename) {
-			response.ErrorResponse(g, 400, "Can only use file .png, .jpg, .jpeg, .gif")
+			response.ErrorResponse(g, 400, 40003)
 			return
 		}
 
 		if err := g.SaveUploadedFile(file, filename); err != nil {
-			response.ErrorResponse(g, 500, err.Error())
+			response.ErrorNonKnow(g, 500, err.Error())
 			return
 		}
 		images = append(images, filename)
 	}
 	post, err := pc.postService.CreatePost(g, description, authPayload.UserId, images)
 	if err != nil {
-		response.ErrorResponse(g, 401, err.Error())
+		response.ErrorNonKnow(g, 404, err.Error())
 		return
 	}
 
@@ -72,17 +72,17 @@ func (pc *PostController) GetListPost(g *gin.Context) {
 	pageSizeStr := g.Query("page_size")
 	page, err := strconv.ParseInt(pageStr, 10, 64)
 	if err != nil {
-		response.ErrorResponse(g, 400, "Bad request, page should be number")
+		response.ErrorResponse(g, 400, 40001)
 		return
 	}
 	pageSize, err := strconv.ParseInt(pageSizeStr, 10, 64)
 	if err != nil {
-		response.ErrorResponse(g, 400, "Bad request, page_size should be number")
+		response.ErrorResponse(g, 400, 40002)
 		return
 	}
 	posts, err := pc.postService.GetListPost(g, page, pageSize)
 	if err != nil {
-		response.ErrorResponse(g, 401, err.Error())
+		response.ErrorNonKnow(g, 404, err.Error())
 		return
 	}
 

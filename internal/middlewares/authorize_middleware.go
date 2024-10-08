@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 
@@ -20,16 +19,14 @@ func AuthorizeMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authorizationHeader := ctx.GetHeader(AuthorizationHeaderKey)
 		if len(authorizationHeader) == 0 {
-			err := errors.New("Unauthorize")
-			response.ErrorResponse(ctx, 401, err.Error())
+			response.ErrorResponse(ctx, 401, 40101)
 			ctx.Abort()
 			return
 		}
 
 		fields := strings.Fields(authorizationHeader)
 		if len(fields) < 2 {
-			err := errors.New("Invalid token")
-			response.ErrorResponse(ctx, 401, err.Error())
+			response.ErrorResponse(ctx, 401, 40102)
 			ctx.Abort()
 			return
 		}
@@ -37,7 +34,7 @@ func AuthorizeMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		authorizationType := strings.ToLower(fields[0])
 		if authorizationType != AuthorizationTypeBearer {
 			err := fmt.Errorf("Unsupported authorization type %s", authorizationType)
-			response.ErrorResponse(ctx, 401, err.Error())
+			response.ErrorNonKnow(ctx, 401, err.Error())
 			ctx.Abort()
 			return
 		}
@@ -45,7 +42,7 @@ func AuthorizeMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		accessToken := fields[1]
 		payload, err := tokenMaker.VerifyToken(accessToken)
 		if err != nil {
-			response.ErrorResponse(ctx, 401, err.Error())
+			response.ErrorNonKnow(ctx, 401, err.Error())
 			ctx.Abort()
 			return
 		}

@@ -27,7 +27,7 @@ func NewHelloController() *HelloController {
 func (hc *HelloController) GetHelloParam(g *gin.Context) {
 	name := g.Param("name")
 	if name == "" {
-		response.ErrorResponse(g, 400, "Input your name on param")
+		response.ErrorNonKnow(g, 400, "Input your name on param")
 		return
 	}
 	data := hc.helloService.GetName(name)
@@ -47,7 +47,7 @@ func (hc *HelloController) GetHelloQuery(g *gin.Context) {
 	name := g.Query("name")
 
 	if name == "" {
-		response.ErrorResponse(g, 400, "Name is required")
+		response.ErrorNonKnow(g, 400, "Name is required")
 		return
 	}
 	// id := g.Query("id")
@@ -76,7 +76,7 @@ type BodyRequest struct {
 func (hc *HelloController) PostHelloBody(g *gin.Context) {
 	var body Hello
 	if err := g.ShouldBindJSON(&body); err != nil {
-		response.ErrorResponse(g, 400, err.Error())
+		response.ErrorNonKnow(g, 400, err.Error())
 		return
 	}
 

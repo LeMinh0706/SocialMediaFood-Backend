@@ -20,10 +20,18 @@ func SuccessResponse(c *gin.Context, code int, data interface{}) {
 	})
 }
 
-func ErrorResponse(c *gin.Context, code int, message string) {
+func ErrorResponse(c *gin.Context, code, status int) {
 	c.JSON(http.StatusOK, ResponseData{
 		Code:    code,
-		Message: message,
+		Message: msg[status],
+		Data:    nil,
+	})
+}
+
+func ErrorNonKnow(c *gin.Context, code int, massage string) {
+	c.JSON(http.StatusOK, ResponseData{
+		Code:    code,
+		Message: massage,
 		Data:    nil,
 	})
 }

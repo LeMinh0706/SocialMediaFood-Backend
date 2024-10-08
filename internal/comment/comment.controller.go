@@ -3,6 +3,7 @@ package comment
 import (
 	"strconv"
 
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
@@ -23,14 +24,25 @@ func NewCommentController(tokenMaker token.Maker) *CommentController {
 func (cc *CommentController) CreateComment(g *gin.Context) {
 	var req response.CommentRequest
 
+	authPayload := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+
 	if err := g.ShouldBindJSON(&req); err != nil {
-		response.ErrorResponse(g, 400, err.Error())
+		response.ErrorNonKnow(g, 400, err.Error())
+		return
+	}
+
+	if authPayload.UserId != req.UserID {
+		response.ErrorResponse(g, 401, 40103)
 		return
 	}
 
 	res, err := cc.commentService.CreateComment(g, req.Description, req.UserID, req.PostTopID)
 	if err != nil {
-		response.ErrorResponse(g, 401, err.Error())
+		if err.Error() == "NotFound" {
+			response.ErrorResponse(g, 404, 40402)
+			return
+		}
+		response.ErrorNonKnow(g, 404, err.Error())
 		return
 	}
 
@@ -43,27 +55,27 @@ func (cc *CommentController) ListComment(g *gin.Context) {
 	pageSizeStr := g.Query("page_size")
 	postId, err := strconv.ParseInt(postIdStr, 10, 64)
 	if err != nil {
-		response.ErrorResponse(g, 404, "Bad request")
+		response.ErrorResponse(g, 400, 40004)
 		return
 	}
 	page, err := strconv.ParseInt(pageStr, 10, 64)
 	if err != nil {
-		response.ErrorResponse(g, 404, "Bad request")
+		response.ErrorResponse(g, 400, 40001)
 		return
 	}
 	pageSize, err := strconv.ParseInt(pageSizeStr, 10, 64)
 	if err != nil {
-		response.ErrorResponse(g, 404, "Bad request")
+		response.ErrorResponse(g, 400, 40002)
 		return
 	}
 
 	comments, err := cc.commentService.ListComment(g, postId, page, pageSize)
 	if err != nil {
 		if err.Error() == "NotFound" {
-			response.ErrorResponse(g, 404, "Can not found post or post was deleted")
+			response.ErrorResponse(g, 404, 40402)
 			return
 		}
-		response.ErrorResponse(g, 401, err.Error())
+		response.ErrorNonKnow(g, 404, err.Error())
 		return
 	}
 	response.SuccessResponse(g, 200, comments)
