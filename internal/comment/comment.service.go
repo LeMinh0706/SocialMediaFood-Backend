@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/post"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/user"
@@ -74,5 +75,36 @@ func (cs *CommentService) ListComment(ctx context.Context, post_id, page, pageSi
 	if len(res) == 0 {
 		return []response.CommentResponse{}, nil
 	}
+	return res, nil
+}
+
+func (cs *CommentService) UpdateComment(ctx context.Context, id, user_id int64, description string) (response.CommentResponse, error) {
+	var res response.CommentResponse
+	if strings.TrimSpace(description) == "" {
+		return res, fmt.Errorf("Description can't empty")
+	}
+	comment, err := cs.commentRepo.GetCommentById(ctx, id)
+	if err != nil {
+		return res, err
+	}
+	if comment.Description.String == description {
+		return res, fmt.Errorf("You are not update description")
+	}
+	if user_id != comment.UserID {
+		return res, fmt.Errorf("Forbidden")
+	}
+
+	user, err := user.NewUserService().GetUser(ctx, user_id)
+	if err != nil {
+		return res, err
+	}
+
+	update, err := cs.commentRepo.UpdateComment(ctx, id, description)
+	if err != nil {
+		return res, err
+	}
+
+	res = response.CommentRes(update, user)
+
 	return res, nil
 }

@@ -8,10 +8,13 @@ type CommentRequest struct {
 	Description string `json:"description" binding:"required"`
 }
 
+type UpdateCommentRequest struct {
+	ID          int64  `json:"id" binding:"required"`
+	Description string `json:"description" binding:"required"`
+}
+
 type CommentResponse struct {
 	ID             int64             `json:"id"`
-	PostTypeID     int32             `json:"post_type_id"`
-	UserID         int64             `json:"user_id"`
 	PostTopID      int64             `json:"post_top_id"`
 	Description    string            `json:"description"`
 	DateCreatePost int64             `json:"date_create_post"`
@@ -21,8 +24,6 @@ type CommentResponse struct {
 func CommentRes(comment db.Post, user db.GetUserByIdRow) CommentResponse {
 	return CommentResponse{
 		ID:             comment.ID,
-		PostTypeID:     comment.PostTypeID,
-		UserID:         comment.UserID,
 		PostTopID:      comment.PostTopID.Int64,
 		Description:    comment.Description.String,
 		DateCreatePost: comment.DateCreatePost,

@@ -38,3 +38,14 @@ func (c *CommentRepository) ListComment(ctx context.Context, post_id int64, page
 		Offset:    page*pageSize - (pageSize - 1),
 	})
 }
+
+func (c *CommentRepository) GetCommentById(ctx context.Context, id int64) (db.Post, error) {
+	return c.queries.GetCommentById(ctx, id)
+}
+
+func (c *CommentRepository) UpdateComment(ctx context.Context, id int64, description string) (db.Post, error) {
+	return c.queries.UpdateComment(ctx, db.UpdateCommentParams{
+		ID:          id,
+		Description: sql.NullString{String: description, Valid: true},
+	})
+}

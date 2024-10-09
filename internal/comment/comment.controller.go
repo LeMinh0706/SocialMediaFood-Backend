@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"database/sql"
 	"strconv"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
@@ -32,7 +33,7 @@ func (cc *CommentController) CreateComment(g *gin.Context) {
 	}
 
 	if authPayload.UserId != req.UserID {
-		response.ErrorResponse(g, 401, 40103)
+		response.ErrorResponse(g, 403, 40103)
 		return
 	}
 
@@ -79,4 +80,40 @@ func (cc *CommentController) ListComment(g *gin.Context) {
 		return
 	}
 	response.SuccessResponse(g, 200, comments)
+}
+
+func (cc *CommentController) UpdateComment(g *gin.Context) {
+	var req response.UpdateCommentRequest
+	authPayload := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+
+	param := g.Param("id")
+
+	id, err := strconv.ParseInt(param, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 400, 40004)
+		return
+	}
+
+	req.ID = id
+
+	if err := g.ShouldBindJSON(&req); err != nil {
+		response.ErrorResponse(g, 400, 40000)
+		return
+	}
+
+	comment, err := cc.commentService.UpdateComment(g, req.ID, authPayload.UserId, req.Description)
+	if err != nil {
+
+		if err == sql.ErrNoRows {
+			response.ErrorResponse(g, 404, 40402)
+			return
+		}
+		if err.Error() == "Forbidden" {
+			response.ErrorResponse(g, 403, 40103)
+			return
+		}
+		response.ErrorNonKnow(g, 400, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 201, comment)
 }
