@@ -49,3 +49,7 @@ func (c *CommentRepository) UpdateComment(ctx context.Context, id int64, descrip
 		Description: sql.NullString{String: description, Valid: true},
 	})
 }
+
+func (c *CommentRepository) DeleteComment(ctx context.Context, id int64) error {
+	return c.queries.DeleteComment(ctx, id)
+}

@@ -13,6 +13,7 @@ func NewCommentRouter(r *gin.Engine, router *gin.RouterGroup, token token.Maker)
 		auth := commentGroup.Group("/").Use(middlewares.AuthorizeMiddleware(token))
 		auth.POST("", cc.CreateComment)
 		auth.PUT(":id", cc.UpdateComment)
+		auth.DELETE(":id", cc.DeleteComment)
 		commentGroup.GET("", cc.ListComment)
 
 	}

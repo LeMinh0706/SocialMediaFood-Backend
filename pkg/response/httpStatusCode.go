@@ -3,6 +3,7 @@ package response
 const (
 	StatusOk              = 200
 	CodeSuccess           = 201
+	DeleteSuccess         = 204
 	ErrBadRequest         = 40000
 	ErrBadRequestPage     = 40001
 	ErrBadRequestPageSize = 40002
@@ -21,6 +22,7 @@ const (
 var msg = map[int]string{
 	StatusOk:              "Ok",
 	CodeSuccess:           "Success",
+	DeleteSuccess:         "Delete no error",
 	ErrBadRequest:         "Bad request",
 	ErrBadRequestPage:     "Page should be number",
 	ErrBadRequestPageSize: "Page size should be number",

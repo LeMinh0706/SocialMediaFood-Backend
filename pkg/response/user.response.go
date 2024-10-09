@@ -15,7 +15,7 @@ type RegisterResponse struct {
 type RequestResponse struct {
 	Username string `json:"username" binding:"required,alphanum"`
 	Password string `json:"password" binding:"required,min=6,max=18"`
-	Gender   int32  `json:"gender" binding:"required,min=0,max=1"`
+	Gender   int32  `json:"gender" binding:"min=0,max=1"`
 }
 
 type UserForPost struct {

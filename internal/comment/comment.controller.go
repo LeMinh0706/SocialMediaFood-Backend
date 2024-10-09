@@ -117,3 +117,30 @@ func (cc *CommentController) UpdateComment(g *gin.Context) {
 	}
 	response.SuccessResponse(g, 201, comment)
 }
+
+func (cc *CommentController) DeleteComment(g *gin.Context) {
+	param := g.Param("id")
+	authPayload := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+
+	id, err := strconv.ParseInt(param, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 400, 40000)
+		return
+	}
+	err = cc.commentService.DeleteComment(g, id, authPayload.UserId, authPayload.RoleID)
+	if err != nil {
+		switch err.Error() {
+		case "unauthorize":
+			response.ErrorResponse(g, 401, 40103)
+		case "NotFound":
+			response.ErrorResponse(g, 404, 40402)
+		case "sql: no rows in result set":
+			response.ErrorResponse(g, 404, 40402)
+		default:
+			response.ErrorNonKnow(g, 500, err.Error())
+		}
+		return
+	}
+
+	response.SuccessResponse(g, 204, nil)
+}

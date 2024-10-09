@@ -108,3 +108,19 @@ func (cs *CommentService) UpdateComment(ctx context.Context, id, user_id int64, 
 
 	return res, nil
 }
+
+func (cs *CommentService) DeleteComment(ctx context.Context, id, user_id int64, role_id int32) error {
+	comment, err := cs.commentRepo.queries.GetCommentById(ctx, id)
+	if err != nil {
+		return fmt.Errorf("NotFound")
+	}
+	if role_id != 1 && comment.UserID != user_id {
+		return fmt.Errorf("unauthorize")
+	}
+
+	err = cs.commentRepo.DeleteComment(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -36,7 +36,7 @@ func (uc *UserController) Register(g *gin.Context) {
 			response.ErrorNonKnow(g, 400, "Password too short, must be less than 18 characters")
 			return
 		}
-		response.ErrorResponse(g, 400, 40400)
+		response.ErrorNonKnow(g, 400, err.Error())
 		return
 	}
 
