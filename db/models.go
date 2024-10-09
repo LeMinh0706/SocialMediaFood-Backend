@@ -9,8 +9,8 @@ import (
 )
 
 type Follower struct {
-	FollowRequest sql.NullInt64 `json:"follow_request"`
-	FollowAccept  sql.NullInt64 `json:"follow_accept"`
+	FollowRequest int64 `json:"follow_request"`
+	FollowAccept  int64 `json:"follow_accept"`
 }
 
 type Post struct {
@@ -31,19 +31,19 @@ type PostImage struct {
 }
 
 type PostType struct {
-	ID   int32          `json:"id"`
-	Name sql.NullString `json:"name"`
+	ID   int32  `json:"id"`
+	Name string `json:"name"`
 }
 
 type ReactPost struct {
-	ID     int64         `json:"id"`
-	PostID sql.NullInt64 `json:"post_id"`
-	UserID sql.NullInt64 `json:"user_id"`
+	ID     int64 `json:"id"`
+	PostID int64 `json:"post_id"`
+	UserID int64 `json:"user_id"`
 }
 
 type Role struct {
-	ID   int32          `json:"id"`
-	Name sql.NullString `json:"name"`
+	ID   int32  `json:"id"`
+	Name string `json:"name"`
 }
 
 type User struct {

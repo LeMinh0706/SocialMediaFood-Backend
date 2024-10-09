@@ -17,7 +17,7 @@ CREATE TABLE "users" (
 
 CREATE TABLE "role" (
   "id" int PRIMARY KEY,
-  "name" varchar
+  "name" varchar NOT NULL
 );
 
 CREATE TABLE "post_image" (
@@ -28,13 +28,13 @@ CREATE TABLE "post_image" (
 
 CREATE TABLE "react_post" (
   "id" bigserial PRIMARY KEY,
-  "post_id" bigint,
-  "user_id" bigint
+  "post_id" bigint NOT NULL,
+  "user_id" bigint NOT NULL
 );
 
 CREATE TABLE "follower" (
-  "follow_request" bigint,
-  "follow_accept" bigint
+  "follow_request" bigint NOT NULL,
+  "follow_accept" bigint NOT NULL
 );
 
 CREATE INDEX ON "users" ("fullname");

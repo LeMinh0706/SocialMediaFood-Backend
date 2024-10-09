@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE "post_type" (
   "id" int PRIMARY KEY,
-  "name" varchar
+  "name" varchar NOT NULL
 );
 
 -- ALTER TABLE "posts" ADD FOREIGN KEY ("post_type_id") REFERENCES "postType" ("id");
