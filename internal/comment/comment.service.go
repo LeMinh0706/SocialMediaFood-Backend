@@ -13,15 +13,18 @@ import (
 
 type CommentService struct {
 	commentRepo *CommentRepository
+	userSevice  *user.UserService
 }
 
 func NewCommentService() *CommentService {
 	repo, err := NewCommentRepo()
+	userService := user.NewUserService()
 	if err != nil {
 		log.Fatal("Error:", err)
 	}
 	return &CommentService{
 		commentRepo: repo,
+		userSevice:  userService,
 	}
 }
 
@@ -94,7 +97,7 @@ func (cs *CommentService) UpdateComment(ctx context.Context, id, user_id int64, 
 		return res, fmt.Errorf("Forbidden")
 	}
 
-	user, err := user.NewUserService().GetUser(ctx, user_id)
+	user, err := cs.userSevice.GetUser(ctx, user_id)
 	if err != nil {
 		return res, err
 	}
