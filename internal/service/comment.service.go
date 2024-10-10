@@ -1,41 +1,36 @@
-package comment
+package service
 
 import (
 	"context"
 	"fmt"
-	"log"
 	"strings"
 
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/post"
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/user"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/repo"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 )
 
 type CommentService struct {
-	commentRepo *CommentRepository
-	userSevice  *user.UserService
+	commentRepo *repo.CommentRepository
+	userSevice  *UserService
+	postService *PostService
 }
 
-func NewCommentService() *CommentService {
-	repo, err := NewCommentRepo()
-	userService := user.NewUserService()
-	if err != nil {
-		log.Fatal("Error:", err)
-	}
+func NewCommentService(repo *repo.CommentRepository, userService *UserService, postService *PostService) *CommentService {
 	return &CommentService{
 		commentRepo: repo,
 		userSevice:  userService,
+		postService: postService,
 	}
 }
 
 func (cs *CommentService) CreateComment(ctx context.Context, description string, user_id, post_top_id int64) (response.CommentResponse, error) {
 	var res response.CommentResponse
-	user, err := user.NewUserService().GetUser(ctx, user_id)
+	user, err := cs.userSevice.GetUser(ctx, user_id)
 	if err != nil {
 		return response.CommentResponse{}, err
 	}
 
-	post, err := post.NewPostService().GetPost(ctx, post_top_id)
+	post, err := cs.postService.GetPost(ctx, post_top_id)
 	if err != nil {
 		return response.CommentResponse{}, err
 	}
@@ -58,7 +53,7 @@ func (cs *CommentService) CreateComment(ctx context.Context, description string,
 func (cs *CommentService) ListComment(ctx context.Context, post_id, page, pageSize int64) ([]response.CommentResponse, error) {
 
 	var res []response.CommentResponse
-	post, err := post.NewPostService().GetPost(ctx, post_id)
+	post, err := cs.postService.GetPost(ctx, post_id)
 	if err != nil {
 		return res, err
 	}
@@ -68,7 +63,7 @@ func (cs *CommentService) ListComment(ctx context.Context, post_id, page, pageSi
 	}
 
 	for _, comment := range comments {
-		user, err := user.NewUserService().GetUser(ctx, comment.UserID)
+		user, err := cs.userSevice.GetUser(ctx, comment.UserID)
 		if err != nil {
 			return res, err
 		}
@@ -113,7 +108,7 @@ func (cs *CommentService) UpdateComment(ctx context.Context, id, user_id int64, 
 }
 
 func (cs *CommentService) DeleteComment(ctx context.Context, id, user_id int64, role_id int32) error {
-	comment, err := cs.commentRepo.queries.GetCommentById(ctx, id)
+	comment, err := cs.commentRepo.GetCommentById(ctx, id)
 	if err != nil {
 		return fmt.Errorf("NotFound")
 	}

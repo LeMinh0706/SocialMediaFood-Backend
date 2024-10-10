@@ -1,4 +1,4 @@
-package user
+package repo
 
 import (
 	"context"
@@ -13,13 +13,9 @@ type UserRepository struct {
 	queries *db.Queries
 }
 
-func NewUserRepo() (*UserRepository, error) {
-	pg, err := db.GetDBConnection()
-	if err != nil {
-		return nil, err
-	}
+func NewUserRepo(queries *db.Queries) (*UserRepository, error) {
 	return &UserRepository{
-		queries: db.New(pg),
+		queries: queries,
 	}, nil
 }
 

@@ -1,4 +1,4 @@
-package post
+package controller
 
 import (
 	"fmt"
@@ -6,19 +6,20 @@ import (
 	"time"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/service"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
 )
 
 type PostController struct {
-	postService *PostService
+	postService *service.PostService
 	token       token.Maker
 }
 
-func NewPostController(tokenMaker token.Maker) *PostController {
+func NewPostController(tokenMaker token.Maker, postService *service.PostService) *PostController {
 	return &PostController{
-		postService: NewPostService(),
+		postService: postService,
 		token:       tokenMaker,
 	}
 }

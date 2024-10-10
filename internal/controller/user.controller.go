@@ -1,4 +1,4 @@
-package user
+package controller
 
 import (
 	"database/sql"
@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/service"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
@@ -13,14 +14,14 @@ import (
 )
 
 type UserController struct {
-	userService *UserService
+	userService *service.UserService
 	tokenMaker  token.Maker
 	config      util.Config
 }
 
-func NewUserController(tokenMaker token.Maker, config util.Config) *UserController {
+func NewUserController(tokenMaker token.Maker, userSerive *service.UserService, config util.Config) *UserController {
 	return &UserController{
-		userService: NewUserService(),
+		userService: userSerive,
 		tokenMaker:  tokenMaker,
 		config:      config,
 	}

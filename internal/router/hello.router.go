@@ -1,10 +1,13 @@
-package hello
+package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/controller"
+	"github.com/gin-gonic/gin"
+)
 
 func NewHelloRouter(router *gin.RouterGroup) {
 	userGroup := router.Group("/hello")
-	uc := NewHelloController()
+	uc := controller.NewHelloController()
 	{
 		userGroup.GET(":name", uc.GetHelloParam)
 		userGroup.GET("", uc.GetHelloQuery)

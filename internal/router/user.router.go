@@ -1,15 +1,17 @@
-package user
+package router
 
 import (
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/controller"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/service"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/gin-gonic/gin"
 )
 
-func NewUserRouter(r *gin.Engine, router *gin.RouterGroup, token token.Maker, config util.Config) {
+func NewUserRouter(r *gin.Engine, router *gin.RouterGroup, token token.Maker, userService *service.UserService, config util.Config) {
 	userGroup := r.Group(router.BasePath() + "/accounts")
-	uc := NewUserController(token, config)
+	uc := controller.NewUserController(token, userService, config)
 	{
 		auth := userGroup.Group("/").Use(middlewares.AuthorizeMiddleware(token))
 		auth.GET("me", uc.GetMe)

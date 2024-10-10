@@ -1,23 +1,24 @@
-package comment
+package controller
 
 import (
 	"database/sql"
 	"strconv"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/service"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
 )
 
 type CommentController struct {
-	commentService *CommentService
+	commentService *service.CommentService
 	token          token.Maker
 }
 
-func NewCommentController(tokenMaker token.Maker) *CommentController {
+func NewCommentController(tokenMaker token.Maker, commentService *service.CommentService) *CommentController {
 	return &CommentController{
-		commentService: NewCommentService(),
+		commentService: commentService,
 		token:          tokenMaker,
 	}
 }

@@ -3,15 +3,19 @@ package server
 import (
 	"fmt"
 
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/service"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
-	config     util.Config
-	tokenMaker token.Maker
-	router     *gin.Engine
+	Config         util.Config
+	TokenMaker     token.Maker
+	Router         *gin.Engine
+	UserService    *service.UserService
+	PostService    *service.PostService
+	CommentService *service.CommentService
 }
 
 func NewServer(config util.Config) (*Server, error) {
@@ -20,10 +24,19 @@ func NewServer(config util.Config) (*Server, error) {
 		return nil, fmt.Errorf("Can not create token: %w", err)
 	}
 	server := &Server{
-		config:     config,
-		tokenMaker: tokenMaker,
+		Config:     config,
+		Router:     gin.Default(),
+		TokenMaker: tokenMaker,
 	}
-
-	server.NewRouter()
+	err = server.InitService()
+	if err != nil {
+		return nil, err
+	}
+	Static(server.Router)
+	NewRouter(server)
 	return server, nil
+}
+
+func (server *Server) Start(address string) error {
+	return server.Router.Run(address)
 }

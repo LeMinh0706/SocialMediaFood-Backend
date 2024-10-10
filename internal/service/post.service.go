@@ -1,26 +1,24 @@
-package post
+package service
 
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/user"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/repo"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 )
 
 type PostService struct {
-	postRepo *PostRepository
+	postRepo    *repo.PostRepository
+	userService *UserService
 }
 
-func NewPostService() *PostService {
-	repo, err := NewPostRepo()
-	if err != nil {
-		log.Fatal("Error:", err)
-	}
+func NewPostService(repo *repo.PostRepository, userService *UserService) *PostService {
+
 	return &PostService{
-		postRepo: repo,
+		postRepo:    repo,
+		userService: userService,
 	}
 }
 
@@ -39,7 +37,7 @@ func (p *PostService) CreatePost(ctx context.Context, description string, user_i
 		return res, err
 	}
 
-	user, err := user.NewUserService().GetUser(ctx, user_id)
+	user, err := p.userService.GetUser(ctx, user_id)
 	if err != nil {
 		return res, err
 	}
@@ -80,7 +78,7 @@ func (p *PostService) GetPost(ctx context.Context, post_id int64) (response.Post
 		return res, err
 	}
 
-	user, err := user.NewUserService().GetUser(ctx, post.UserID)
+	user, err := p.userService.GetUser(ctx, post.UserID)
 	if err != nil {
 		return res, err
 	}
@@ -111,7 +109,7 @@ func (p *PostService) GetListPost(ctx context.Context, page, pageSize int64) ([]
 			return []response.PostResponse{}, err
 		}
 
-		user, err := user.NewUserService().GetUser(ctx, post.UserID)
+		user, err := p.userService.GetUser(ctx, post.UserID)
 		if err != nil {
 			return []response.PostResponse{}, err
 		}

@@ -1,4 +1,4 @@
-package post
+package repo
 
 import (
 	"context"
@@ -12,14 +12,9 @@ type PostRepository struct {
 	queries *db.Queries
 }
 
-func NewPostRepo() (*PostRepository, error) {
-	pg, err := db.GetDBConnection()
-	if err != nil {
-		return nil, err
-	}
-
+func NewPostRepo(queries *db.Queries) (*PostRepository, error) {
 	return &PostRepository{
-		queries: db.New(pg),
+		queries: queries,
 	}, nil
 }
 

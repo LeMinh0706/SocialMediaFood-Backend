@@ -1,17 +1,19 @@
-package hello
+package controller
 
 import (
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/repo"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/service"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/gin-gonic/gin"
 )
 
 type HelloController struct {
-	helloService *HelloService
+	helloService *service.HelloService
 }
 
 func NewHelloController() *HelloController {
 	return &HelloController{
-		helloService: NewHelloService(),
+		helloService: service.NewHelloService(),
 	}
 }
 
@@ -74,7 +76,7 @@ type BodyRequest struct {
 // @Param body body Hello true "ID and Name here"
 // @Router /example/hello [post]
 func (hc *HelloController) PostHelloBody(g *gin.Context) {
-	var body Hello
+	var body repo.Hello
 	if err := g.ShouldBindJSON(&body); err != nil {
 		response.ErrorNonKnow(g, 400, err.Error())
 		return

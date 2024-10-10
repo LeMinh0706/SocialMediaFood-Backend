@@ -1,4 +1,4 @@
-package comment
+package repo
 
 import (
 	"context"
@@ -12,13 +12,10 @@ type CommentRepository struct {
 	queries *db.Queries
 }
 
-func NewCommentRepo() (*CommentRepository, error) {
-	pg, err := db.GetDBConnection()
-	if err != nil {
-		return nil, err
-	}
+func NewCommentRepo(queries *db.Queries) (*CommentRepository, error) {
+
 	return &CommentRepository{
-		queries: db.New(pg),
+		queries: queries,
 	}, nil
 }
 
@@ -35,7 +32,7 @@ func (c *CommentRepository) ListComment(ctx context.Context, post_id int64, page
 	return c.queries.ListComment(ctx, db.ListCommentParams{
 		PostTopID: sql.NullInt64{Int64: post_id, Valid: true},
 		Limit:     pageSize,
-		Offset:    page*pageSize - (pageSize - 1),
+		Offset:    (page - 1) * pageSize,
 	})
 }
 
