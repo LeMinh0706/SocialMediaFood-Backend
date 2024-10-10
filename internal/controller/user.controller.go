@@ -41,7 +41,7 @@ func (uc *UserController) Register(g *gin.Context) {
 		return
 	}
 
-	user, err := uc.userService.Register(g.Request.Context(), req.Username, req.Password, req.Gender)
+	user, err := uc.userService.Register(g.Request.Context(), req.Username, req.Password, req.Fullname, req.Email, req.Gender)
 	if err != nil {
 		if err.Error() == "pq: duplicate key value violates unique constraint \"users_username_key\"" {
 			response.ErrorResponse(g, 409, 40900)

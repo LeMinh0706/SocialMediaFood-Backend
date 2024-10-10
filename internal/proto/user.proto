@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/LeMinh0706/SocialMediaFood-Backend/pb";
+
+message User {
+    string fullname = 1;
+    string email = 2;
+    string gender = 3;
+}

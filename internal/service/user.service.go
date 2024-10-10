@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/repo"
@@ -21,12 +22,22 @@ func NewUserService(repo *repo.UserRepository) *UserService {
 	}
 }
 
-func (us *UserService) Register(ctx context.Context, username, password string, gender int32) (db.User, error) {
+func (us *UserService) Register(ctx context.Context, username, password, fullname string, emailReq string, gender int32) (db.User, error) {
 	hashPassword, err := util.HashPashword(password)
 	if err != nil {
 		return db.User{}, err
 	}
-	user, err := us.userRepo.CreateUser(ctx, username, hashPassword, gender, 3)
+	if strings.TrimSpace(fullname) == "" {
+		fullname = username
+	}
+	var email sql.NullString
+	if strings.TrimSpace(emailReq) == "" {
+		email = sql.NullString{Valid: false}
+	} else {
+		email = sql.NullString{String: emailReq, Valid: true}
+	}
+
+	user, err := us.userRepo.CreateUser(ctx, username, hashPassword, fullname, email, 3, gender)
 	if err != nil {
 		return db.User{}, err
 	}

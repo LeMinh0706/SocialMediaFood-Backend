@@ -19,12 +19,12 @@ func NewUserRepo(queries *db.Queries) (*UserRepository, error) {
 	}, nil
 }
 
-func (repo *UserRepository) CreateUser(ctx context.Context, username, password string, gender int32, role_id int32) (db.User, error) {
+func (repo *UserRepository) CreateUser(ctx context.Context, username, password, fullname string, email sql.NullString, gender int32, role_id int32) (db.User, error) {
 	return repo.queries.CreateUser(ctx, db.CreateUserParams{
 		Username:             username,
-		Fullname:             username,
+		Fullname:             fullname,
 		HashPashword:         password,
-		Email:                sql.NullString{Valid: false},
+		Email:                email,
 		Gender:               gender,
 		UrlAvatar:            util.RandomAvatar(gender),
 		UrlBackgroundProfile: db.GetBackground(),
