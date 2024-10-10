@@ -19,7 +19,7 @@ func NewUserRepo(queries *db.Queries) (*UserRepository, error) {
 	}, nil
 }
 
-func (repo *UserRepository) CreateUser(ctx context.Context, username, password, fullname string, email sql.NullString, gender int32, role_id int32) (db.User, error) {
+func (repo *UserRepository) CreateUser(ctx context.Context, username, password, fullname string, email sql.NullString, gender, role_id int32) (db.User, error) {
 	return repo.queries.CreateUser(ctx, db.CreateUserParams{
 		Username:             username,
 		Fullname:             fullname,

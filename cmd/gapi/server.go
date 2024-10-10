@@ -4,14 +4,18 @@ import (
 	"fmt"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/pb"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/service"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 )
 
 type Server struct {
 	pb.UnimplementedSocialMediaFoodServer
-	Config     util.Config
-	TokenMaker token.Maker
+	Config         util.Config
+	TokenMaker     token.Maker
+	UserService    *service.UserService
+	PostService    *service.PostService
+	CommentService *service.CommentService
 }
 
 func NewServer(config util.Config) (*Server, error) {
@@ -23,6 +27,11 @@ func NewServer(config util.Config) (*Server, error) {
 		Config:     config,
 		TokenMaker: tokenMaker,
 	}
+	if err != nil {
+		return nil, err
+	}
+
+	err = server.InitService()
 	if err != nil {
 		return nil, err
 	}

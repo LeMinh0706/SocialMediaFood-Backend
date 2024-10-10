@@ -37,7 +37,7 @@ func (us *UserService) Register(ctx context.Context, username, password, fullnam
 		email = sql.NullString{String: emailReq, Valid: true}
 	}
 
-	user, err := us.userRepo.CreateUser(ctx, username, hashPassword, fullname, email, 3, gender)
+	user, err := us.userRepo.CreateUser(ctx, username, hashPassword, fullname, email, gender, 3)
 	if err != nil {
 		return db.User{}, err
 	}

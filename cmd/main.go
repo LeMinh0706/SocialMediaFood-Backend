@@ -18,7 +18,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Cannot load config", err)
 	}
-	GinRun(config)
+	// GinRun(config)
 	GrpcRun(config)
 }
 

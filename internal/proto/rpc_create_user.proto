@@ -17,4 +17,7 @@ message CreateUserRequest {
 message CreateUserResponse{
     User user = 1;
 }
+// message UserResponse{
+//     User user = 1;
+// }
 

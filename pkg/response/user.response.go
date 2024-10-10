@@ -47,6 +47,18 @@ type LoginResponse struct {
 	User        UserResponse `json:"user"`
 }
 
+func RegisterRes(user db.User) RegisterResponse {
+	return RegisterResponse{
+		ID:                user.ID,
+		Email:             user.Email.String,
+		Username:          user.Username,
+		Fullname:          user.Fullname,
+		Gender:            user.Gender,
+		RoleID:            user.RoleID,
+		DateCreateAccount: user.DateCreateAccount,
+	}
+}
+
 func UserRes(user db.User) UserResponse {
 	return UserResponse{ID: user.ID, Fullname: user.Fullname, Gender: user.Gender, UrlAvatar: user.UrlAvatar, UrlBackground: user.UrlBackgroundProfile, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
 }

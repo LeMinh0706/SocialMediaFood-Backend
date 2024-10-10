@@ -11,7 +11,7 @@ message LoginUserRequest {
     string password = 2;
 }
 
-message LoginUserResponse{
+message LoginUserResponse{  
     User user = 1;
     string access_token = 2;
 }

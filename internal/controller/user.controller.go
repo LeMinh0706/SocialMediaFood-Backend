@@ -51,7 +51,7 @@ func (uc *UserController) Register(g *gin.Context) {
 		return
 	}
 
-	res := response.RegisterResponse{ID: user.ID, Email: user.Email.String, Fullname: user.Fullname, Username: user.Username, Gender: user.Gender, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
+	res := response.RegisterRes(user)
 	response.SuccessResponse(g, 201, res)
 }
 
