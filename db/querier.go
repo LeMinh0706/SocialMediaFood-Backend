@@ -20,10 +20,12 @@ type Querier interface {
 	DeleteReact(ctx context.Context, id int64) error
 	GetComment(ctx context.Context, postTopID sql.NullInt64) (Post, error)
 	GetCommentById(ctx context.Context, id int64) (Post, error)
+	GetCountPost(ctx context.Context, postID int64) (int64, error)
 	GetImagePost(ctx context.Context, postID int64) ([]PostImage, error)
 	GetListUser(ctx context.Context, arg GetListUserParams) ([]GetListUserRow, error)
 	GetPost(ctx context.Context, id int64) (Post, error)
 	GetReact(ctx context.Context, arg GetReactParams) (ReactPost, error)
+	GetReactPost(ctx context.Context, postID int64) ([]int64, error)
 	GetUser(ctx context.Context, username string) (User, error)
 	GetUserById(ctx context.Context, id int64) (GetUserByIdRow, error)
 	ListComment(ctx context.Context, arg ListCommentParams) ([]Post, error)

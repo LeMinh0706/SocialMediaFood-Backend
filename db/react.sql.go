@@ -40,6 +40,18 @@ func (q *Queries) DeleteReact(ctx context.Context, id int64) error {
 	return err
 }
 
+const getCountPost = `-- name: GetCountPost :one
+SELECT COUNT(user_id) FROM react_post
+WHERE post_id = $1
+`
+
+func (q *Queries) GetCountPost(ctx context.Context, postID int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getCountPost, postID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const getReact = `-- name: GetReact :one
 SELECT id, post_id, user_id FROM react_post
 WHERE post_id = $1 AND user_id = $2
@@ -55,4 +67,32 @@ func (q *Queries) GetReact(ctx context.Context, arg GetReactParams) (ReactPost, 
 	var i ReactPost
 	err := row.Scan(&i.ID, &i.PostID, &i.UserID)
 	return i, err
+}
+
+const getReactPost = `-- name: GetReactPost :many
+SELECT user_id FROM react_post
+WHERE post_id = $1
+`
+
+func (q *Queries) GetReactPost(ctx context.Context, postID int64) ([]int64, error) {
+	rows, err := q.db.QueryContext(ctx, getReactPost, postID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []int64{}
+	for rows.Next() {
+		var user_id int64
+		if err := rows.Scan(&user_id); err != nil {
+			return nil, err
+		}
+		items = append(items, user_id)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

@@ -13,3 +13,11 @@ WHERE id = $1;
 -- name: GetReact :one
 SELECT * FROM react_post
 WHERE post_id = $1 AND user_id = $2;
+
+-- name: GetReactPost :many
+SELECT user_id FROM react_post
+WHERE post_id = $1;
+
+-- name: GetCountPost :one
+SELECT COUNT(user_id) FROM react_post
+WHERE post_id = $1;

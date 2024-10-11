@@ -5,6 +5,7 @@ import (
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/repo"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 )
 
 type ReactPostService struct {
@@ -36,6 +37,26 @@ func (service *ReactPostService) ReactPost(ctx context.Context, arg db.CreateRea
 		return res, err
 	}
 	res = react
+	return res, nil
+}
+
+func (service *ReactPostService) ListUserReact(ctx context.Context, post_id int64) (response.ReactPostResponse, error) {
+	var res response.ReactPostResponse
+	var userRes response.UserReactResponse
+	_, err := service.postService.GetPost(ctx, post_id)
+	if err != nil {
+		return res, err
+	}
+	// var userRes response.UserReactResponse
+	users, err := service.reactRepo.GetPostReact(ctx, post_id)
+	if err != nil {
+		return res, err
+	}
+	res = response.ReactPostRes(post_id, int64(len(users)))
+	for _, user := range users {
+		userRes.UserID = user
+		res.Users = append(res.Users, userRes)
+	}
 	return res, nil
 }
 

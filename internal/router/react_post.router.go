@@ -15,5 +15,6 @@ func NewReactRouter(r *gin.Engine, router *gin.RouterGroup, token token.Maker, s
 		auth := reactGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
 		auth.POST("", rc.LikePost)
 		auth.DELETE("", rc.UnlikePost)
+		reactGroup.GET(":id", rc.ListReactPost)
 	}
 }

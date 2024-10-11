@@ -65,12 +65,12 @@ func TestDeleteReact(t *testing.T) {
 	post := createRandomPost(t)
 	react1 := createReact(t, user.ID, post.ID)
 
-	err := testQueries.DeleteReact(context.Background(), db.DeleteReactParams{
+	err := testQueries.DeleteReact(context.Background(), react1.ID)
+	require.NoError(t, err)
+	react2, err := testQueries.GetReact(context.Background(), db.GetReactParams{
 		PostID: post.ID,
 		UserID: user.ID,
 	})
-	require.NoError(t, err)
-	react2, err := testQueries.GetReact(context.Background(), react1.ID)
 	require.Error(t, err)
 	require.Empty(t, react2)
 	require.Equal(t, err, sql.ErrNoRows)

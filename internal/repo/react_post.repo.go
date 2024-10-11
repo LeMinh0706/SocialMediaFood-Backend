@@ -24,6 +24,17 @@ func (repo *ReactPostRepository) GetReact(ctx context.Context, arg db.GetReactPa
 	return repo.queries.GetReact(ctx, arg)
 }
 
+// /Get all react in post
+func (repo *ReactPostRepository) GetPostReact(ctx context.Context, post_id int64) ([]int64, error) {
+	return repo.queries.GetReactPost(ctx, post_id)
+}
+
+// func (repo *ReactPostRepository) CountReact(ctx context.Context, post_id int64) (int64, error) {
+// 	return repo.queries.GetCountPost()
+// }
+
+///
+
 func (repo *ReactPostRepository) DeleteReact(ctx context.Context, id int64) error {
 	return repo.queries.DeleteReact(ctx, id)
 }

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"database/sql"
+	"strconv"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
@@ -69,4 +70,19 @@ func (rc *ReactController) UnlikePost(g *gin.Context) {
 		}
 	}
 	response.SuccessResponse(g, 204, nil)
+}
+
+func (rc *ReactController) ListReactPost(g *gin.Context) {
+	param := g.Param("id")
+	id, err := strconv.ParseInt(param, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 400, 40000)
+		return
+	}
+	res, err := rc.service.ListUserReact(g, id)
+	if err != nil {
+		response.ErrorNonKnow(g, 404, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 200, res)
 }
