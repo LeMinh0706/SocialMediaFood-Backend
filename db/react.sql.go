@@ -32,26 +32,26 @@ func (q *Queries) CreateReact(ctx context.Context, arg CreateReactParams) (React
 
 const deleteReact = `-- name: DeleteReact :exec
 DELETE FROM react_post
-WHERE post_id = $1 AND user_id = $2
+WHERE id = $1
 `
 
-type DeleteReactParams struct {
-	PostID int64 `json:"post_id"`
-	UserID int64 `json:"user_id"`
-}
-
-func (q *Queries) DeleteReact(ctx context.Context, arg DeleteReactParams) error {
-	_, err := q.db.ExecContext(ctx, deleteReact, arg.PostID, arg.UserID)
+func (q *Queries) DeleteReact(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteReact, id)
 	return err
 }
 
 const getReact = `-- name: GetReact :one
 SELECT id, post_id, user_id FROM react_post
-WHERE id = $1
+WHERE post_id = $1 AND user_id = $2
 `
 
-func (q *Queries) GetReact(ctx context.Context, id int64) (ReactPost, error) {
-	row := q.db.QueryRowContext(ctx, getReact, id)
+type GetReactParams struct {
+	PostID int64 `json:"post_id"`
+	UserID int64 `json:"user_id"`
+}
+
+func (q *Queries) GetReact(ctx context.Context, arg GetReactParams) (ReactPost, error) {
+	row := q.db.QueryRowContext(ctx, getReact, arg.PostID, arg.UserID)
 	var i ReactPost
 	err := row.Scan(&i.ID, &i.PostID, &i.UserID)
 	return i, err

@@ -15,6 +15,7 @@ func NewRouter(s *Server) {
 		router.NewUserRouter(s.Router, v1, s.TokenMaker, s.UserService, s.Config)
 		router.NewPostRouter(s.Router, v1, s.TokenMaker, s.PostService)
 		router.NewCommentRouter(s.Router, v1, s.TokenMaker, s.CommentService)
+		router.NewReactRouter(s.Router, v1, s.TokenMaker, s.ReactService)
 	}
 
 	s.Router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

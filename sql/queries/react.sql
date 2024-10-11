@@ -8,8 +8,8 @@ INSERT INTO react_post(
 
 -- name: DeleteReact :exec
 DELETE FROM react_post
-WHERE post_id = $1 AND user_id = $2;
+WHERE id = $1;
 
 -- name: GetReact :one
 SELECT * FROM react_post
-WHERE id = $1;
+WHERE post_id = $1 AND user_id = $2;

@@ -46,6 +46,6 @@ func (repo *PostRepository) GetPost(ctx context.Context, id int64) (db.Post, err
 func (repo *PostRepository) GetListPost(ctx context.Context, page, pageSize int32) ([]db.Post, error) {
 	return repo.queries.ListPost(ctx, db.ListPostParams{
 		Limit:  pageSize,
-		Offset: page*pageSize - (pageSize - 1),
+		Offset: (page - 1) * pageSize,
 	})
 }

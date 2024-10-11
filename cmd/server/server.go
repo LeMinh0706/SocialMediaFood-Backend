@@ -16,6 +16,7 @@ type Server struct {
 	UserService    *service.UserService
 	PostService    *service.PostService
 	CommentService *service.CommentService
+	ReactService   *service.ReactPostService
 }
 
 func NewServer(config util.Config) (*Server, error) {

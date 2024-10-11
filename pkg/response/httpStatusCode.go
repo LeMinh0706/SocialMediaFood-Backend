@@ -16,6 +16,8 @@ const (
 	ErrLogin              = 40400
 	ErrNotFoundUser       = 40401
 	ErrFindPost           = 40402
+	ErrUnlike             = 40403
+	ErrLike               = 40404
 	ErrFileTooLarge       = 41300
 )
 
@@ -35,6 +37,8 @@ var msg = map[int]string{
 	ErrLogin:              "Wrong username or password",
 	ErrNotFoundUser:       "User not found",
 	ErrFindPost:           "Can not found post or post was deleted",
+	ErrUnlike:             "You didn't like this post yet",
+	ErrLike:               "You have liked post yet",
 	ErrFileTooLarge:       "File too large, only allowed 6MB",
 }
 
