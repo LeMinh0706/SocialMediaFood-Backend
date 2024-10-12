@@ -9,7 +9,6 @@ type CommentRequest struct {
 }
 
 type UpdateCommentRequest struct {
-	ID          int64  `json:"id" binding:"required"`
 	Description string `json:"description" binding:"required"`
 }
 

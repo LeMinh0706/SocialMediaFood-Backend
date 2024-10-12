@@ -23,6 +23,17 @@ func NewCommentController(tokenMaker token.Maker, commentService *service.Commen
 	}
 }
 
+// User godoc
+// @Summary      Create comment
+// @Description  Create comment in post
+// @Tags         comment
+// @Accept       json
+// @Produce      json
+// @Security BearerAuth
+// @Param        request body response.CommentRequest true "request"
+// @Success      201  {object}  response.CommentResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /comment [post]
 func (cc *CommentController) CreateComment(g *gin.Context) {
 	var req response.CommentRequest
 
@@ -51,6 +62,18 @@ func (cc *CommentController) CreateComment(g *gin.Context) {
 	response.SuccessResponse(g, 201, res)
 }
 
+// Comment godoc
+// @Summary      Get list comment
+// @Description  Get list comment with page and page size (Limit-Offset)
+// @Tags         comment
+// @Accept       json
+// @Produce      json
+// @Param        post_id query int true "Post Id"
+// @Param        page query int true "Page"
+// @Param        page_size query int true "Page size"
+// @Success      200  {object}  []response.CommentResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /comment [get]
 func (cc *CommentController) ListComment(g *gin.Context) {
 	postIdStr := g.Query("post_id")
 	pageStr := g.Query("page")
@@ -83,6 +106,18 @@ func (cc *CommentController) ListComment(g *gin.Context) {
 	response.SuccessResponse(g, 200, comments)
 }
 
+// Comment godoc
+// @Summary      Update comment
+// @Description  Update comment
+// @Tags         comment
+// @Accept       json
+// @Produce      json
+// @Security BearerAuth
+// @Param        id path int true "Post Id"
+// @Param		 request body response.UpdateCommentRequest true "request"
+// @Success      200  {object}  response.CommentResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /comment/{id} [put]
 func (cc *CommentController) UpdateComment(g *gin.Context) {
 	var req response.UpdateCommentRequest
 	authPayload := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
@@ -95,14 +130,12 @@ func (cc *CommentController) UpdateComment(g *gin.Context) {
 		return
 	}
 
-	req.ID = id
-
 	if err := g.ShouldBindJSON(&req); err != nil {
 		response.ErrorResponse(g, 400, 40000)
 		return
 	}
 
-	comment, err := cc.commentService.UpdateComment(g, req.ID, authPayload.UserId, req.Description)
+	comment, err := cc.commentService.UpdateComment(g, id, authPayload.UserId, req.Description)
 	if err != nil {
 
 		if err == sql.ErrNoRows {
@@ -119,6 +152,17 @@ func (cc *CommentController) UpdateComment(g *gin.Context) {
 	response.SuccessResponse(g, 201, comment)
 }
 
+// Comment godoc
+// @Summary      Delete comment
+// @Description  Delete comment with id
+// @Tags         comment
+// @Accept       json
+// @Produce      json
+// @Security BearerAuth
+// @Param        id path int true "Post Id"
+// @Success      204  {object}  response.ResponseData
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /comment/{id} [delete]
 func (cc *CommentController) DeleteComment(g *gin.Context) {
 	param := g.Param("id")
 	authPayload := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)

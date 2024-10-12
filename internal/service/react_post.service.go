@@ -57,6 +57,9 @@ func (service *ReactPostService) ListUserReact(ctx context.Context, post_id int6
 		userRes.UserID = user
 		res.Users = append(res.Users, userRes)
 	}
+	if len(res.Users) == 0 {
+		return response.ReactPostResponse{PostID: res.PostID, Users: []response.UserReactResponse{}, Total: 0}, nil
+	}
 	return res, nil
 }
 

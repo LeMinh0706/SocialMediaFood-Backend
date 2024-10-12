@@ -38,8 +38,8 @@ type UserResponse struct {
 }
 
 type RequestLogin struct {
-	Username string `json:"username" binding:"required,alphanum"`
-	Password string `json:"password" binding:"required,min=6,max=18"`
+	Username string `json:"username" binding:"required,alphanum" example:"Naruto"`
+	Password string `json:"password" binding:"required,min=6,max=18" example:"kocanpass"`
 }
 
 type LoginResponse struct {
