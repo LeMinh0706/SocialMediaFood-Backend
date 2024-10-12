@@ -1,5 +1,27 @@
 basePath: /api/v1
 definitions:
+  db.GetUserByIdRow:
+    properties:
+      fullname:
+        type: string
+      id:
+        type: integer
+      role_id:
+        type: integer
+      url_avatar:
+        type: string
+      url_background_profile:
+        type: string
+    type: object
+  db.PostImage:
+    properties:
+      id:
+        type: integer
+      post_id:
+        type: integer
+      url_image:
+        type: string
+    type: object
   response.ErrSwaggerJson:
     properties:
       code:
@@ -14,6 +36,25 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/response.UserResponse'
+    type: object
+  response.PostResponse:
+    properties:
+      date_create_post:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      images:
+        items:
+          $ref: '#/definitions/db.PostImage'
+        type: array
+      post_type_id:
+        type: integer
+      user:
+        $ref: '#/definitions/db.GetUserByIdRow'
+      user_id:
+        type: integer
     type: object
   response.RegisterResponse:
     properties:
@@ -118,7 +159,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrSwaggerJson'
-      summary: Register user
+      summary: Login user
       tags:
       - accounts
   /accounts/me:
@@ -168,6 +209,70 @@ paths:
       summary: Register user
       tags:
       - accounts
+  /post:
+    get:
+      consumes:
+      - application/json
+      description: Get list post with page and page size (Limit-Offset)
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.PostResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Get list post
+      tags:
+      - Posts
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create post
+      parameters:
+      - description: Description
+        in: formData
+        name: description
+        type: string
+      - collectionFormat: csv
+        description: Images post
+        in: formData
+        items:
+          type: file
+        name: images
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PostResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Create post
+      tags:
+      - Posts
 securityDefinitions:
   BearerAuth:
     in: header

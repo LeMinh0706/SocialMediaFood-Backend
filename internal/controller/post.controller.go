@@ -25,6 +25,18 @@ func NewPostController(tokenMaker token.Maker, postService *service.PostService)
 	}
 }
 
+// Post godoc
+// @Summary      Create post
+// @Description  Create post
+// @Tags         Posts
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        description formData string false "Description"
+// @Param        images formData []file false "Images post"
+// @Security BearerAuth
+// @Success      200  {object}  response.PostResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /post [post]
 func (pc *PostController) CreatePost(g *gin.Context) {
 	// var req response.PostRequest
 
@@ -69,6 +81,17 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 	response.SuccessResponse(g, 201, post)
 }
 
+// Post godoc
+// @Summary      Get list post
+// @Description  Get list post with page and page size (Limit-Offset)
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Param        page query int true "Page"
+// @Param        page_size query int true "Page size"
+// @Success      200  {object}  []response.PostResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /post [get]
 func (pc *PostController) GetListPost(g *gin.Context) {
 	pageStr := g.Query("page")
 	pageSizeStr := g.Query("page_size")
