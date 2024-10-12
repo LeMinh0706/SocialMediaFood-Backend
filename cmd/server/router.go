@@ -1,8 +1,8 @@
 package server
 
 import (
-	"github.com/LeMinh0706/SocialMediaFood-Backend/docs"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/router"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/swag/docs"
 	swaggerfiles "github.com/swaggo/files" // swagger embed files
 	ginSwagger "github.com/swaggo/gin-swagger"
 )

@@ -1,4 +1,4 @@
-package middlewares
+package util
 
 import (
 	"path/filepath"

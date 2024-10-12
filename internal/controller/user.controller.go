@@ -27,6 +27,16 @@ func NewUserController(tokenMaker token.Maker, userSerive *service.UserService, 
 	}
 }
 
+// User godoc
+// @Summary      Register user
+// @Description  register to join socialfood
+// @Tags         accounts
+// @Accept       json
+// @Produce      json
+// @Param        request body response.RequestResponse true "request"
+// @Success      200  {object}  response.RegisterResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /accounts/register [post]
 func (uc *UserController) Register(g *gin.Context) {
 	var req response.RequestResponse
 	if err := g.ShouldBindJSON(&req); err != nil {

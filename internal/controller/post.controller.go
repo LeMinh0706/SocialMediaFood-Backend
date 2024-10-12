@@ -9,6 +9,7 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/service"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/gin-gonic/gin"
 )
 
@@ -48,7 +49,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 			return
 		}
 		filename := fmt.Sprintf("upload/post/%d_%s", time.Now().Unix(), file.Filename)
-		if !middlewares.FileUploadCheck(filename) {
+		if !util.FileUploadCheck(filename) {
 			response.ErrorResponse(g, 400, 40003)
 			return
 		}
