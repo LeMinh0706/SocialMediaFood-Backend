@@ -39,5 +39,6 @@ func NewServer(config util.Config) (*Server, error) {
 }
 
 func (server *Server) Start(address string) error {
+	// server.Router.Use(middlewares.AuthorizeMiddleware(server.TokenMaker))
 	return server.Router.Run(address)
 }

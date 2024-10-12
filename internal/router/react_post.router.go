@@ -9,10 +9,10 @@ import (
 )
 
 func NewReactRouter(r *gin.Engine, router *gin.RouterGroup, token token.Maker, service *service.ReactPostService) {
-	rc := controller.NewReactPostController(token, service)
 	reactGroup := r.Group(router.BasePath() + "/react")
+	auth := reactGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
+	rc := controller.NewReactPostController(token, service)
 	{
-		auth := reactGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
 		auth.POST("", rc.LikePost)
 		auth.DELETE("", rc.UnlikePost)
 		reactGroup.GET(":id", rc.ListReactPost)

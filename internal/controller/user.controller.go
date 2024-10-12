@@ -29,7 +29,7 @@ func NewUserController(tokenMaker token.Maker, userSerive *service.UserService, 
 
 // User godoc
 // @Summary      Register user
-// @Description  register to join socialfood
+// @Description  Join with us
 // @Tags         accounts
 // @Accept       json
 // @Produce      json
@@ -65,6 +65,16 @@ func (uc *UserController) Register(g *gin.Context) {
 	response.SuccessResponse(g, 201, res)
 }
 
+// User godoc
+// @Summary      Login user
+// @Description  Login to be more handsome
+// @Tags         accounts
+// @Accept       json
+// @Produce      json
+// @Param        request body response.RequestLogin true "request"
+// @Success      200  {object}  response.LoginResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /accounts/login [post]
 func (uc *UserController) Login(g *gin.Context) {
 	var req response.RequestLogin
 
@@ -99,6 +109,16 @@ func (uc *UserController) Login(g *gin.Context) {
 	response.SuccessResponse(g, 200, res)
 }
 
+// User godoc
+// @Summary      It's you
+// @Description  Login to be more handsome
+// @Tags         accounts
+// @Accept       json
+// @Produce      json
+// @Security BearerAuth
+// @Success      200  {object}  response.UserResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /accounts/me [get]
 func (uc *UserController) GetMe(g *gin.Context) {
 
 	authPayload := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)

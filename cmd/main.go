@@ -20,6 +20,11 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
+// @securityDefinitions.apiKey BearerAuth
+// @in header
+// @name Authorization
+// @schema bearer
+
 // @host localhost:8070
 // @BasePath /api/v1
 // @schema http

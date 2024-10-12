@@ -10,9 +10,9 @@ import (
 
 func NewPostRouter(r *gin.Engine, router *gin.RouterGroup, token token.Maker, postService *service.PostService) {
 	postGroup := r.Group(router.BasePath() + "/post")
+	auth := postGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
 	pc := controller.NewPostController(token, postService)
 	{
-		auth := postGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
 		auth.POST("", pc.CreatePost)
 		// postGroup.GET(":id", pc.GetPostById)
 		postGroup.GET("", pc.GetListPost)

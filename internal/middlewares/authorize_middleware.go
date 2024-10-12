@@ -24,6 +24,11 @@ func AuthorizeMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 			return
 		}
 
+		if !strings.HasPrefix(authorizationHeader, "Bearer") {
+			authorizationHeader = "Bearer " + authorizationHeader
+			ctx.Request.Header.Set(AuthorizationHeaderKey, authorizationHeader)
+		}
+
 		fields := strings.Fields(authorizationHeader)
 		if len(fields) < 2 {
 			response.ErrorResponse(ctx, 401, 40102)

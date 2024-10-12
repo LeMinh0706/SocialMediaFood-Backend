@@ -11,9 +11,9 @@ import (
 
 func NewUserRouter(r *gin.Engine, router *gin.RouterGroup, token token.Maker, userService *service.UserService, config util.Config) {
 	userGroup := r.Group(router.BasePath() + "/accounts")
+	auth := userGroup.Group("/").Use(middlewares.AuthorizeMiddleware(token))
 	uc := controller.NewUserController(token, userService, config)
 	{
-		auth := userGroup.Group("/").Use(middlewares.AuthorizeMiddleware(token))
 		auth.GET("me", uc.GetMe)
 		userGroup.GET(":id", uc.GetById)
 		userGroup.POST("register", uc.Register)

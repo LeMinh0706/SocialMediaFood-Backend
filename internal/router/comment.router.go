@@ -10,9 +10,9 @@ import (
 
 func NewCommentRouter(r *gin.Engine, router *gin.RouterGroup, token token.Maker, commentService *service.CommentService) {
 	commentGroup := r.Group(router.BasePath() + "/comment")
+	auth := commentGroup.Group("/").Use(middlewares.AuthorizeMiddleware(token))
 	cc := controller.NewCommentController(token, commentService)
 	{
-		auth := commentGroup.Group("/").Use(middlewares.AuthorizeMiddleware(token))
 		auth.POST("", cc.CreateComment)
 		auth.PUT(":id", cc.UpdateComment)
 		auth.DELETE(":id", cc.DeleteComment)

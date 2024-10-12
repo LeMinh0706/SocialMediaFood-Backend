@@ -8,6 +8,13 @@ definitions:
         type: string
       return: {}
     type: object
+  response.LoginResponse:
+    properties:
+      access_token:
+        type: string
+      user:
+        $ref: '#/definitions/response.UserResponse'
+    type: object
   response.RegisterResponse:
     properties:
       date_create_account:
@@ -24,6 +31,18 @@ definitions:
         type: integer
       username:
         type: string
+    type: object
+  response.RequestLogin:
+    properties:
+      password:
+        maxLength: 18
+        minLength: 6
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
     type: object
   response.RequestResponse:
     properties:
@@ -45,6 +64,23 @@ definitions:
     - password
     - username
     type: object
+  response.UserResponse:
+    properties:
+      date_create_account:
+        type: integer
+      fullname:
+        type: string
+      gender:
+        type: integer
+      id:
+        type: integer
+      role_id:
+        type: integer
+      url_avatar:
+        type: string
+      url_background:
+        type: string
+    type: object
 host: localhost:8070
 info:
   contact:
@@ -59,11 +95,58 @@ info:
   title: SocialFood Documentations
   version: "1.0"
 paths:
+  /accounts/login:
+    post:
+      consumes:
+      - application/json
+      description: Login to be more handsome
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/response.RequestLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.LoginResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Register user
+      tags:
+      - accounts
+  /accounts/me:
+    get:
+      consumes:
+      - application/json
+      description: Login to be more handsome
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: It's you
+      tags:
+      - accounts
   /accounts/register:
     post:
       consumes:
       - application/json
-      description: register to join socialfood
+      description: Join with us
       parameters:
       - description: request
         in: body
@@ -85,4 +168,9 @@ paths:
       summary: Register user
       tags:
       - accounts
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
