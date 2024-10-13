@@ -27,22 +27,18 @@ func (cs *CommentService) CreateComment(ctx context.Context, description string,
 	var res response.CommentResponse
 	user, err := cs.userSevice.GetUser(ctx, user_id)
 	if err != nil {
-		return response.CommentResponse{}, err
+		return res, err
 	}
 
-	post, err := cs.postService.GetPost(ctx, post_top_id)
+	_, err = cs.postService.GetPost(ctx, post_top_id)
 	if err != nil {
-		return response.CommentResponse{}, err
-	}
-
-	if post.PostTypeID == 2 {
-		return response.CommentResponse{}, fmt.Errorf("Can not create in comment")
+		return res, err
 	}
 
 	comment, err := cs.commentRepo.CreateComment(ctx, description, user_id, post_top_id)
 
 	if err != nil {
-		return response.CommentResponse{}, err
+		return res, err
 	}
 
 	res = response.CommentRes(comment, user)
