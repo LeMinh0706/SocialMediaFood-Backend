@@ -25,11 +25,11 @@ func NewPostService(repo *repo.PostRepository, userService *UserService) *PostSe
 func (p *PostService) CreatePost(ctx context.Context, description string, user_id int64, images []string) (response.PostResponse, error) {
 	var res response.PostResponse
 	if description == "" && len(images) == 0 {
-		return response.PostResponse{}, fmt.Errorf("Description or image can't empty")
+		return response.PostResponse{}, fmt.Errorf("description or image can't empty")
 	}
 
 	if len(images) > 4 {
-		return res, fmt.Errorf("Number of image can't more than 4")
+		return res, fmt.Errorf("number of image can't more than 4")
 	}
 
 	post, err := p.postRepo.CreatePost(ctx, description, user_id)

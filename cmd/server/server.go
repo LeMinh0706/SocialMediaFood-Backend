@@ -20,9 +20,9 @@ type Server struct {
 }
 
 func NewServer(config util.Config) (*Server, error) {
-	tokenMaker, err := token.NewPasetoMaker(config.SymmetricKey)
+	tokenMaker, err := token.NewJWTMaker(config.SecretKey)
 	if err != nil {
-		return nil, fmt.Errorf("Can not create token: %w", err)
+		return nil, fmt.Errorf("can not create token: %w", err)
 	}
 	server := &Server{
 		Config:     config,

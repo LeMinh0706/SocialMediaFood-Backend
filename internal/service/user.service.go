@@ -71,7 +71,7 @@ func (us *UserService) GetUser(ctx context.Context, id int64) (db.GetUserByIdRow
 	user, err := us.userRepo.GetUserById(ctx, id)
 
 	if err == sql.ErrNoRows {
-		return db.GetUserByIdRow{}, fmt.Errorf("User does not exist")
+		return db.GetUserByIdRow{}, fmt.Errorf("user does not exist")
 	}
 	return user, nil
 }

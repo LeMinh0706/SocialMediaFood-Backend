@@ -9,8 +9,8 @@ import (
 
 func NewRouter(s *Server) {
 
-	docs.SwaggerInfo.BasePath = "/api/v1"
-	v1 := s.Router.Group("/api/v1")
+	docs.SwaggerInfo.BasePath = "/api"
+	v1 := s.Router.Group("/api")
 	{
 		router.NewUserRouter(s.Router, v1, s.TokenMaker, s.UserService, s.Config)
 		router.NewPostRouter(s.Router, v1, s.TokenMaker, s.PostService)

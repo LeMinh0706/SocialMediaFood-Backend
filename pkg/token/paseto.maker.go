@@ -1,49 +1,40 @@
 package token
 
-import (
-	"fmt"
-	"time"
+// type PasetoMaker struct {
+// 	paseto       *paseto.V2
+// 	symmetricKey []byte
+// }
 
-	"golang.org/x/crypto/chacha20poly1305"
+// func NewPasetoMaker(symmetricKey string) (Maker, error) {
+// 	if len(symmetricKey) != chacha20poly1305.KeySize {
+// 		return nil, fmt.Errorf("Invalid key size")
+// 	}
+// 	maker := &PasetoMaker{
+// 		paseto:       paseto.NewV2(),
+// 		symmetricKey: []byte(symmetricKey),
+// 	}
+// 	return maker, nil
+// }
 
-	"github.com/o1egl/paseto"
-)
+// func (maker *PasetoMaker) CreateToken(user_id int64, role_id int32, username string, duration time.Duration) (string, error) {
+// 	payload, err := NewPayload(user_id, role_id, username, duration)
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	return maker.paseto.Encrypt(maker.symmetricKey, payload, nil)
+// }
 
-type PasetoMaker struct {
-	paseto       *paseto.V2
-	symmetricKey []byte
-}
+// // Is token valid?
+// func (maker *PasetoMaker) VerifyToken(token string) (*Payload, error) {
+// 	payload := &Payload{}
+// 	err := maker.paseto.Decrypt(token, maker.symmetricKey, payload, nil)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	err = payload.Valid()
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-func NewPasetoMaker(symmetricKey string) (Maker, error) {
-	if len(symmetricKey) != chacha20poly1305.KeySize {
-		return nil, fmt.Errorf("Invalid key size")
-	}
-	maker := &PasetoMaker{
-		paseto:       paseto.NewV2(),
-		symmetricKey: []byte(symmetricKey),
-	}
-	return maker, nil
-}
-
-func (maker *PasetoMaker) CreateToken(user_id int64, role_id int32, username string, duration time.Duration) (string, error) {
-	payload, err := NewPayload(user_id, role_id, username, duration)
-	if err != nil {
-		return "", err
-	}
-	return maker.paseto.Encrypt(maker.symmetricKey, payload, nil)
-}
-
-// Is token valid?
-func (maker *PasetoMaker) VerifyToken(token string) (*Payload, error) {
-	payload := &Payload{}
-	err := maker.paseto.Decrypt(token, maker.symmetricKey, payload, nil)
-	if err != nil {
-		return nil, err
-	}
-	err = payload.Valid()
-	if err != nil {
-		return nil, err
-	}
-
-	return payload, nil
-}
+// 	return payload, nil
+// }

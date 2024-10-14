@@ -75,14 +75,14 @@ func (cs *CommentService) ListComment(ctx context.Context, post_id, page, pageSi
 func (cs *CommentService) UpdateComment(ctx context.Context, id, user_id int64, description string) (response.CommentResponse, error) {
 	var res response.CommentResponse
 	if strings.TrimSpace(description) == "" {
-		return res, fmt.Errorf("Description can't empty")
+		return res, fmt.Errorf("description can't empty")
 	}
 	comment, err := cs.commentRepo.GetCommentById(ctx, id)
 	if err != nil {
 		return res, err
 	}
 	if comment.Description.String == description {
-		return res, fmt.Errorf("You are not update description")
+		return res, fmt.Errorf("you are not update description")
 	}
 	if user_id != comment.UserID {
 		return res, fmt.Errorf("Forbidden")
