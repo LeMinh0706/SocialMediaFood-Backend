@@ -24,6 +24,29 @@ type Account struct {
 	IsUpgrade            pgtype.Bool `json:"is_upgrade"`
 }
 
+type Post struct {
+	ID          int64              `json:"id"`
+	PostTypeID  int32              `json:"post_type_id"`
+	AccountID   int64              `json:"account_id"`
+	PostTopID   pgtype.Int8        `json:"post_top_id"`
+	Description pgtype.Text        `json:"description"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+	Location    interface{}        `json:"location"`
+	IsBanned    bool               `json:"is_banned"`
+	IsDeleted   bool               `json:"is_deleted"`
+}
+
+type PostImage struct {
+	ID       int64  `json:"id"`
+	UrlImage string `json:"url_image"`
+	PostID   int64  `json:"post_id"`
+}
+
+type PostType struct {
+	ID   int32  `json:"id"`
+	Name string `json:"name"`
+}
+
 type User struct {
 	ID           int64              `json:"id"`
 	Email        pgtype.Text        `json:"email"`

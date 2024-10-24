@@ -17,6 +17,7 @@ CREATE TABLE "accounts" (
 );
 
 CREATE INDEX ON "accounts" ("fullname");
+CREATE INDEX ON "accounts" ("user_id");
 ALTER TABLE "accounts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 -- +goose StatementEnd

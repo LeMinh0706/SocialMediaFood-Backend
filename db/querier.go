@@ -9,7 +9,10 @@ import (
 )
 
 type Querier interface {
+	AddImagePost(ctx context.Context, arg AddImagePostParams) (PostImage, error)
 	CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error)
+	CreateComment(ctx context.Context, arg CreateCommentParams) (Post, error)
+	CreatePost(ctx context.Context, arg CreatePostParams) (Post, error)
 	GetAccountById(ctx context.Context, id int64) (Account, error)
 	GetAccountByUserId(ctx context.Context, userID int64) ([]Account, error)
 	Login(ctx context.Context, username string) (LoginRow, error)

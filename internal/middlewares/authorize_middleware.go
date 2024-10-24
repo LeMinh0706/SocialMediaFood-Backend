@@ -14,7 +14,7 @@ const (
 )
 
 // Update middle with less code
-// Error is in Token
+// Error is in Token package
 // Use ErrNonKnow but knowing in advance :))
 func AuthorizeMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
