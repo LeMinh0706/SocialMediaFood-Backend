@@ -10,13 +10,10 @@ import (
 )
 
 type Server struct {
-	Config         util.Config
-	TokenMaker     token.Maker
-	Router         *gin.Engine
-	UserService    *service.UserService
-	PostService    *service.PostService
-	CommentService *service.CommentService
-	ReactService   *service.ReactPostService
+	Config      util.Config
+	TokenMaker  token.Maker
+	Router      *gin.Engine
+	UserService *service.UserService
 }
 
 func NewServer(config util.Config) (*Server, error) {

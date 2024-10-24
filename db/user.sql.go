@@ -7,202 +7,65 @@ package db
 
 import (
 	"context"
-	"database/sql"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const createUser = `-- name: CreateUser :one
+const login = `-- name: Login :one
+SELECT id, username, email, created_at FROM users
+WHERE username = $1
+`
+
+type LoginRow struct {
+	ID        int64              `json:"id"`
+	Username  string             `json:"username"`
+	Email     pgtype.Text        `json:"email"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+}
+
+func (q *Queries) Login(ctx context.Context, username string) (LoginRow, error) {
+	row := q.db.QueryRow(ctx, login, username)
+	var i LoginRow
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Email,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const register = `-- name: Register :one
 INSERT INTO users(
+    username, 
     email,
-    hash_pashword,
-    username,
-    fullname,
-    gender,
-    url_avatar,
-    url_background_profile,
-    role_id,
-    date_create_account
+    hash_pashword
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9
-) RETURNING id, email, hash_pashword, username, fullname, gender, country, language, url_avatar, url_background_profile, role_id, date_create_account
+    $1, $2, $3
+) RETURNING id, username, email, created_at
 `
 
-type CreateUserParams struct {
-	Email                sql.NullString `json:"email"`
-	HashPashword         string         `json:"hash_pashword"`
-	Username             string         `json:"username"`
-	Fullname             string         `json:"fullname"`
-	Gender               int32          `json:"gender"`
-	UrlAvatar            string         `json:"url_avatar"`
-	UrlBackgroundProfile string         `json:"url_background_profile"`
-	RoleID               int32          `json:"role_id"`
-	DateCreateAccount    int64          `json:"date_create_account"`
+type RegisterParams struct {
+	Username     string      `json:"username"`
+	Email        pgtype.Text `json:"email"`
+	HashPashword string      `json:"hash_pashword"`
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createUser,
-		arg.Email,
-		arg.HashPashword,
-		arg.Username,
-		arg.Fullname,
-		arg.Gender,
-		arg.UrlAvatar,
-		arg.UrlBackgroundProfile,
-		arg.RoleID,
-		arg.DateCreateAccount,
-	)
-	var i User
+type RegisterRow struct {
+	ID        int64              `json:"id"`
+	Username  string             `json:"username"`
+	Email     pgtype.Text        `json:"email"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+}
+
+func (q *Queries) Register(ctx context.Context, arg RegisterParams) (RegisterRow, error) {
+	row := q.db.QueryRow(ctx, register, arg.Username, arg.Email, arg.HashPashword)
+	var i RegisterRow
 	err := row.Scan(
 		&i.ID,
-		&i.Email,
-		&i.HashPashword,
 		&i.Username,
-		&i.Fullname,
-		&i.Gender,
-		&i.Country,
-		&i.Language,
-		&i.UrlAvatar,
-		&i.UrlBackgroundProfile,
-		&i.RoleID,
-		&i.DateCreateAccount,
-	)
-	return i, err
-}
-
-const getListUser = `-- name: GetListUser :many
-SELECT id, email, fullname, gender, role_id, date_create_account FROM users
-ORDER BY id DESC
-LIMIT $1 
-OFFSET $2
-`
-
-type GetListUserParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
-}
-
-type GetListUserRow struct {
-	ID                int64          `json:"id"`
-	Email             sql.NullString `json:"email"`
-	Fullname          string         `json:"fullname"`
-	Gender            int32          `json:"gender"`
-	RoleID            int32          `json:"role_id"`
-	DateCreateAccount int64          `json:"date_create_account"`
-}
-
-func (q *Queries) GetListUser(ctx context.Context, arg GetListUserParams) ([]GetListUserRow, error) {
-	rows, err := q.db.QueryContext(ctx, getListUser, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []GetListUserRow{}
-	for rows.Next() {
-		var i GetListUserRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.Email,
-			&i.Fullname,
-			&i.Gender,
-			&i.RoleID,
-			&i.DateCreateAccount,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getUser = `-- name: GetUser :one
-SELECT id, email, hash_pashword, username, fullname, gender, country, language, url_avatar, url_background_profile, role_id, date_create_account FROM users
-WHERE username LIKE $1 LIMIT 1
-`
-
-func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUser, username)
-	var i User
-	err := row.Scan(
-		&i.ID,
 		&i.Email,
-		&i.HashPashword,
-		&i.Username,
-		&i.Fullname,
-		&i.Gender,
-		&i.Country,
-		&i.Language,
-		&i.UrlAvatar,
-		&i.UrlBackgroundProfile,
-		&i.RoleID,
-		&i.DateCreateAccount,
-	)
-	return i, err
-}
-
-const getUserById = `-- name: GetUserById :one
-SELECT id, fullname, url_avatar, url_background_profile,role_id FROM users 
-WHERE id = $1 LIMIT 1
-`
-
-type GetUserByIdRow struct {
-	ID                   int64  `json:"id"`
-	Fullname             string `json:"fullname"`
-	UrlAvatar            string `json:"url_avatar"`
-	UrlBackgroundProfile string `json:"url_background_profile"`
-	RoleID               int32  `json:"role_id"`
-}
-
-func (q *Queries) GetUserById(ctx context.Context, id int64) (GetUserByIdRow, error) {
-	row := q.db.QueryRowContext(ctx, getUserById, id)
-	var i GetUserByIdRow
-	err := row.Scan(
-		&i.ID,
-		&i.Fullname,
-		&i.UrlAvatar,
-		&i.UrlBackgroundProfile,
-		&i.RoleID,
-	)
-	return i, err
-}
-
-const updateUser = `-- name: UpdateUser :one
-UPDATE users 
-SET fullname = $2,
-gender = $3
-WHERE id = $1
-RETURNING id, email, fullname, gender, role_id, date_create_account
-`
-
-type UpdateUserParams struct {
-	ID       int64  `json:"id"`
-	Fullname string `json:"fullname"`
-	Gender   int32  `json:"gender"`
-}
-
-type UpdateUserRow struct {
-	ID                int64          `json:"id"`
-	Email             sql.NullString `json:"email"`
-	Fullname          string         `json:"fullname"`
-	Gender            int32          `json:"gender"`
-	RoleID            int32          `json:"role_id"`
-	DateCreateAccount int64          `json:"date_create_account"`
-}
-
-func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (UpdateUserRow, error) {
-	row := q.db.QueryRowContext(ctx, updateUser, arg.ID, arg.Fullname, arg.Gender)
-	var i UpdateUserRow
-	err := row.Scan(
-		&i.ID,
-		&i.Email,
-		&i.Fullname,
-		&i.Gender,
-		&i.RoleID,
-		&i.DateCreateAccount,
+		&i.CreatedAt,
 	)
 	return i, err
 }

@@ -6,33 +6,13 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 type Querier interface {
-	CreateComment(ctx context.Context, arg CreateCommentParams) (Post, error)
-	CreateImagePost(ctx context.Context, arg CreateImagePostParams) (PostImage, error)
-	CreatePost(ctx context.Context, arg CreatePostParams) (Post, error)
-	CreateReact(ctx context.Context, arg CreateReactParams) (ReactPost, error)
-	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
-	DeleteComment(ctx context.Context, id int64) error
-	DeletePost(ctx context.Context, id int64) error
-	DeleteReact(ctx context.Context, id int64) error
-	GetComment(ctx context.Context, postTopID sql.NullInt64) (Post, error)
-	GetCommentById(ctx context.Context, id int64) (Post, error)
-	GetCountPost(ctx context.Context, postID int64) (int64, error)
-	GetImagePost(ctx context.Context, postID int64) ([]PostImage, error)
-	GetListUser(ctx context.Context, arg GetListUserParams) ([]GetListUserRow, error)
-	GetPost(ctx context.Context, id int64) (Post, error)
-	GetReact(ctx context.Context, arg GetReactParams) (ReactPost, error)
-	GetReactPost(ctx context.Context, postID int64) ([]int64, error)
-	GetUser(ctx context.Context, username string) (User, error)
-	GetUserById(ctx context.Context, id int64) (GetUserByIdRow, error)
-	ListComment(ctx context.Context, arg ListCommentParams) ([]Post, error)
-	ListPost(ctx context.Context, arg ListPostParams) ([]Post, error)
-	UpdateComment(ctx context.Context, arg UpdateCommentParams) (Post, error)
-	UpdatePost(ctx context.Context, arg UpdatePostParams) (Post, error)
-	UpdateUser(ctx context.Context, arg UpdateUserParams) (UpdateUserRow, error)
+	CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error)
+	GetAccountByUserId(ctx context.Context, userID int64) (Account, error)
+	Login(ctx context.Context, username string) (LoginRow, error)
+	Register(ctx context.Context, arg RegisterParams) (RegisterRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

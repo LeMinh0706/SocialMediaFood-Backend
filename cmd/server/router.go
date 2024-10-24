@@ -10,12 +10,9 @@ import (
 func NewRouter(s *Server) {
 
 	docs.SwaggerInfo.BasePath = "/api"
-	v1 := s.Router.Group("/api")
+	a := s.Router.Group("/api")
 	{
-		router.NewUserRouter(s.Router, v1, s.TokenMaker, s.UserService, s.Config)
-		router.NewPostRouter(s.Router, v1, s.TokenMaker, s.PostService)
-		router.NewCommentRouter(s.Router, v1, s.TokenMaker, s.CommentService)
-		router.NewReactRouter(s.Router, v1, s.TokenMaker, s.ReactService)
+		router.NewUserRouter(s.Router, a, s.UserService)
 	}
 
 	s.Router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

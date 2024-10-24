@@ -10,8 +10,5 @@ func (server *Server) InitService() error {
 		return err
 	}
 	server.UserService = factory.UserService
-	server.PostService = factory.PostService
-	server.CommentService = factory.CommentService
-	server.ReactService = factory.ReactService
 	return nil
 }
