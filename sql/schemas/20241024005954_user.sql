@@ -4,7 +4,7 @@ CREATE TABLE "users" (
   "id" bigserial PRIMARY KEY,
   "email" varchar UNIQUE,
   "username" varchar UNIQUE NOT NULL,
-  "hash_pashword" varchar NOT NULL,
+  "hash_password" varchar NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "is_deleted" bool NOT NULL DEFAULT false
 );

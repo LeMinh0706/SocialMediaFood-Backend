@@ -12,15 +12,16 @@ import (
 )
 
 const login = `-- name: Login :one
-SELECT id, username, email, created_at FROM users
+SELECT id, username, hash_password, email, created_at FROM users
 WHERE username = $1
 `
 
 type LoginRow struct {
-	ID        int64              `json:"id"`
-	Username  string             `json:"username"`
-	Email     pgtype.Text        `json:"email"`
-	CreatedAt pgtype.Timestamptz `json:"created_at"`
+	ID           int64              `json:"id"`
+	Username     string             `json:"username"`
+	HashPassword string             `json:"hash_password"`
+	Email        pgtype.Text        `json:"email"`
+	CreatedAt    pgtype.Timestamptz `json:"created_at"`
 }
 
 func (q *Queries) Login(ctx context.Context, username string) (LoginRow, error) {
@@ -29,6 +30,7 @@ func (q *Queries) Login(ctx context.Context, username string) (LoginRow, error) 
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
+		&i.HashPassword,
 		&i.Email,
 		&i.CreatedAt,
 	)
@@ -39,7 +41,7 @@ const register = `-- name: Register :one
 INSERT INTO users(
     username, 
     email,
-    hash_pashword
+    hash_password
 ) VALUES (
     $1, $2, $3
 ) RETURNING id, username, email, created_at
@@ -48,7 +50,7 @@ INSERT INTO users(
 type RegisterParams struct {
 	Username     string      `json:"username"`
 	Email        pgtype.Text `json:"email"`
-	HashPashword string      `json:"hash_pashword"`
+	HashPassword string      `json:"hash_password"`
 }
 
 type RegisterRow struct {
@@ -59,7 +61,7 @@ type RegisterRow struct {
 }
 
 func (q *Queries) Register(ctx context.Context, arg RegisterParams) (RegisterRow, error) {
-	row := q.db.QueryRow(ctx, register, arg.Username, arg.Email, arg.HashPashword)
+	row := q.db.QueryRow(ctx, register, arg.Username, arg.Email, arg.HashPassword)
 	var i RegisterRow
 	err := row.Scan(
 		&i.ID,

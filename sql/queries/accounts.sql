@@ -12,6 +12,11 @@ INSERT INTO accounts(
     $1, $2, $3, $4, $5, $6, $7, $8
 ) RETURNING * ;
 
--- name: GetAccountByUserId :one
+-- name: GetAccountByUserId :many
 SELECT * FROM accounts
 WHERE user_id = $1;
+
+-- name: GetAccountById :one
+SELECT * FROM accounts
+WHERE id = $1
+LIMIT 1;

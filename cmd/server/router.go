@@ -12,7 +12,8 @@ func NewRouter(s *Server) {
 	docs.SwaggerInfo.BasePath = "/api"
 	a := s.Router.Group("/api")
 	{
-		router.NewUserRouter(s.Router, a, s.UserService)
+		router.NewUserRouter(s.Router, a, s.UserService, s.TokenMaker, s.Config)
+		router.NewAccountRouter(s.Router, a, s.AccountService, s.TokenMaker)
 	}
 
 	s.Router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

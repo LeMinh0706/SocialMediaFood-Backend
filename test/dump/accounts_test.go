@@ -12,12 +12,12 @@ import (
 
 func createRandomUser(t *testing.T) db.RegisterRow {
 	password := "kocanpass"
-	hashed, err := util.HashPashword(password)
+	hashed, err := util.HashPassword(password)
 	require.NoError(t, err)
 	arg := db.RegisterParams{
 		Username:     util.RandomString(6),
 		Email:        pgtype.Text{String: util.RandomEmail(), Valid: true},
-		HashPashword: hashed,
+		HashPassword: hashed,
 	}
 	user, err := testQueries.Register(context.Background(), arg)
 	require.NotEmpty(t, user)
@@ -58,11 +58,17 @@ func TestRegister(t *testing.T) {
 
 func TestGetAccount(t *testing.T) {
 	user := createRandomUser(t)
-	acc := make([]db.Account, 0)
+	login, err := testQueries.Login(context.Background(), user.Username)
+	require.NotEmpty(t, login)
+	require.NoError(t, err)
+	require.Equal(t, user.Username, login.Username)
+	require.Equal(t, user.ID, login.ID)
+
 	for i := 0; i < 3; i++ {
-		create := createRandomAccount(t, user.ID, int32(i))
-		acc = append(acc, create)
+		createRandomAccount(t, user.ID, int32(i))
 	}
+	acc, err := testQueries.GetAccountByUserId(context.Background(), user.ID)
+	require.NoError(t, err)
 	require.NotEmpty(t, acc)
 	require.Len(t, acc, 3)
 }

@@ -10,5 +10,6 @@ func (server *Server) InitService() error {
 		return err
 	}
 	server.UserService = factory.UserService
+	server.AccountService = factory.AccountService
 	return nil
 }

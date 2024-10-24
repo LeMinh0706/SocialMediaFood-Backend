@@ -10,7 +10,8 @@ import (
 
 type Querier interface {
 	CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error)
-	GetAccountByUserId(ctx context.Context, userID int64) (Account, error)
+	GetAccountById(ctx context.Context, id int64) (Account, error)
+	GetAccountByUserId(ctx context.Context, userID int64) ([]Account, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (RegisterRow, error)
 }

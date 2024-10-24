@@ -7,7 +7,8 @@ import (
 )
 
 type Factory struct {
-	UserService *service.UserService
+	UserService    *service.UserService
+	AccountService *service.AccountService
 }
 
 // Đang sửa lại thành cấu trúc cũ thì thành như này
@@ -25,14 +26,24 @@ func NewFactory() (*Factory, error) {
 		return nil, err
 	}
 
+	accountRepo, err := repo.NewAccountRepo(queries)
+	if err != nil {
+		return nil, err
+	}
+
 	//Service
-	userService, err := service.NewUserService(userRepo)
+	accountService, err := service.NewAccountService(accountRepo)
+	if err != nil {
+		return nil, err
+	}
+	userService, err := service.NewUserService(userRepo, accountService)
 	if err != nil {
 		return nil, err
 	}
 
 	///return
 	return &Factory{
-		UserService: userService,
+		UserService:    userService,
+		AccountService: accountService,
 	}, nil
 }

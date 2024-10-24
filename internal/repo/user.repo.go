@@ -21,6 +21,10 @@ func (repo *UserRepo) Register(ctx context.Context, username, password string, e
 	return repo.queries.Register(ctx, db.RegisterParams{
 		Username:     username,
 		Email:        email,
-		HashPashword: password,
+		HashPassword: password,
 	})
+}
+
+func (repo *UserRepo) Login(ctx context.Context, username string) (db.LoginRow, error) {
+	return repo.queries.Login(ctx, username)
 }

@@ -28,7 +28,7 @@ type User struct {
 	ID           int64              `json:"id"`
 	Email        pgtype.Text        `json:"email"`
 	Username     string             `json:"username"`
-	HashPashword string             `json:"hash_pashword"`
+	HashPassword string             `json:"hash_password"`
 	CreatedAt    pgtype.Timestamptz `json:"created_at"`
 	IsDeleted    bool               `json:"is_deleted"`
 }
