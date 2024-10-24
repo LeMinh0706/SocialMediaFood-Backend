@@ -95,19 +95,37 @@ func (q *Queries) GetAccountById(ctx context.Context, id int64) (Account, error)
 }
 
 const getAccountByUserId = `-- name: GetAccountByUserId :many
-SELECT id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, address, is_deleted, type, location, is_upgrade FROM accounts
+SELECT id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, address, is_upgrade,
+ST_X(location::geometry) AS lng, 
+ST_Y(location::geometry) AS lat
+FROM accounts
 WHERE user_id = $1
 `
 
-func (q *Queries) GetAccountByUserId(ctx context.Context, userID int64) ([]Account, error) {
+type GetAccountByUserIdRow struct {
+	ID                   int64       `json:"id"`
+	UserID               int64       `json:"user_id"`
+	Fullname             string      `json:"fullname"`
+	UrlAvatar            string      `json:"url_avatar"`
+	UrlBackgroundProfile string      `json:"url_background_profile"`
+	Gender               pgtype.Int4 `json:"gender"`
+	Country              pgtype.Text `json:"country"`
+	Language             pgtype.Text `json:"language"`
+	Address              pgtype.Text `json:"address"`
+	IsUpgrade            pgtype.Bool `json:"is_upgrade"`
+	Lng                  interface{} `json:"lng"`
+	Lat                  interface{} `json:"lat"`
+}
+
+func (q *Queries) GetAccountByUserId(ctx context.Context, userID int64) ([]GetAccountByUserIdRow, error) {
 	rows, err := q.db.Query(ctx, getAccountByUserId, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Account{}
+	items := []GetAccountByUserIdRow{}
 	for rows.Next() {
-		var i Account
+		var i GetAccountByUserIdRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
@@ -118,10 +136,9 @@ func (q *Queries) GetAccountByUserId(ctx context.Context, userID int64) ([]Accou
 			&i.Country,
 			&i.Language,
 			&i.Address,
-			&i.IsDeleted,
-			&i.Type,
-			&i.Location,
 			&i.IsUpgrade,
+			&i.Lng,
+			&i.Lat,
 		); err != nil {
 			return nil, err
 		}

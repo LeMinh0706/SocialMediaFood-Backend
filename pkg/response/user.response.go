@@ -1,8 +1,9 @@
 package response
 
 import (
+	"time"
+
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type RegisterRequest struct {
@@ -13,17 +14,33 @@ type RegisterRequest struct {
 	Gender   int32  `json:"gender" binding:"min=0,max=1"`
 }
 
+type RegisterResponse struct {
+	ID        int64     `json:"id"`
+	Username  string    `json:"username" binding:"required"`
+	Email     string    `json:"email"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 type LoginRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
 type LoginResponse struct {
-	ID        int64              `json:"id"`
-	Username  string             `json:"username"`
-	Email     string             `json:"email"`
-	CreatedAt pgtype.Timestamptz `json:"created_at"`
-	Token     string             `json:"access_token"`
+	ID        int64     `json:"id"`
+	Username  string    `json:"username"`
+	Email     string    `json:"email"`
+	CreatedAt time.Time `json:"created_at"`
+	Token     string    `json:"access_token"`
+}
+
+func RegisterRes(user db.RegisterRow) RegisterResponse {
+	return RegisterResponse{
+		ID:        user.ID,
+		Username:  user.Username,
+		Email:     user.Email.String,
+		CreatedAt: user.CreatedAt.Time,
+	}
 }
 
 func LoginRes(user db.LoginRow, token string) LoginResponse {
@@ -31,7 +48,7 @@ func LoginRes(user db.LoginRow, token string) LoginResponse {
 		ID:        user.ID,
 		Username:  user.Username,
 		Email:     user.Email.String,
-		CreatedAt: user.CreatedAt,
+		CreatedAt: user.CreatedAt.Time,
 		Token:     token,
 	}
 }

@@ -20,6 +20,16 @@ func NewAccountController(service *service.AccountService, token token.Maker) (*
 	}, nil
 }
 
+// account godoc
+// @Summary      It's you
+// @Description  Login to be more handsome
+// @Tags         accounts
+// @Accept       json
+// @Produce      json
+// @Security BearerAuth
+// @Success      200  {object}  []response.AccountResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /accounts/me [get]
 func (ac *AccountController) GetMe(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 	me, err := ac.accountService.GetAccountUser(g, auth.UserId)

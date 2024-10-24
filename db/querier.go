@@ -14,7 +14,7 @@ type Querier interface {
 	CreateComment(ctx context.Context, arg CreateCommentParams) (Post, error)
 	CreatePost(ctx context.Context, arg CreatePostParams) (Post, error)
 	GetAccountById(ctx context.Context, id int64) (Account, error)
-	GetAccountByUserId(ctx context.Context, userID int64) ([]Account, error)
+	GetAccountByUserId(ctx context.Context, userID int64) ([]GetAccountByUserIdRow, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (RegisterRow, error)
 }

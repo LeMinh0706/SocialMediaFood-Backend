@@ -13,7 +13,10 @@ INSERT INTO accounts(
 ) RETURNING * ;
 
 -- name: GetAccountByUserId :many
-SELECT * FROM accounts
+SELECT id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, address, is_upgrade,
+ST_X(location::geometry) AS lng, 
+ST_Y(location::geometry) AS lat
+FROM accounts
 WHERE user_id = $1;
 
 -- name: GetAccountById :one
