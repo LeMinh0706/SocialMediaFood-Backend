@@ -13,6 +13,10 @@ type Config struct {
 	GrpcAddress         string        `mapstructure:"GRPC_ADDRESS"`
 	SecretKey           string        `mapstructure:"SECRET_KEY"`
 	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
+	MaxConns            int32         `mapstructure:"MAX_CONNS"`
+	MinConns            int32         `mapstructure:"MIN_CONNS"`
+	MaxConnIdleTime     time.Duration `mapstructure:"MAX_CONN_IDLE_TIME"`
+	MaxConnLifetime     time.Duration `mapstructure:"MAX_CONN_LIFE_TIME"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

@@ -5,7 +5,7 @@ import (
 )
 
 func (server *Server) InitService() error {
-	factory, err := factory.NewFactory()
+	factory, err := factory.NewFactory(server.DBConn)
 	if err != nil {
 		return err
 	}

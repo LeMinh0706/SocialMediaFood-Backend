@@ -6,7 +6,7 @@ INSERT INTO posts (
     location
 ) VALUES (
     $1, $2, $3, ST_SETSRID(ST_MakePoint($4, $5),4326)
-) RETURNING * ;
+) RETURNING id, post_type_id, account_id, description, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat, created_at;
 
 -- name: CreateComment :one
 INSERT INTO posts (

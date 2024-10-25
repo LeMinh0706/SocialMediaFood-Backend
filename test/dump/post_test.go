@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createPostNoPoint(t *testing.T) db.Post {
+func createPostNoPoint(t *testing.T) db.CreatePostRow {
 	user := createRandomUser(t)
 	account := createRandomAccount(t, user.ID, 3)
 	description := util.RandomDescription()
@@ -50,4 +50,21 @@ func TestCreatePostImage(t *testing.T) {
 
 		require.Equal(t, post.ID, img.PostID)
 	}
+}
+
+func TestCreatePostPosition(t *testing.T) {
+	user := createRandomUser(t)
+	account := createRandomAccount(t, user.ID, 3)
+	description := util.RandomDescription()
+	arg := db.CreatePostParams{
+		PostTypeID:    1,
+		AccountID:     account.ID,
+		Description:   pgtype.Text{String: description, Valid: true},
+		StMakepoint:   util.RandomX(),
+		StMakepoint_2: util.RandomY(),
+	}
+
+	post, err := testQueries.CreatePost(context.Background(), arg)
+	require.NotEmpty(t, post)
+	require.NoError(t, err)
 }

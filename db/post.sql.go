@@ -53,7 +53,7 @@ INSERT INTO posts (
     location
 ) VALUES (
     $1, $2, $3, ST_SETSRID(ST_MakePoint($4, $5),4326)
-) RETURNING id, post_type_id, account_id, post_top_id, description, created_at, location, is_banned, is_deleted
+) RETURNING id, post_type_id, account_id, description, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat, created_at
 `
 
 type CreatePostParams struct {
@@ -64,7 +64,17 @@ type CreatePostParams struct {
 	StMakepoint_2 interface{} `json:"st_makepoint_2"`
 }
 
-func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (Post, error) {
+type CreatePostRow struct {
+	ID          int64              `json:"id"`
+	PostTypeID  int32              `json:"post_type_id"`
+	AccountID   int64              `json:"account_id"`
+	Description pgtype.Text        `json:"description"`
+	Lng         interface{}        `json:"lng"`
+	Lat         interface{}        `json:"lat"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+}
+
+func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (CreatePostRow, error) {
 	row := q.db.QueryRow(ctx, createPost,
 		arg.PostTypeID,
 		arg.AccountID,
@@ -72,17 +82,15 @@ func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (Post, e
 		arg.StMakepoint,
 		arg.StMakepoint_2,
 	)
-	var i Post
+	var i CreatePostRow
 	err := row.Scan(
 		&i.ID,
 		&i.PostTypeID,
 		&i.AccountID,
-		&i.PostTopID,
 		&i.Description,
+		&i.Lng,
+		&i.Lat,
 		&i.CreatedAt,
-		&i.Location,
-		&i.IsBanned,
-		&i.IsDeleted,
 	)
 	return i, err
 }
