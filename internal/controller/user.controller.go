@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/service"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
@@ -78,4 +79,19 @@ func (uc *UserController) Login(g *gin.Context) {
 	}
 	res := response.LoginRes(user, token)
 	response.SuccessResponse(g, 200, res)
+}
+
+func (uc *UserController) RegisterTx(g *gin.Context) {
+	var req db.RegisterRequest
+	if err := g.ShouldBindJSON(&req); err != nil {
+		response.ErrorResponse(g, 400, 40000)
+		return
+	}
+	res, err := uc.userService.RegisterTx(g, req)
+	if err != nil {
+		response.ErrorNonKnow(g, 401, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 201, res)
+
 }

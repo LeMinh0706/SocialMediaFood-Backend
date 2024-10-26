@@ -60,3 +60,12 @@ func (us *UserService) Login(ctx context.Context, username, password string) (db
 	}
 	return user, nil
 }
+
+func (us *UserService) RegisterTx(ctx context.Context, req db.RegisterRequest) (db.RegisterRow, error) {
+	var res db.RegisterRow
+	user, err := us.userRepo.RegisterTx(ctx, req)
+	if err != nil {
+		return res, err
+	}
+	return user, nil
+}

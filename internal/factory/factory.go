@@ -14,9 +14,12 @@ type Factory struct {
 
 // Đang sửa lại thành cấu trúc cũ thì thành như này
 func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
+
+	store := db.NewStore(pq)
+
 	//Repo
 	queries := db.New(pq)
-	userRepo, err := repo.NewUserRepo(queries)
+	userRepo, err := repo.NewUserRepo(queries, store)
 	if err != nil {
 		return nil, err
 	}

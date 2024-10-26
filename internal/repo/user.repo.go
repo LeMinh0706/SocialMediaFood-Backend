@@ -9,11 +9,13 @@ import (
 
 type UserRepo struct {
 	queries *db.Queries
+	store   *db.Store
 }
 
-func NewUserRepo(queries *db.Queries) (*UserRepo, error) {
+func NewUserRepo(queries *db.Queries, store *db.Store) (*UserRepo, error) {
 	return &UserRepo{
 		queries: queries,
+		store:   store,
 	}, nil
 }
 
@@ -23,6 +25,10 @@ func (repo *UserRepo) Register(ctx context.Context, username, password string, e
 		Email:        email,
 		HashPassword: password,
 	})
+}
+
+func (repo *UserRepo) RegisterTx(ctx context.Context, arg db.RegisterRequest) (db.RegisterRow, error) {
+	return repo.store.CreateAccountTx(ctx, arg)
 }
 
 func (repo *UserRepo) Login(ctx context.Context, username string) (db.LoginRow, error) {
