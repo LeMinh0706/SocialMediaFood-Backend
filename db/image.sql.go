@@ -9,51 +9,23 @@ import (
 	"context"
 )
 
-const createImagePost = `-- name: CreateImagePost :one
-INSERT INTO post_image(
-    post_id,
-    url_image
+const addImagePost = `-- name: AddImagePost :one
+INSERT INTO post_image (
+    url_image,
+    post_id
 ) VALUES (
     $1, $2
 ) RETURNING id, url_image, post_id
 `
 
-type CreateImagePostParams struct {
-	PostID   int64  `json:"post_id"`
+type AddImagePostParams struct {
 	UrlImage string `json:"url_image"`
+	PostID   int64  `json:"post_id"`
 }
 
-func (q *Queries) CreateImagePost(ctx context.Context, arg CreateImagePostParams) (PostImage, error) {
-	row := q.db.QueryRowContext(ctx, createImagePost, arg.PostID, arg.UrlImage)
+func (q *Queries) AddImagePost(ctx context.Context, arg AddImagePostParams) (PostImage, error) {
+	row := q.db.QueryRow(ctx, addImagePost, arg.UrlImage, arg.PostID)
 	var i PostImage
 	err := row.Scan(&i.ID, &i.UrlImage, &i.PostID)
 	return i, err
-}
-
-const getImagePost = `-- name: GetImagePost :many
-SELECT id, url_image, post_id FROM post_image
-WHERE post_id = $1
-`
-
-func (q *Queries) GetImagePost(ctx context.Context, postID int64) ([]PostImage, error) {
-	rows, err := q.db.QueryContext(ctx, getImagePost, postID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []PostImage{}
-	for rows.Next() {
-		var i PostImage
-		if err := rows.Scan(&i.ID, &i.UrlImage, &i.PostID); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
 }

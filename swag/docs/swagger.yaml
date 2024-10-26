@@ -1,126 +1,10 @@
 basePath: /api/v1
 definitions:
-  db.CreateReactParams:
+  response.AccountResponse:
     properties:
-      post_id:
-        type: integer
-      user_id:
-        type: integer
-    type: object
-  db.GetReactParams:
-    properties:
-      post_id:
-        type: integer
-      user_id:
-        type: integer
-    type: object
-  db.GetUserByIdRow:
-    properties:
-      fullname:
+      address:
         type: string
-      id:
-        type: integer
-      role_id:
-        type: integer
-      url_avatar:
-        type: string
-      url_background_profile:
-        type: string
-    type: object
-  db.PostImage:
-    properties:
-      id:
-        type: integer
-      post_id:
-        type: integer
-      url_image:
-        type: string
-    type: object
-  db.ReactPost:
-    properties:
-      id:
-        type: integer
-      post_id:
-        type: integer
-      user_id:
-        type: integer
-    type: object
-  response.CommentRequest:
-    properties:
-      description:
-        type: string
-      post_top_id:
-        type: integer
-      user_id:
-        type: integer
-    required:
-    - description
-    - post_top_id
-    - user_id
-    type: object
-  response.CommentResponse:
-    properties:
-      date_create_post:
-        type: integer
-      description:
-        type: string
-      id:
-        type: integer
-      post_top_id:
-        type: integer
-      user:
-        $ref: '#/definitions/db.GetUserByIdRow'
-    type: object
-  response.ErrSwaggerJson:
-    properties:
-      code:
-        type: integer
-      error:
-        type: string
-      return: {}
-    type: object
-  response.LoginResponse:
-    properties:
-      access_token:
-        type: string
-      user:
-        $ref: '#/definitions/response.UserResponse'
-    type: object
-  response.PostResponse:
-    properties:
-      date_create_post:
-        type: integer
-      description:
-        type: string
-      id:
-        type: integer
-      images:
-        items:
-          $ref: '#/definitions/db.PostImage'
-        type: array
-      post_type_id:
-        type: integer
-      user:
-        $ref: '#/definitions/db.GetUserByIdRow'
-      user_id:
-        type: integer
-    type: object
-  response.ReactPostResponse:
-    properties:
-      Total:
-        type: integer
-      post_id:
-        type: integer
-      users:
-        items:
-          $ref: '#/definitions/response.UserReactResponse'
-        type: array
-    type: object
-  response.RegisterResponse:
-    properties:
-      date_create_account:
-        type: integer
-      email:
+      country:
         type: string
       fullname:
         type: string
@@ -128,26 +12,48 @@ definitions:
         type: integer
       id:
         type: integer
-      role_id:
+      is_upgrade:
+        type: boolean
+      language:
+        type: string
+      lat: {}
+      lng: {}
+      url_avatar:
+        type: string
+      url_background_profile:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  response.ErrSwaggerJson:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+  response.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  response.LoginResponse:
+    properties:
+      access_token:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
         type: integer
       username:
         type: string
     type: object
-  response.RequestLogin:
-    properties:
-      password:
-        example: kocanpass
-        maxLength: 18
-        minLength: 6
-        type: string
-      username:
-        example: Naruto
-        type: string
-    required:
-    - password
-    - username
-    type: object
-  response.RequestResponse:
+  response.RegisterRequest:
     properties:
       email:
         type: string
@@ -158,51 +64,26 @@ definitions:
         minimum: 0
         type: integer
       password:
-        maxLength: 18
-        minLength: 6
         type: string
       username:
         type: string
     required:
+    - fullname
     - password
     - username
     type: object
-  response.ResponseData:
+  response.RegisterResponse:
     properties:
-      code:
-        type: integer
-      data: {}
-      message:
+      created_at:
         type: string
-    type: object
-  response.UpdateCommentRequest:
-    properties:
-      description:
+      email:
         type: string
-    required:
-    - description
-    type: object
-  response.UserReactResponse:
-    properties:
-      user_id:
-        type: integer
-    type: object
-  response.UserResponse:
-    properties:
-      date_create_account:
-        type: integer
-      fullname:
-        type: string
-      gender:
-        type: integer
       id:
         type: integer
-      role_id:
-        type: integer
-      url_avatar:
+      username:
         type: string
-      url_background:
-        type: string
+    required:
+    - username
     type: object
 host: localhost:8070
 info:
@@ -218,7 +99,30 @@ info:
   title: SocialFood Documentations
   version: "1.0"
 paths:
-  /accounts/login:
+  /accounts/me:
+    get:
+      consumes:
+      - application/json
+      description: Login to be more handsome
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.AccountResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: It's you
+      tags:
+      - accounts
+  /users/login:
     post:
       consumes:
       - application/json
@@ -229,7 +133,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/response.RequestLogin'
+          $ref: '#/definitions/response.LoginRequest'
       produces:
       - application/json
       responses:
@@ -243,29 +147,8 @@ paths:
             $ref: '#/definitions/response.ErrSwaggerJson'
       summary: Login user
       tags:
-      - accounts
-  /accounts/me:
-    get:
-      consumes:
-      - application/json
-      description: Login to be more handsome
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.UserResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrSwaggerJson'
-      security:
-      - BearerAuth: []
-      summary: It's you
-      tags:
-      - accounts
-  /accounts/register:
+      - users
+  /users/register:
     post:
       consumes:
       - application/json
@@ -276,7 +159,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/response.RequestResponse'
+          $ref: '#/definitions/response.RegisterRequest'
       produces:
       - application/json
       responses:
@@ -290,275 +173,7 @@ paths:
             $ref: '#/definitions/response.ErrSwaggerJson'
       summary: Register user
       tags:
-      - accounts
-  /comment:
-    get:
-      consumes:
-      - application/json
-      description: Get list comment with page and page size (Limit-Offset)
-      parameters:
-      - description: Post Id
-        in: query
-        name: post_id
-        required: true
-        type: integer
-      - description: Page
-        in: query
-        name: page
-        required: true
-        type: integer
-      - description: Page size
-        in: query
-        name: page_size
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/response.CommentResponse'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrSwaggerJson'
-      summary: Get list comment
-      tags:
-      - comment
-    post:
-      consumes:
-      - application/json
-      description: Create comment in post
-      parameters:
-      - description: request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/response.CommentRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/response.CommentResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrSwaggerJson'
-      security:
-      - BearerAuth: []
-      summary: Create comment
-      tags:
-      - comment
-  /comment/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete comment with id
-      parameters:
-      - description: Post Id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrSwaggerJson'
-      security:
-      - BearerAuth: []
-      summary: Delete comment
-      tags:
-      - comment
-    put:
-      consumes:
-      - application/json
-      description: Update comment
-      parameters:
-      - description: Post Id
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/response.UpdateCommentRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.CommentResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrSwaggerJson'
-      security:
-      - BearerAuth: []
-      summary: Update comment
-      tags:
-      - comment
-  /post:
-    get:
-      consumes:
-      - application/json
-      description: Get list post with page and page size (Limit-Offset)
-      parameters:
-      - description: Page
-        in: query
-        name: page
-        required: true
-        type: integer
-      - description: Page size
-        in: query
-        name: page_size
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/response.PostResponse'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrSwaggerJson'
-      summary: Get list post
-      tags:
-      - Posts
-    post:
-      consumes:
-      - multipart/form-data
-      description: Create post
-      parameters:
-      - description: Description
-        in: formData
-        name: description
-        type: string
-      - collectionFormat: csv
-        description: Images post
-        in: formData
-        items:
-          type: file
-        name: images
-        type: array
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.PostResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrSwaggerJson'
-      security:
-      - BearerAuth: []
-      summary: Create post
-      tags:
-      - Posts
-  /react:
-    delete:
-      consumes:
-      - application/json
-      description: Delete react where user id and post id exist, also it's exist in
-        react model
-      parameters:
-      - description: request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/db.GetReactParams'
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrSwaggerJson'
-      security:
-      - BearerAuth: []
-      summary: Delete react
-      tags:
-      - react
-    post:
-      consumes:
-      - application/json
-      description: React post from user to post
-      parameters:
-      - description: request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/db.CreateReactParams'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/db.ReactPost'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrSwaggerJson'
-      security:
-      - BearerAuth: []
-      summary: React post
-      tags:
-      - react
-  /react/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Get list react with no limit offset
-      parameters:
-      - description: Post Id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ReactPostResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrSwaggerJson'
-      summary: Get list react
-      tags:
-      - react
+      - users
 securityDefinitions:
   BearerAuth:
     in: header

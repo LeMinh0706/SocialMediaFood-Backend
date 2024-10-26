@@ -1,36 +1,12 @@
--- name: CreateUser :one
+-- name: Register :one
 INSERT INTO users(
+    username, 
     email,
-    hash_pashword,
-    username,
-    fullname,
-    gender,
-    url_avatar,
-    url_background_profile,
-    role_id,
-    date_create_account
+    hash_password
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9
-) RETURNING *;
+    $1, $2, $3
+) RETURNING id, username, email, created_at;
 
--- name: GetUser :one
-SELECT * FROM users
-WHERE username LIKE $1 LIMIT 1;
-
--- name: GetUserById :one
-SELECT id, fullname, url_avatar, url_background_profile,role_id FROM users 
-WHERE id = $1 LIMIT 1;
-
--- name: GetListUser :many
-SELECT id, email, fullname, gender, role_id, date_create_account FROM users
-ORDER BY id DESC
-LIMIT $1 
-OFFSET $2;
-
--- name: UpdateUser :one
-UPDATE users 
-SET fullname = $2,
-gender = $3
-WHERE id = $1
-RETURNING id, email, fullname, gender, role_id, date_create_account;
-
+-- name: Login :one
+SELECT id, username, hash_password, email, created_at FROM users
+WHERE username = $1;

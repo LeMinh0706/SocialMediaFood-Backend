@@ -1,64 +1,54 @@
 package response
 
-import "github.com/LeMinh0706/SocialMediaFood-Backend/db"
+import (
+	"time"
 
-type RegisterResponse struct {
-	ID                int64  `json:"id"`
-	Email             string `json:"email"`
-	Username          string `json:"username"`
-	Fullname          string `json:"fullname"`
-	Gender            int32  `json:"gender"`
-	RoleID            int32  `json:"role_id"`
-	DateCreateAccount int64  `json:"date_create_account"`
-}
+	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
+)
 
-type RequestResponse struct {
-	Username string `json:"username" binding:"required,alphanum"`
-	Password string `json:"password" binding:"required,min=6,max=18"`
-	Fullname string `json:"fullname"`
+type RegisterRequest struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
 	Email    string `json:"email"`
+	Fullname string `json:"fullname" binding:"required"`
 	Gender   int32  `json:"gender" binding:"min=0,max=1"`
 }
 
-type UserForPost struct {
-	ID        int64  `json:"id"`
-	Fullname  string `json:"fullname"`
-	RoleID    int32  `json:"role_id"`
-	UrlAvatar string `json:"url_avatar"`
+type RegisterResponse struct {
+	ID        int64     `json:"id"`
+	Username  string    `json:"username" binding:"required"`
+	Email     string    `json:"email"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
-type UserResponse struct {
-	ID                int64  `json:"id"`
-	Fullname          string `json:"fullname"`
-	Gender            int32  `json:"gender"`
-	RoleID            int32  `json:"role_id"`
-	UrlAvatar         string `json:"url_avatar"`
-	UrlBackground     string `json:"url_background"`
-	DateCreateAccount int64  `json:"date_create_account"`
-}
-
-type RequestLogin struct {
-	Username string `json:"username" binding:"required,alphanum" example:"Naruto"`
-	Password string `json:"password" binding:"required,min=6,max=18" example:"kocanpass"`
+type LoginRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 type LoginResponse struct {
-	AccessToken string       `json:"access_token"`
-	User        UserResponse `json:"user"`
+	ID        int64     `json:"id"`
+	Username  string    `json:"username"`
+	Email     string    `json:"email"`
+	CreatedAt time.Time `json:"created_at"`
+	Token     string    `json:"access_token"`
 }
 
-func RegisterRes(user db.User) RegisterResponse {
+func RegisterRes(user db.RegisterRow) RegisterResponse {
 	return RegisterResponse{
-		ID:                user.ID,
-		Email:             user.Email.String,
-		Username:          user.Username,
-		Fullname:          user.Fullname,
-		Gender:            user.Gender,
-		RoleID:            user.RoleID,
-		DateCreateAccount: user.DateCreateAccount,
+		ID:        user.ID,
+		Username:  user.Username,
+		Email:     user.Email.String,
+		CreatedAt: user.CreatedAt.Time,
 	}
 }
 
-func UserRes(user db.User) UserResponse {
-	return UserResponse{ID: user.ID, Fullname: user.Fullname, Gender: user.Gender, UrlAvatar: user.UrlAvatar, UrlBackground: user.UrlBackgroundProfile, RoleID: user.RoleID, DateCreateAccount: user.DateCreateAccount}
+func LoginRes(user db.LoginRow, token string) LoginResponse {
+	return LoginResponse{
+		ID:        user.ID,
+		Username:  user.Username,
+		Email:     user.Email.String,
+		CreatedAt: user.CreatedAt.Time,
+		Token:     token,
+	}
 }

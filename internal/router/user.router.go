@@ -1,22 +1,24 @@
 package router
 
 import (
+	"log"
+
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/controller"
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/service"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/gin-gonic/gin"
 )
 
-func NewUserRouter(r *gin.Engine, router *gin.RouterGroup, token token.Maker, userService *service.UserService, config util.Config) {
-	userGroup := r.Group(router.BasePath() + "/accounts")
-	auth := userGroup.Group("/").Use(middlewares.AuthorizeMiddleware(token))
-	uc := controller.NewUserController(token, userService, config)
+func NewUserRouter(r *gin.Engine, router *gin.RouterGroup, service *service.UserService, token token.Maker, config util.Config) {
+	uc, err := controller.NewUserController(service, config, token)
+	if err != nil {
+		log.Fatal(err)
+	}
+	userGroup := r.Group(router.BasePath() + "/users")
 	{
-		auth.GET("me", uc.GetMe)
-		userGroup.GET(":id", uc.GetById)
-		userGroup.POST("register", uc.Register)
-		userGroup.POST("login", uc.Login)
+		userGroup.POST("/register", uc.Register)
+		userGroup.POST("/login", uc.Login)
+		userGroup.POST("/tx", uc.RegisterTx)
 	}
 }

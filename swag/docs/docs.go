@@ -24,46 +24,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/accounts/login": {
-            "post": {
-                "description": "Login to be more handsome",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "accounts"
-                ],
-                "summary": "Login user",
-                "parameters": [
-                    {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/response.RequestLogin"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.LoginResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            }
-        },
         "/accounts/me": {
             "get": {
                 "security": [
@@ -86,7 +46,10 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.UserResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.AccountResponse"
+                            }
                         }
                     },
                     "500": {
@@ -98,7 +61,47 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/register": {
+        "/users/login": {
+            "post": {
+                "description": "Login to be more handsome",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Login user",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/response.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.LoginResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/register": {
             "post": {
                 "description": "Join with us",
                 "consumes": [
@@ -108,7 +111,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "users"
                 ],
                 "summary": "Register user",
                 "parameters": [
@@ -118,7 +121,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/response.RequestResponse"
+                            "$ref": "#/definitions/response.RegisterRequest"
                         }
                     }
                 ],
@@ -137,609 +140,16 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/comment": {
-            "get": {
-                "description": "Get list comment with page and page size (Limit-Offset)",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "comment"
-                ],
-                "summary": "Get list comment",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Post Id",
-                        "name": "post_id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Page size",
-                        "name": "page_size",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/response.CommentResponse"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Create comment in post",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "comment"
-                ],
-                "summary": "Create comment",
-                "parameters": [
-                    {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/response.CommentRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/response.CommentResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            }
-        },
-        "/comment/{id}": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Update comment",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "comment"
-                ],
-                "summary": "Update comment",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Post Id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/response.UpdateCommentRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.CommentResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Delete comment with id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "comment"
-                ],
-                "summary": "Delete comment",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Post Id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            }
-        },
-        "/post": {
-            "get": {
-                "description": "Get list post with page and page size (Limit-Offset)",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Posts"
-                ],
-                "summary": "Get list post",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Page size",
-                        "name": "page_size",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/response.PostResponse"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Create post",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Posts"
-                ],
-                "summary": "Create post",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Description",
-                        "name": "description",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "array",
-                        "items": {
-                            "type": "file"
-                        },
-                        "collectionFormat": "csv",
-                        "description": "Images post",
-                        "name": "images",
-                        "in": "formData"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.PostResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            }
-        },
-        "/react": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "React post from user to post",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "react"
-                ],
-                "summary": "React post",
-                "parameters": [
-                    {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/db.CreateReactParams"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/db.ReactPost"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Delete react where user id and post id exist, also it's exist in react model",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "react"
-                ],
-                "summary": "Delete react",
-                "parameters": [
-                    {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/db.GetReactParams"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            }
-        },
-        "/react/{id}": {
-            "get": {
-                "description": "Get list react with no limit offset",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "react"
-                ],
-                "summary": "Get list react",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Post Id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ReactPostResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
-        "db.CreateReactParams": {
+        "response.AccountResponse": {
             "type": "object",
             "properties": {
-                "post_id": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "db.GetReactParams": {
-            "type": "object",
-            "properties": {
-                "post_id": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "db.GetUserByIdRow": {
-            "type": "object",
-            "properties": {
-                "fullname": {
+                "address": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
-                },
-                "role_id": {
-                    "type": "integer"
-                },
-                "url_avatar": {
-                    "type": "string"
-                },
-                "url_background_profile": {
-                    "type": "string"
-                }
-            }
-        },
-        "db.PostImage": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "post_id": {
-                    "type": "integer"
-                },
-                "url_image": {
-                    "type": "string"
-                }
-            }
-        },
-        "db.ReactPost": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "post_id": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "response.CommentRequest": {
-            "type": "object",
-            "required": [
-                "description",
-                "post_top_id",
-                "user_id"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "post_top_id": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "response.CommentResponse": {
-            "type": "object",
-            "properties": {
-                "date_create_post": {
-                    "type": "integer"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "post_top_id": {
-                    "type": "integer"
-                },
-                "user": {
-                    "$ref": "#/definitions/db.GetUserByIdRow"
-                }
-            }
-        },
-        "response.ErrSwaggerJson": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "error": {
-                    "type": "string"
-                },
-                "return": {}
-            }
-        },
-        "response.LoginResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/response.UserResponse"
-                }
-            }
-        },
-        "response.PostResponse": {
-            "type": "object",
-            "properties": {
-                "date_create_post": {
-                    "type": "integer"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "images": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/db.PostImage"
-                    }
-                },
-                "post_type_id": {
-                    "type": "integer"
-                },
-                "user": {
-                    "$ref": "#/definitions/db.GetUserByIdRow"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "response.ReactPostResponse": {
-            "type": "object",
-            "properties": {
-                "Total": {
-                    "type": "integer"
-                },
-                "post_id": {
-                    "type": "integer"
-                },
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/response.UserReactResponse"
-                    }
-                }
-            }
-        },
-        "response.RegisterResponse": {
-            "type": "object",
-            "properties": {
-                "date_create_account": {
-                    "type": "integer"
-                },
-                "email": {
+                "country": {
                     "type": "string"
                 },
                 "fullname": {
@@ -751,7 +161,61 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "role_id": {
+                "is_upgrade": {
+                    "type": "boolean"
+                },
+                "language": {
+                    "type": "string"
+                },
+                "lat": {},
+                "lng": {},
+                "url_avatar": {
+                    "type": "string"
+                },
+                "url_background_profile": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.ErrSwaggerJson": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
                     "type": "integer"
                 },
                 "username": {
@@ -759,28 +223,10 @@ const docTemplate = `{
                 }
             }
         },
-        "response.RequestLogin": {
+        "response.RegisterRequest": {
             "type": "object",
             "required": [
-                "password",
-                "username"
-            ],
-            "properties": {
-                "password": {
-                    "type": "string",
-                    "maxLength": 18,
-                    "minLength": 6,
-                    "example": "kocanpass"
-                },
-                "username": {
-                    "type": "string",
-                    "example": "Naruto"
-                }
-            }
-        },
-        "response.RequestResponse": {
-            "type": "object",
-            "required": [
+                "fullname",
                 "password",
                 "username"
             ],
@@ -797,68 +243,29 @@ const docTemplate = `{
                     "minimum": 0
                 },
                 "password": {
-                    "type": "string",
-                    "maxLength": 18,
-                    "minLength": 6
+                    "type": "string"
                 },
                 "username": {
                     "type": "string"
                 }
             }
         },
-        "response.ResponseData": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "data": {},
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "response.UpdateCommentRequest": {
+        "response.RegisterResponse": {
             "type": "object",
             "required": [
-                "description"
+                "username"
             ],
             "properties": {
-                "description": {
-                    "type": "string"
-                }
-            }
-        },
-        "response.UserReactResponse": {
-            "type": "object",
-            "properties": {
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "response.UserResponse": {
-            "type": "object",
-            "properties": {
-                "date_create_account": {
-                    "type": "integer"
-                },
-                "fullname": {
+                "created_at": {
                     "type": "string"
                 },
-                "gender": {
-                    "type": "integer"
+                "email": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "role_id": {
-                    "type": "integer"
-                },
-                "url_avatar": {
-                    "type": "string"
-                },
-                "url_background": {
+                "username": {
                     "type": "string"
                 }
             }

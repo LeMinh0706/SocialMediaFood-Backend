@@ -1,27 +1,33 @@
 package db
 
 import (
-	"database/sql"
+	"context"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 var (
-	pgd        *sql.DB
 	background = "upload/background/background_1.jpg"
 )
 
 // Get connection để tương tác dưới db, ở repo khỏi phải viết lại nguyên hàm
-func GetDBConnection() (*sql.DB, error) {
-	if pgd == nil {
-		config, err := util.LoadConfig("../..")
-		if err != nil {
-			return nil, err
-		}
-		pgd, err = sql.Open(config.DBDriver, config.DBSource)
-		if err != nil {
-			return nil, err
-		}
+// pgx nhanh hơn, nhưng xử phải có Maxconn hợp lí để ko nghẽn cổ chai
+func GetDBConnection(config util.Config) (*pgxpool.Pool, error) {
+
+	pgConfig, err := pgxpool.ParseConfig(config.DBSource)
+	if err != nil {
+		return nil, err
+	}
+
+	pgConfig.MaxConns = config.MaxConns
+	pgConfig.MinConns = config.MinConns
+	pgConfig.MaxConnLifetime = config.MaxConnLifetime
+	pgConfig.MaxConnIdleTime = config.MaxConnIdleTime
+
+	pgd, err := pgxpool.NewWithConfig(context.Background(), pgConfig)
+	if err != nil {
+		return nil, err
 	}
 	return pgd, nil
 }

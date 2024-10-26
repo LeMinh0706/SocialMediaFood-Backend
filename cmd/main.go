@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/cmd/server"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	_ "github.com/lib/pq"
 )
@@ -34,7 +35,13 @@ func main() {
 		log.Fatal("Cannot load config", err)
 	}
 
-	server, err := server.NewServer(config)
+	pg, err := db.GetDBConnection(config)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer pg.Close()
+
+	server, err := server.NewServer(pg, config)
 	if err != nil {
 		log.Fatal("Cannot create server:", err)
 	}

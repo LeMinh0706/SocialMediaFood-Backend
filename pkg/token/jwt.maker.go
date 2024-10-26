@@ -12,8 +12,8 @@ type JWTMaker struct {
 }
 
 // CreateToken implements Maker.
-func (j JWTMaker) CreateToken(user_id int64, role_id int32, username string, duration time.Duration) (string, error) {
-	payload, err := NewPayload(user_id, role_id, username, duration)
+func (j JWTMaker) CreateToken(user_id int64, username string, duration time.Duration) (string, error) {
+	payload, err := NewPayload(user_id, username, duration)
 	if err != nil {
 		return "", err
 	}

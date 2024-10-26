@@ -2,121 +2,69 @@ package dump
 
 import (
 	"context"
-	"database/sql"
 	"testing"
-	"time"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/stretchr/testify/require"
 )
 
-func createRandomPost(t *testing.T) db.Post {
+func createPostNoPoint(t *testing.T) db.CreatePostRow {
 	user := createRandomUser(t)
-
+	account := createRandomAccount(t, user.ID, 3)
+	description := util.RandomDescription()
 	arg := db.CreatePostParams{
-		PostTypeID:     util.RandomType(),
-		UserID:         user.ID,
-		Description:    sql.NullString{String: util.RandomDescription(), Valid: true},
-		DateCreatePost: time.Now().Unix(),
+		PostTypeID:  1,
+		AccountID:   account.ID,
+		Description: pgtype.Text{String: description, Valid: true},
 	}
-	post, err := testQueries.CreatePost(context.Background(), arg)
 
+	post, err := testQueries.CreatePost(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, post)
 
 	require.Equal(t, arg.PostTypeID, post.PostTypeID)
+	require.Equal(t, arg.AccountID, post.AccountID)
 	require.Equal(t, arg.Description, post.Description)
-	require.Equal(t, user.ID, post.UserID)
-	require.Equal(t, arg.DateCreatePost, post.DateCreatePost)
-	require.NotZero(t, post.ID)
 
+	require.NotZero(t, post.ID)
+	require.NotZero(t, post.CreatedAt)
 	return post
 }
 
 func TestCreatePost(t *testing.T) {
-	createRandomPost(t)
+	createPostNoPoint(t)
 }
 
-func TestGetPost(t *testing.T) {
-	post1 := createRandomPost(t)
+func TestCreatePostImage(t *testing.T) {
+	post := createPostNoPoint(t)
 
-	post2, err := testQueries.GetPost(context.Background(), post1.ID)
-
-	require.NoError(t, err)
-	require.NotEmpty(t, post2)
-
-	require.Equal(t, post1.ID, post2.ID)
-	require.Equal(t, post1.PostTypeID, post2.PostTypeID)
-	require.Equal(t, post1.Description, post2.Description)
-	require.Equal(t, post1.PostTopID, post2.PostTopID)
-	require.Equal(t, post1.UserID, post2.UserID)
-	require.Equal(t, post1.DateCreatePost, post2.DateCreatePost)
-}
-
-func TestUpdatePost(t *testing.T) {
-	post1 := createRandomPost(t)
-
-	arg := db.UpdatePostParams{
-		ID:          post1.ID,
-		Description: sql.NullString{String: util.RandomDescription(), Valid: true},
-	}
-
-	post2, err := testQueries.UpdatePost(context.Background(), arg)
-	require.NoError(t, err)
-	require.NotEmpty(t, post2)
-
-	require.Equal(t, post1.ID, post2.ID)
-	require.Equal(t, post1.PostTypeID, post2.PostTypeID)
-	require.Equal(t, arg.Description, post2.Description)
-	require.Equal(t, post1.PostTopID, post2.PostTopID)
-	require.Equal(t, post1.UserID, post2.UserID)
-	require.Equal(t, post1.DateCreatePost, post2.DateCreatePost)
-}
-
-func TestDeletePost(t *testing.T) {
-	post1 := createRandomPost(t)
-	err := testQueries.DeletePost(context.Background(), post1.ID)
-	require.NoError(t, err)
-
-	post2, err := testQueries.GetPost(context.Background(), post1.ID)
-	require.Error(t, err)
-	require.EqualError(t, err, sql.ErrNoRows.Error())
-	require.Empty(t, post2)
-}
-
-func TestListPost(t *testing.T) {
-	for i := 0; i < 10; i++ {
-		createRandomPost(t)
-	}
-	arg := db.ListPostParams{
-		Limit:  5,
-		Offset: 5,
-	}
-	posts, err := testQueries.ListPost(context.Background(), arg)
-	require.NoError(t, err)
-	require.Len(t, posts, 5)
-
-	for _, post := range posts {
-		require.NotEmpty(t, post)
-	}
-}
-
-func TestCreatePostWithImage(t *testing.T) {
-
-	post := createRandomPost(t)
-
-	images := []string{util.RandomImage(), util.RandomImage()}
-	for i := 0; i < len(images); i++ {
-		image, err := testQueries.CreateImagePost(context.Background(), db.CreateImagePostParams{
+	for i := 0; i < 4; i++ {
+		img, err := testQueries.AddImagePost(context.Background(), db.AddImagePostParams{
 			PostID:   post.ID,
-			UrlImage: images[i],
+			UrlImage: util.RandomImage(),
 		})
 		require.NoError(t, err)
-		require.NotEmpty(t, image)
+		require.NotEmpty(t, img)
 
-		require.Equal(t, post.ID, image.PostID)
-		require.NotZero(t, image)
+		require.Equal(t, post.ID, img.PostID)
 	}
-	require.NotEmpty(t, images)
+}
+
+func TestCreatePostPosition(t *testing.T) {
+	user := createRandomUser(t)
+	account := createRandomAccount(t, user.ID, 3)
+	description := util.RandomDescription()
+	arg := db.CreatePostParams{
+		PostTypeID:    1,
+		AccountID:     account.ID,
+		Description:   pgtype.Text{String: description, Valid: true},
+		StMakepoint:   util.RandomX(),
+		StMakepoint_2: util.RandomY(),
+	}
+
+	post, err := testQueries.CreatePost(context.Background(), arg)
+	require.NotEmpty(t, post)
+	require.NoError(t, err)
 }

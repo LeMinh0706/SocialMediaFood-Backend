@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"strings"
 
@@ -10,68 +9,63 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/repo"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type UserService struct {
-	userRepo *repo.UserRepository
+	userRepo       *repo.UserRepo
+	accountService *AccountService
 }
 
-func NewUserService(repo *repo.UserRepository) *UserService {
+func NewUserService(repo *repo.UserRepo, accountService *AccountService) (*UserService, error) {
 	return &UserService{
-		userRepo: repo,
-	}
+		userRepo:       repo,
+		accountService: accountService,
+	}, nil
 }
 
-func (us *UserService) Register(ctx context.Context, username, password, fullname string, emailReq string, gender int32) (db.User, error) {
-	hashPassword, err := util.HashPashword(password)
+func (us *UserService) Register(ctx context.Context, req response.RegisterRequest) (response.RegisterResponse, error) {
+	var res response.RegisterResponse
+	hash, err := util.HashPassword(req.Password)
 	if err != nil {
-		return db.User{}, err
+		return res, err
 	}
-	if strings.TrimSpace(fullname) == "" {
-		fullname = username
-	}
-	var email sql.NullString
-	if strings.TrimSpace(emailReq) == "" {
-		email = sql.NullString{Valid: false}
+	var nullmail pgtype.Text
+	if strings.TrimSpace(req.Email) == "" {
+		nullmail = pgtype.Text{Valid: false}
 	} else {
-		email = sql.NullString{String: emailReq, Valid: true}
+		nullmail = pgtype.Text{String: req.Email, Valid: true}
 	}
-
-	user, err := us.userRepo.CreateUser(ctx, username, hashPassword, fullname, email, gender, 3)
+	user, err := us.userRepo.Register(ctx, req.Username, hash, nullmail)
 	if err != nil {
-		return db.User{}, err
+		return res, err
+	}
+	us.accountService.CreateAccount(ctx, user.ID, req.Fullname, req.Gender)
+	res = response.RegisterRes(user)
+	return res, nil
+}
+
+func (us *UserService) Login(ctx context.Context, username, password string) (db.LoginRow, error) {
+	var res db.LoginRow
+	user, err := us.userRepo.Login(ctx, username)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return res, fmt.Errorf("wrong username or password")
+		}
+		return res, err
+	}
+	if err = util.CheckPassword(password, user.HashPassword); err != nil {
+		return res, fmt.Errorf("wrong username or password %v", password)
 	}
 	return user, nil
 }
 
-func (us *UserService) GetMe(ctx context.Context, username string) (response.UserResponse, error) {
-	user, err := us.userRepo.GetUser(ctx, username)
+func (us *UserService) RegisterTx(ctx context.Context, req db.RegisterRequest) (db.RegisterRow, error) {
+	var res db.RegisterRow
+	user, err := us.userRepo.RegisterTx(ctx, req)
 	if err != nil {
-		return response.UserRes(user), err
-	}
-	res := response.UserRes(user)
-	return res, nil
-}
-
-func (us *UserService) Login(ctx context.Context, username, password string) (response.UserResponse, error) {
-	user, err := us.userRepo.GetUser(ctx, username)
-
-	if err != nil {
-		return response.UserRes(user), err
-	}
-
-	if err := util.CheckPassword(password, user.HashPashword); err != nil {
-		return response.UserRes(user), err
-	}
-	res := response.UserRes(user)
-	return res, nil
-}
-
-func (us *UserService) GetUser(ctx context.Context, id int64) (db.GetUserByIdRow, error) {
-	user, err := us.userRepo.GetUserById(ctx, id)
-
-	if err == sql.ErrNoRows {
-		return db.GetUserByIdRow{}, fmt.Errorf("user does not exist")
+		return res, err
 	}
 	return user, nil
 }

@@ -4,17 +4,20 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
-	"time"
 )
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz"
 
-func init() {
-	rand.Seed(time.Now().Unix())
-}
-
 func RandomInt(min, max int64) int64 {
 	return min + rand.Int63n(max-min+1)
+}
+
+func RandomX() float64 {
+	return 106.256229 + rand.Float64()*(107.583089-106.256229)
+}
+
+func RandomY() float64 {
+	return 10.354072 + rand.Float64()*(11.257274-10.354072)
 }
 
 func RandomString(n int) string {
@@ -29,12 +32,6 @@ func RandomString(n int) string {
 
 func RandomDescription() string {
 	return RandomString(int(RandomInt(2, 5))) + " " + RandomString(int(RandomInt(2, 5))) + " " + RandomString(int(RandomInt(2, 5))) + " " + RandomString(int(RandomInt(2, 5)))
-}
-
-func RandomType() int32 {
-	types := []int32{1, 3}
-	n := len(types)
-	return types[rand.Intn(n)]
 }
 
 func RandomEmail() string {

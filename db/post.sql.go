@@ -7,148 +7,90 @@ package db
 
 import (
 	"context"
-	"database/sql"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const createPost = `-- name: CreatePost :one
-INSERT INTO posts(
+const createComment = `-- name: CreateComment :one
+INSERT INTO posts (
     post_type_id,
-    user_id,
-    description,
-    date_create_post
+    account_id,
+    post_top_id,
+    description
 ) VALUES (
-    $1, $2, $3, $4
-) RETURNING id, post_type_id, user_id, post_top_id, description, date_create_post, is_banned, is_deleted
+    9, $1, $2, $3 
+) RETURNING id, post_type_id, account_id, post_top_id, description, created_at, location, is_banned, is_deleted
+`
+
+type CreateCommentParams struct {
+	AccountID   int64       `json:"account_id"`
+	PostTopID   pgtype.Int8 `json:"post_top_id"`
+	Description pgtype.Text `json:"description"`
+}
+
+func (q *Queries) CreateComment(ctx context.Context, arg CreateCommentParams) (Post, error) {
+	row := q.db.QueryRow(ctx, createComment, arg.AccountID, arg.PostTopID, arg.Description)
+	var i Post
+	err := row.Scan(
+		&i.ID,
+		&i.PostTypeID,
+		&i.AccountID,
+		&i.PostTopID,
+		&i.Description,
+		&i.CreatedAt,
+		&i.Location,
+		&i.IsBanned,
+		&i.IsDeleted,
+	)
+	return i, err
+}
+
+const createPost = `-- name: CreatePost :one
+INSERT INTO posts (
+    post_type_id,
+    account_id,
+    description,
+    location
+) VALUES (
+    $1, $2, $3, ST_SETSRID(ST_MakePoint($4, $5),4326)
+) RETURNING id, post_type_id, account_id, description, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat, created_at
 `
 
 type CreatePostParams struct {
-	PostTypeID     int32          `json:"post_type_id"`
-	UserID         int64          `json:"user_id"`
-	Description    sql.NullString `json:"description"`
-	DateCreatePost int64          `json:"date_create_post"`
+	PostTypeID    int32       `json:"post_type_id"`
+	AccountID     int64       `json:"account_id"`
+	Description   pgtype.Text `json:"description"`
+	StMakepoint   interface{} `json:"st_makepoint"`
+	StMakepoint_2 interface{} `json:"st_makepoint_2"`
 }
 
-func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (Post, error) {
-	row := q.db.QueryRowContext(ctx, createPost,
+type CreatePostRow struct {
+	ID          int64              `json:"id"`
+	PostTypeID  int32              `json:"post_type_id"`
+	AccountID   int64              `json:"account_id"`
+	Description pgtype.Text        `json:"description"`
+	Lng         interface{}        `json:"lng"`
+	Lat         interface{}        `json:"lat"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+}
+
+func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (CreatePostRow, error) {
+	row := q.db.QueryRow(ctx, createPost,
 		arg.PostTypeID,
-		arg.UserID,
+		arg.AccountID,
 		arg.Description,
-		arg.DateCreatePost,
+		arg.StMakepoint,
+		arg.StMakepoint_2,
 	)
-	var i Post
+	var i CreatePostRow
 	err := row.Scan(
 		&i.ID,
 		&i.PostTypeID,
-		&i.UserID,
-		&i.PostTopID,
+		&i.AccountID,
 		&i.Description,
-		&i.DateCreatePost,
-		&i.IsBanned,
-		&i.IsDeleted,
-	)
-	return i, err
-}
-
-const deletePost = `-- name: DeletePost :exec
-DELETE FROM posts
-WHERE id = $1
-`
-
-func (q *Queries) DeletePost(ctx context.Context, id int64) error {
-	_, err := q.db.ExecContext(ctx, deletePost, id)
-	return err
-}
-
-const getPost = `-- name: GetPost :one
-SELECT id, post_type_id, user_id, post_top_id, description, date_create_post, is_banned, is_deleted FROM posts
-WHERE id = $1 AND post_type_id != 2 AND (is_banned != true AND is_deleted != true) LIMIT 1
-`
-
-func (q *Queries) GetPost(ctx context.Context, id int64) (Post, error) {
-	row := q.db.QueryRowContext(ctx, getPost, id)
-	var i Post
-	err := row.Scan(
-		&i.ID,
-		&i.PostTypeID,
-		&i.UserID,
-		&i.PostTopID,
-		&i.Description,
-		&i.DateCreatePost,
-		&i.IsBanned,
-		&i.IsDeleted,
-	)
-	return i, err
-}
-
-const listPost = `-- name: ListPost :many
-SELECT id, post_type_id, user_id, post_top_id, description, date_create_post, is_banned, is_deleted FROM posts
-WHERE post_type_id != 2 AND is_banned = false AND is_deleted = false
-ORDER BY id DESC
-LIMIT $1
-OFFSET $2
-`
-
-type ListPostParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
-}
-
-func (q *Queries) ListPost(ctx context.Context, arg ListPostParams) ([]Post, error) {
-	rows, err := q.db.QueryContext(ctx, listPost, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []Post{}
-	for rows.Next() {
-		var i Post
-		if err := rows.Scan(
-			&i.ID,
-			&i.PostTypeID,
-			&i.UserID,
-			&i.PostTopID,
-			&i.Description,
-			&i.DateCreatePost,
-			&i.IsBanned,
-			&i.IsDeleted,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const updatePost = `-- name: UpdatePost :one
-UPDATE posts
-SET description = $2
-WHERE id = $1
-RETURNING id, post_type_id, user_id, post_top_id, description, date_create_post, is_banned, is_deleted
-`
-
-type UpdatePostParams struct {
-	ID          int64          `json:"id"`
-	Description sql.NullString `json:"description"`
-}
-
-func (q *Queries) UpdatePost(ctx context.Context, arg UpdatePostParams) (Post, error) {
-	row := q.db.QueryRowContext(ctx, updatePost, arg.ID, arg.Description)
-	var i Post
-	err := row.Scan(
-		&i.ID,
-		&i.PostTypeID,
-		&i.UserID,
-		&i.PostTopID,
-		&i.Description,
-		&i.DateCreatePost,
-		&i.IsBanned,
-		&i.IsDeleted,
+		&i.Lng,
+		&i.Lat,
+		&i.CreatedAt,
 	)
 	return i, err
 }

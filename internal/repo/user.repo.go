@@ -2,41 +2,35 @@ package repo
 
 import (
 	"context"
-	"database/sql"
-	"time"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
-	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type UserRepository struct {
+type UserRepo struct {
 	queries *db.Queries
+	store   *db.Store
 }
 
-func NewUserRepo(queries *db.Queries) (*UserRepository, error) {
-	return &UserRepository{
+func NewUserRepo(queries *db.Queries, store *db.Store) (*UserRepo, error) {
+	return &UserRepo{
 		queries: queries,
+		store:   store,
 	}, nil
 }
 
-func (repo *UserRepository) CreateUser(ctx context.Context, username, password, fullname string, email sql.NullString, gender, role_id int32) (db.User, error) {
-	return repo.queries.CreateUser(ctx, db.CreateUserParams{
-		Username:             username,
-		Fullname:             fullname,
-		HashPashword:         password,
-		Email:                email,
-		Gender:               gender,
-		UrlAvatar:            util.RandomAvatar(gender),
-		UrlBackgroundProfile: db.GetBackground(),
-		RoleID:               role_id,
-		DateCreateAccount:    time.Now().Unix(),
+func (repo *UserRepo) Register(ctx context.Context, username, password string, email pgtype.Text) (db.RegisterRow, error) {
+	return repo.queries.Register(ctx, db.RegisterParams{
+		Username:     username,
+		Email:        email,
+		HashPassword: password,
 	})
 }
 
-func (repo *UserRepository) GetUser(ctx context.Context, username string) (db.User, error) {
-	return repo.queries.GetUser(ctx, username)
+func (repo *UserRepo) RegisterTx(ctx context.Context, arg db.RegisterRequest) (db.RegisterRow, error) {
+	return repo.store.CreateAccountTx(ctx, arg)
 }
 
-func (repo *UserRepository) GetUserById(ctx context.Context, id int64) (db.GetUserByIdRow, error) {
-	return repo.queries.GetUserById(ctx, id)
+func (repo *UserRepo) Login(ctx context.Context, username string) (db.LoginRow, error) {
+	return repo.queries.Login(ctx, username)
 }
