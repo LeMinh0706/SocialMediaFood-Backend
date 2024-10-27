@@ -10,6 +10,7 @@ import (
 type Factory struct {
 	UserService    *service.UserService
 	AccountService *service.AccountService
+	PostService    *service.PostService
 }
 
 // Đang sửa lại thành cấu trúc cũ thì thành như này
@@ -29,6 +30,11 @@ func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
 		return nil, err
 	}
 
+	postRepo, err := repo.NewPostRepo(queries)
+	if err != nil {
+		return nil, err
+	}
+
 	//Service
 	accountService, err := service.NewAccountService(accountRepo)
 	if err != nil {
@@ -38,10 +44,15 @@ func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
 	if err != nil {
 		return nil, err
 	}
+	postService, err := service.NewPostRepo(postRepo, accountService)
+	if err != nil {
+		return nil, err
+	}
 
 	///return
 	return &Factory{
 		UserService:    userService,
 		AccountService: accountService,
+		PostService:    postService,
 	}, nil
 }

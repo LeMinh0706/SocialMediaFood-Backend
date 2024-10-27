@@ -9,6 +9,8 @@ const (
 	ErrBadRequestPageSize = 40002
 	ErrBadRequestMime     = 40003
 	ErrBadRequestPostId   = 40004
+	ErrImageLen           = 40005
+	ErrImageSize          = 40006
 	ErrUnauthorize        = 40101
 	ErrInvalid            = 40102
 	ErrYourSelf           = 40103
@@ -30,6 +32,7 @@ var msg = map[int]string{
 	ErrBadRequestPageSize: "Page size should be number",
 	ErrBadRequestMime:     "Can only use file .png, .jpg, .jpeg, .gif",
 	ErrBadRequestPostId:   "Id must be number, can't convert from this request",
+	ErrImageLen:           "Images shoud less than 4",
 	ErrUnauthorize:        "Unauthorize",
 	ErrInvalid:            "Invalid Token",
 	ErrYourSelf:           "Not your self, cant create/update/delete anything for another",

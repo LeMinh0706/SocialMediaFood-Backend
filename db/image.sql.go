@@ -29,3 +29,28 @@ func (q *Queries) AddImagePost(ctx context.Context, arg AddImagePostParams) (Pos
 	err := row.Scan(&i.ID, &i.UrlImage, &i.PostID)
 	return i, err
 }
+
+const getImagePost = `-- name: GetImagePost :many
+SELECT id, url_image, post_id FROM post_image 
+WHERE post_id = $1
+`
+
+func (q *Queries) GetImagePost(ctx context.Context, postID int64) ([]PostImage, error) {
+	rows, err := q.db.Query(ctx, getImagePost, postID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []PostImage{}
+	for rows.Next() {
+		var i PostImage
+		if err := rows.Scan(&i.ID, &i.UrlImage, &i.PostID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

@@ -52,16 +52,15 @@ INSERT INTO posts (
     description,
     location
 ) VALUES (
-    $1, $2, $3, ST_SETSRID(ST_MakePoint($4, $5),4326)
+    $1, $2, $3, ST_GeomFromText($4,4326)
 ) RETURNING id, post_type_id, account_id, description, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat, created_at
 `
 
 type CreatePostParams struct {
-	PostTypeID    int32       `json:"post_type_id"`
-	AccountID     int64       `json:"account_id"`
-	Description   pgtype.Text `json:"description"`
-	StMakepoint   interface{} `json:"st_makepoint"`
-	StMakepoint_2 interface{} `json:"st_makepoint_2"`
+	PostTypeID     int32       `json:"post_type_id"`
+	AccountID      int64       `json:"account_id"`
+	Description    pgtype.Text `json:"description"`
+	StGeomfromtext interface{} `json:"st_geomfromtext"`
 }
 
 type CreatePostRow struct {
@@ -79,8 +78,7 @@ func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (CreateP
 		arg.PostTypeID,
 		arg.AccountID,
 		arg.Description,
-		arg.StMakepoint,
-		arg.StMakepoint_2,
+		arg.StGeomfromtext,
 	)
 	var i CreatePostRow
 	err := row.Scan(

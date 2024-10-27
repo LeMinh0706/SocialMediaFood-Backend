@@ -5,15 +5,15 @@ import (
 	"strings"
 )
 
-var AllowedType = map[string]bool{
+var AllowType = map[string]bool{
 	".png":  true,
 	".jpg":  true,
 	".jpeg": true,
 	".gif":  true,
 }
 
-func FileUploadCheck(image string) bool {
+func FileExtCheck(image string) bool {
 	ext := strings.ToLower(filepath.Ext(image))
 
-	return AllowedType[ext]
+	return AllowType[ext]
 }

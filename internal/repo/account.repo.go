@@ -31,3 +31,7 @@ func (ar *AccountRepo) CreateAccount(ctx context.Context, user_id int64, fullnam
 func (ar *AccountRepo) GetAccountByUserId(ctx context.Context, user_id int64) ([]db.GetAccountByUserIdRow, error) {
 	return ar.queries.GetAccountByUserId(ctx, user_id)
 }
+
+func (ar *AccountRepo) GetAccountBydId(ctx context.Context, id int64) (db.Account, error) {
+	return ar.queries.GetAccountById(ctx, id)
+}

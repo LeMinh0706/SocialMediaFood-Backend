@@ -63,13 +63,22 @@ func TestGetAccount(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, user.Username, login.Username)
 	require.Equal(t, user.ID, login.ID)
-
-	for i := 3; i > 1; i-- {
-		createRandomAccount(t, user.ID, int32(i))
-	}
+	createRandomAccount(t, user.ID, 3)
+	createRandomAccount(t, user.ID, 2)
+	createRandomAccount(t, user.ID, 2)
 	createRandomAccount(t, user.ID, 2)
 	acc, err := testQueries.GetAccountByUserId(context.Background(), user.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, acc)
-	require.Len(t, acc, 3)
+	require.Len(t, acc, 4)
+}
+
+func TestGetOneAccount(t *testing.T) {
+	user := createRandomUser(t)
+	acc1 := createRandomAccount(t, user.ID, 3)
+	acc2, err := testQueries.GetAccountById(context.Background(), acc1.ID)
+	require.NotEmpty(t, acc2)
+	require.NoError(t, err)
+
+	require.Equal(t, user.ID, acc2.UserID)
 }

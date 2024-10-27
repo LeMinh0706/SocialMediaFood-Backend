@@ -2,6 +2,7 @@ package dump
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
@@ -33,11 +34,7 @@ func createPostNoPoint(t *testing.T) db.CreatePostRow {
 	return post
 }
 
-func TestCreatePost(t *testing.T) {
-	createPostNoPoint(t)
-}
-
-func TestCreatePostImage(t *testing.T) {
+func createPostImage(t *testing.T) db.CreatePostRow {
 	post := createPostNoPoint(t)
 
 	for i := 0; i < 4; i++ {
@@ -50,6 +47,25 @@ func TestCreatePostImage(t *testing.T) {
 
 		require.Equal(t, post.ID, img.PostID)
 	}
+
+	return post
+}
+
+func TestCreatePost(t *testing.T) {
+	createPostNoPoint(t)
+}
+
+func TestCreatePostImage(t *testing.T) {
+	createPostImage(t)
+}
+
+func TestGetImagePost(t *testing.T) {
+	post := createPostImage(t)
+
+	images, err := testQueries.GetImagePost(context.Background(), post.ID)
+	require.NoError(t, err)
+	require.NotEmpty(t, images)
+	require.Len(t, images, 4)
 }
 
 func TestCreatePostPosition(t *testing.T) {
@@ -57,11 +73,10 @@ func TestCreatePostPosition(t *testing.T) {
 	account := createRandomAccount(t, user.ID, 3)
 	description := util.RandomDescription()
 	arg := db.CreatePostParams{
-		PostTypeID:    1,
-		AccountID:     account.ID,
-		Description:   pgtype.Text{String: description, Valid: true},
-		StMakepoint:   util.RandomX(),
-		StMakepoint_2: util.RandomY(),
+		PostTypeID:     1,
+		AccountID:      account.ID,
+		Description:    pgtype.Text{String: description, Valid: true},
+		StGeomfromtext: fmt.Sprintf("POINT(%f %f)", util.RandomX(), util.RandomY()),
 	}
 
 	post, err := testQueries.CreatePost(context.Background(), arg)

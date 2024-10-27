@@ -38,3 +38,11 @@ func (as *AccountService) GetAccountUser(ctx context.Context, user_id int64) ([]
 	res := response.ListAccountResponse(list)
 	return res, nil
 }
+
+func (as *AccountService) GetAccountById(ctx context.Context, id int64) (int64, error) {
+	account, err := as.accountRepo.GetAccountBydId(ctx, id)
+	if err != nil {
+		return 0, err
+	}
+	return account.UserID, nil
+}

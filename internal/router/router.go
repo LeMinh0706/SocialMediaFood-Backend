@@ -25,6 +25,7 @@ func NewRouter(g *gin.Engine, config util.Config, token token.Maker, pgx *pgxpoo
 		Static(g)
 		NewUserRouter(g, a, fac.UserService, token, config)
 		NewAccountRouter(g, a, fac.AccountService, token)
+		NewPostRouter(g, a, fac.PostService, token)
 	}
 
 	g.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
