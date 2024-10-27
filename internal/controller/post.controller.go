@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"mime/multipart"
+	"path/filepath"
 	"strconv"
 	"time"
 
@@ -49,7 +50,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 		response.ErrorResponse(g, 400, 40005)
 		return
 	}
-	images, err := AddImageFile(g, files)
+	images, err := AddImageFileError(g, files)
 	if err != nil {
 		response.ErrorNonKnow(g, 400, err.Error())
 		return
@@ -67,7 +68,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 	response.SuccessResponse(g, 201, post)
 }
 
-func AddImageFile(g *gin.Context, files []*multipart.FileHeader) ([]string, error) {
+func AddImageFileError(g *gin.Context, files []*multipart.FileHeader) ([]string, error) {
 	const maxSize = 4 << 20
 	for _, file := range files {
 		if !util.FileExtCheck(file.Filename) {
@@ -76,11 +77,11 @@ func AddImageFile(g *gin.Context, files []*multipart.FileHeader) ([]string, erro
 	}
 
 	var images []string
-	for _, file := range files {
+	for i, file := range files {
 		if file.Size > maxSize {
 			return nil, fmt.Errorf("images size must less than 4 Mb")
 		}
-		filename := fmt.Sprintf("upload/post/%d_%s", time.Now().Unix(), file.Filename)
+		filename := fmt.Sprintf("upload/post/%d_%d%s", time.Now().Unix(), i, filepath.Ext(file.Filename))
 		if err := g.SaveUploadedFile(file, filename); err != nil {
 			return nil, err
 		}
