@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/models"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/repo"
-	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -24,8 +24,8 @@ func NewPostRepo(repo *repo.PostRepo, accountService *AccountService) (*PostServ
 	}, nil
 }
 
-func (ps *PostService) CreatePost(ctx context.Context, post_type int32, description string, user_id, account_id int64, x, y string, images []string) (response.PostResponse, error) {
-	var res response.PostResponse
+func (ps *PostService) CreatePost(ctx context.Context, post_type int32, description string, user_id, account_id int64, x, y string, images []string) (models.PostResponse, error) {
+	var res models.PostResponse
 	if strings.TrimSpace(description) == "" && len(images) == 0 {
 		return res, fmt.Errorf("description and image can't empty")
 	}
@@ -68,12 +68,12 @@ func (ps *PostService) CreatePost(ctx context.Context, post_type int32, descript
 		}
 		imgs = append(imgs, i)
 	}
-	res = response.PostRes(post, acc, imgs)
+	res = models.PostRes(post, acc, imgs)
 	return res, nil
 }
 
-func (ps *PostService) GetPost(ctx context.Context, id int64) (response.PostResponse, error) {
-	var res response.PostResponse
+func (ps *PostService) GetPost(ctx context.Context, id int64) (models.PostResponse, error) {
+	var res models.PostResponse
 
 	post, err := ps.postRepo.GetPost(ctx, id)
 	if err != nil {
@@ -87,31 +87,31 @@ func (ps *PostService) GetPost(ctx context.Context, id int64) (response.PostResp
 	if err != nil {
 		return res, err
 	}
-	res = response.PostRes(db.CreatePostRow(post), acc, img)
+	res = models.PostRes(db.CreatePostRow(post), acc, img)
 
 	return res, nil
 }
 
-func (ps *PostService) GetListPost(ctx context.Context, pageStr, pageSizeStr string) ([]response.PostResponse, error) {
-	var res []response.PostResponse
+func (ps *PostService) GetListPost(ctx context.Context, pageStr, pageSizeStr string) ([]models.PostResponse, error) {
+	var res []models.PostResponse
 	page, err := strconv.ParseInt(pageStr, 10, 64)
 	if err != nil {
-		return []response.PostResponse{}, fmt.Errorf("page number")
+		return []models.PostResponse{}, fmt.Errorf("page number")
 	}
 	pageSize, err := strconv.ParseInt(pageSizeStr, 10, 64)
 	if err != nil {
-		return []response.PostResponse{}, fmt.Errorf("pagesize number")
+		return []models.PostResponse{}, fmt.Errorf("pagesize number")
 	}
 
 	post_id, err := ps.postRepo.GetListPost(ctx, int32(page), int32(pageSize))
 	if err != nil {
-		return []response.PostResponse{}, err
+		return []models.PostResponse{}, err
 	}
 
 	for _, id := range post_id {
 		post, err := ps.GetPost(ctx, id)
 		if err != nil {
-			return []response.PostResponse{}, err
+			return []models.PostResponse{}, err
 		}
 		res = append(res, post)
 	}

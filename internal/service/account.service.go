@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/models"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/repo"
-	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -30,12 +30,12 @@ func (as *AccountService) CreateAccount(ctx context.Context, user_id int64, full
 }
 
 // Tam thoi chi lay account theo tu token, chua co thong tin khac 24/10
-func (as *AccountService) GetAccountUser(ctx context.Context, user_id int64) ([]response.AccountResponse, error) {
+func (as *AccountService) GetAccountUser(ctx context.Context, user_id int64) ([]models.AccountResponse, error) {
 	list, err := as.accountRepo.GetAccountByUserId(ctx, user_id)
 	if err != nil {
-		return []response.AccountResponse{}, err
+		return []models.AccountResponse{}, err
 	}
-	res := response.ListAccountResponse(list)
+	res := models.ListAccountResponse(list)
 	return res, nil
 }
 

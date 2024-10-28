@@ -1,6 +1,30 @@
 basePath: /api/v1
 definitions:
-  response.AccountResponse:
+  db.RegisterRequest:
+    properties:
+      email:
+        type: string
+      fullname:
+        maxLength: 32
+        minLength: 6
+        type: string
+      gender:
+        maximum: 1
+        minimum: 0
+        type: integer
+      password:
+        minLength: 8
+        type: string
+      username:
+        maxLength: 16
+        minLength: 6
+        type: string
+    required:
+    - fullname
+    - password
+    - username
+    type: object
+  models.AccountResponse:
     properties:
       address:
         type: string
@@ -25,6 +49,31 @@ definitions:
       user_id:
         type: integer
     type: object
+  models.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  models.LoginResponse:
+    properties:
+      access_token:
+        type: string
+    type: object
+  models.RegisterResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      username:
+        type: string
+    required:
+    - username
+    type: object
   response.ErrSwaggerJson:
     properties:
       code:
@@ -33,69 +82,13 @@ definitions:
       message:
         type: string
     type: object
-  response.LoginRequest:
-    properties:
-      password:
-        type: string
-      username:
-        type: string
-    type: object
-  response.LoginResponse:
-    properties:
-      access_token:
-        type: string
-      created_at:
-        type: string
-      email:
-        type: string
-      id:
-        type: integer
-      username:
-        type: string
-    type: object
-  response.RegisterRequest:
-    properties:
-      email:
-        type: string
-      fullname:
-        type: string
-      gender:
-        maximum: 1
-        minimum: 0
-        type: integer
-      password:
-        type: string
-      username:
-        type: string
-    required:
-    - fullname
-    - password
-    - username
-    type: object
-  response.RegisterResponse:
-    properties:
-      created_at:
-        type: string
-      email:
-        type: string
-      id:
-        type: integer
-      username:
-        type: string
-    required:
-    - username
-    type: object
 host: localhost:8070
 info:
-  contact:
-    email: leminhken124356@gmail.com
-    name: Đồ ăn công nghiệp (DACN)
-    url: github.com/LeMinh0706/SocialMediaFood-Backend
+  contact: {}
   description: This is SocialFood Swagger.
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: github.com/LeMinh0706/SocialMediaFood-Backend
   title: SocialFood Documentations
   version: "1.0"
 paths:
@@ -111,7 +104,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/response.AccountResponse'
+              $ref: '#/definitions/models.AccountResponse'
             type: array
         "500":
           description: Internal Server Error
@@ -133,14 +126,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/response.LoginRequest'
+          $ref: '#/definitions/models.LoginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.LoginResponse'
+            $ref: '#/definitions/models.LoginResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -159,14 +152,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/response.RegisterRequest'
+          $ref: '#/definitions/db.RegisterRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.RegisterResponse'
+            $ref: '#/definitions/models.RegisterResponse'
         "500":
           description: Internal Server Error
           schema:

@@ -1,4 +1,4 @@
-package response
+package models
 
 import "github.com/LeMinh0706/SocialMediaFood-Backend/db"
 

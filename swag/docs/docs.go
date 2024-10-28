@@ -9,12 +9,7 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "github.com/LeMinh0706/SocialMediaFood-Backend",
-        "contact": {
-            "name": "Đồ ăn công nghiệp (DACN)",
-            "url": "github.com/LeMinh0706/SocialMediaFood-Backend",
-            "email": "leminhken124356@gmail.com"
-        },
+        "contact": {},
         "license": {
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -48,7 +43,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/response.AccountResponse"
+                                "$ref": "#/definitions/models.AccountResponse"
                             }
                         }
                     },
@@ -81,7 +76,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/response.LoginRequest"
+                            "$ref": "#/definitions/models.LoginRequest"
                         }
                     }
                 ],
@@ -89,7 +84,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.LoginResponse"
+                            "$ref": "#/definitions/models.LoginResponse"
                         }
                     },
                     "500": {
@@ -121,7 +116,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/response.RegisterRequest"
+                            "$ref": "#/definitions/db.RegisterRequest"
                         }
                     }
                 ],
@@ -129,7 +124,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.RegisterResponse"
+                            "$ref": "#/definitions/models.RegisterResponse"
                         }
                     },
                     "500": {
@@ -143,7 +138,39 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "response.AccountResponse": {
+        "db.RegisterRequest": {
+            "type": "object",
+            "required": [
+                "fullname",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "fullname": {
+                    "type": "string",
+                    "maxLength": 32,
+                    "minLength": 6
+                },
+                "gender": {
+                    "type": "integer",
+                    "maximum": 1,
+                    "minimum": 0
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 16,
+                    "minLength": 6
+                }
+            }
+        },
+        "models.AccountResponse": {
             "type": "object",
             "properties": {
                 "address": {
@@ -180,6 +207,45 @@ const docTemplate = `{
                 }
             }
         },
+        "models.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RegisterResponse": {
+            "type": "object",
+            "required": [
+                "username"
+            ],
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "response.ErrSwaggerJson": {
             "type": "object",
             "properties": {
@@ -188,84 +254,6 @@ const docTemplate = `{
                 },
                 "data": {},
                 "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "response.LoginRequest": {
-            "type": "object",
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "response.LoginResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "response.RegisterRequest": {
-            "type": "object",
-            "required": [
-                "fullname",
-                "password",
-                "username"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "fullname": {
-                    "type": "string"
-                },
-                "gender": {
-                    "type": "integer",
-                    "maximum": 1,
-                    "minimum": 0
-                },
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "response.RegisterResponse": {
-            "type": "object",
-            "required": [
-                "username"
-            ],
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "username": {
                     "type": "string"
                 }
             }

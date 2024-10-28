@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/models"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/service"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
@@ -29,12 +30,12 @@ func NewUserController(service *service.UserService, config util.Config, token t
 // @Tags         users
 // @Accept       json
 // @Produce      json
-// @Param        request body response.LoginRequest true "request"
-// @Success      200  {object}  response.LoginResponse
+// @Param        request body models.LoginRequest true "request"
+// @Success      200  {object}  models.LoginResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /users/login [post]
 func (uc *UserController) Login(g *gin.Context) {
-	var req response.LoginRequest
+	var req models.LoginRequest
 	if err := g.ShouldBindJSON(&req); err != nil {
 		ValidateRegister(g, err)
 		// response.ErrorNonKnow(g, 400, err.Error())
@@ -58,7 +59,7 @@ func (uc *UserController) Login(g *gin.Context) {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return
 	}
-	res := response.LoginRes(user, token)
+	res := models.LoginResponse{Token: token}
 	response.SuccessResponse(g, 200, res)
 }
 
@@ -69,7 +70,7 @@ func (uc *UserController) Login(g *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        request body db.RegisterRequest true "request"
-// @Success      200  {object}  response.RegisterResponse
+// @Success      200  {object}  models.RegisterResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /users/register [post]
 func (uc *UserController) RegisterTx(g *gin.Context) {

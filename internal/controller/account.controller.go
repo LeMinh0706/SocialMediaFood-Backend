@@ -27,7 +27,7 @@ func NewAccountController(service *service.AccountService, token token.Maker) (*
 // @Accept       json
 // @Produce      json
 // @Security BearerAuth
-// @Success      200  {object}  []response.AccountResponse
+// @Success      200  {object}  []models.AccountResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /accounts/me [get]
 func (ac *AccountController) GetMe(g *gin.Context) {
