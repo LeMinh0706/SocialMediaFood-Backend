@@ -23,16 +23,6 @@ func NewUserController(service *service.UserService, config util.Config, token t
 	}, nil
 }
 
-// User godoc
-// @Summary      Register user
-// @Description  Join with us
-// @Tags         users
-// @Accept       json
-// @Produce      json
-// @Param        request body response.RegisterRequest true "request"
-// @Success      200  {object}  response.RegisterResponse
-// @Failure      500  {object}  response.ErrSwaggerJson
-// @Router       /users/register [post]
 func (uc *UserController) Register(g *gin.Context) {
 	var req response.RegisterRequest
 	if err := g.ShouldBindJSON(&req); err != nil {
@@ -81,6 +71,16 @@ func (uc *UserController) Login(g *gin.Context) {
 	response.SuccessResponse(g, 200, res)
 }
 
+// User godoc
+// @Summary      Register user
+// @Description  Join with us
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        request body response.RegisterRequest true "request"
+// @Success      200  {object}  response.RegisterResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /users/register [post]
 func (uc *UserController) RegisterTx(g *gin.Context) {
 	var req db.RegisterRequest
 	if err := g.ShouldBindJSON(&req); err != nil {
