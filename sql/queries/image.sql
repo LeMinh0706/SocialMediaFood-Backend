@@ -9,3 +9,7 @@ INSERT INTO post_image (
 -- name: GetImagePost :many
 SELECT * FROM post_image 
 WHERE post_id = $1;
+
+-- name: DeleteImagePost :exec 
+DELETE FROM post_image
+WHERE id = $1;

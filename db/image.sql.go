@@ -30,6 +30,16 @@ func (q *Queries) AddImagePost(ctx context.Context, arg AddImagePostParams) (Pos
 	return i, err
 }
 
+const deleteImagePost = `-- name: DeleteImagePost :exec
+DELETE FROM post_image
+WHERE id = $1
+`
+
+func (q *Queries) DeleteImagePost(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, deleteImagePost, id)
+	return err
+}
+
 const getImagePost = `-- name: GetImagePost :many
 SELECT id, url_image, post_id FROM post_image 
 WHERE post_id = $1

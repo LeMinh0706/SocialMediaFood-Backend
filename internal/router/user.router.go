@@ -17,8 +17,8 @@ func NewUserRouter(r *gin.Engine, router *gin.RouterGroup, service *service.User
 	}
 	userGroup := r.Group(router.BasePath() + "/users")
 	{
-		userGroup.POST("/register", uc.Register)
+		// userGroup.POST("/register", uc.Register)
 		userGroup.POST("/login", uc.Login)
-		userGroup.POST("/tx", uc.RegisterTx)
+		userGroup.POST("/register", uc.RegisterTx)
 	}
 }

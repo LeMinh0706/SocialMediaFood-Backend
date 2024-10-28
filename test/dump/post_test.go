@@ -83,3 +83,35 @@ func TestCreatePostPosition(t *testing.T) {
 	require.NotEmpty(t, post)
 	require.NoError(t, err)
 }
+
+func TestDeleteImage(t *testing.T) {
+	post := createPostImage(t)
+
+	images1, err := testQueries.GetImagePost(context.Background(), post.ID)
+	require.NoError(t, err)
+	for _, image := range images1 {
+		err := testQueries.DeleteImagePost(context.Background(), image.ID)
+		require.NoError(t, err)
+	}
+	images2, err := testQueries.GetImagePost(context.Background(), post.ID)
+	require.Empty(t, images2)
+	require.NoError(t, err)
+}
+
+func TestUpdatePost(t *testing.T) {
+	post := createPostImage(t)
+
+	description := "Post updated"
+	arg := db.UpdatePostParams{
+		ID:          post.ID,
+		Description: pgtype.Text{String: description, Valid: true},
+	}
+
+	update, err := testQueries.UpdatePost(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, update)
+
+	require.Equal(t, arg.Description.String, update.Description.String)
+	require.Equal(t, post.CreatedAt.Time, update.CreatedAt.Time)
+
+}

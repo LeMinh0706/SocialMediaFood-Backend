@@ -92,3 +92,31 @@ func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (CreateP
 	)
 	return i, err
 }
+
+const updatePost = `-- name: UpdatePost :one
+UPDATE posts SET description = $2
+WHERE id = $1
+RETURNING id, post_type_id, account_id, post_top_id, description, created_at, location, is_banned, is_deleted
+`
+
+type UpdatePostParams struct {
+	ID          int64       `json:"id"`
+	Description pgtype.Text `json:"description"`
+}
+
+func (q *Queries) UpdatePost(ctx context.Context, arg UpdatePostParams) (Post, error) {
+	row := q.db.QueryRow(ctx, updatePost, arg.ID, arg.Description)
+	var i Post
+	err := row.Scan(
+		&i.ID,
+		&i.PostTypeID,
+		&i.AccountID,
+		&i.PostTopID,
+		&i.Description,
+		&i.CreatedAt,
+		&i.Location,
+		&i.IsBanned,
+		&i.IsDeleted,
+	)
+	return i, err
+}
