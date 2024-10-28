@@ -18,6 +18,9 @@ func NewPostRouter(r *gin.Engine, router *gin.RouterGroup, service *service.Post
 	postGroup := r.Group(router.BasePath() + "/posts")
 	auth := postGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
 	{
+		postGroup.GET("", pc.GetListPost)
+		postGroup.GET(":id", pc.GetPost)
 		auth.POST("", pc.CreatePost)
+		auth.DELETE(":id", pc.DeletePost)
 	}
 }

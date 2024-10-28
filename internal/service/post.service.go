@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
@@ -35,12 +36,12 @@ func (ps *PostService) CreatePost(ctx context.Context, post_type int32, descript
 		location = pgtype.Text{Valid: false}
 	}
 
-	user, err := ps.accountService.GetAccountById(ctx, account_id)
+	acc, err := ps.accountService.GetAccountById(ctx, account_id)
 	if err != nil {
 		return res, fmt.Errorf("account not found")
 	}
 
-	if user_id != user {
+	if user_id != acc.UserID {
 		return res, fmt.Errorf("not you")
 	}
 
@@ -67,6 +68,74 @@ func (ps *PostService) CreatePost(ctx context.Context, post_type int32, descript
 		}
 		imgs = append(imgs, i)
 	}
-	res = response.PostRes(post, imgs)
+	res = response.PostRes(post, acc, imgs)
 	return res, nil
+}
+
+func (ps *PostService) GetPost(ctx context.Context, id int64) (response.PostResponse, error) {
+	var res response.PostResponse
+
+	post, err := ps.postRepo.GetPost(ctx, id)
+	if err != nil {
+		return res, err
+	}
+	acc, err := ps.accountService.GetAccountById(ctx, post.AccountID)
+	if err != nil {
+		return res, err
+	}
+	img, err := ps.postRepo.GetImagePost(ctx, post.ID)
+	if err != nil {
+		return res, err
+	}
+	res = response.PostRes(db.CreatePostRow(post), acc, img)
+
+	return res, nil
+}
+
+func (ps *PostService) GetListPost(ctx context.Context, pageStr, pageSizeStr string) ([]response.PostResponse, error) {
+	var res []response.PostResponse
+	page, err := strconv.ParseInt(pageStr, 10, 64)
+	if err != nil {
+		return []response.PostResponse{}, fmt.Errorf("page number")
+	}
+	pageSize, err := strconv.ParseInt(pageSizeStr, 10, 64)
+	if err != nil {
+		return []response.PostResponse{}, fmt.Errorf("pagesize number")
+	}
+
+	post_id, err := ps.postRepo.GetListPost(ctx, int32(page), int32(pageSize))
+	if err != nil {
+		return []response.PostResponse{}, err
+	}
+
+	for _, id := range post_id {
+		post, err := ps.GetPost(ctx, id)
+		if err != nil {
+			return []response.PostResponse{}, err
+		}
+		res = append(res, post)
+	}
+
+	return res, nil
+}
+
+func (ps *PostService) DeletePost(ctx context.Context, id, user_id int64) error {
+	post, err := ps.GetPost(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	acc, err := ps.accountService.GetAccountById(ctx, post.AccountID)
+	if err != nil {
+		return err
+	}
+	if acc.UserID != user_id {
+		return fmt.Errorf("not you")
+	}
+
+	err = ps.postRepo.DeletePost(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

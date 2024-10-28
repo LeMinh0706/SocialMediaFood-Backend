@@ -39,10 +39,11 @@ func (as *AccountService) GetAccountUser(ctx context.Context, user_id int64) ([]
 	return res, nil
 }
 
-func (as *AccountService) GetAccountById(ctx context.Context, id int64) (int64, error) {
+func (as *AccountService) GetAccountById(ctx context.Context, id int64) (db.Account, error) {
+	var res db.Account
 	account, err := as.accountRepo.GetAccountBydId(ctx, id)
 	if err != nil {
-		return 0, err
+		return res, err
 	}
-	return account.UserID, nil
+	return account, nil
 }

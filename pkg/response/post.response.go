@@ -15,9 +15,10 @@ type PostResponse struct {
 	Lat         interface{}    `json:"lat"`
 	CreatedAt   time.Time      `json:"created_at"`
 	Images      []db.PostImage `json:"images"`
+	Account     db.Account     `json:"account"`
 }
 
-func PostRes(post db.CreatePostRow, imgs []db.PostImage) PostResponse {
+func PostRes(post db.CreatePostRow, account db.Account, imgs []db.PostImage) PostResponse {
 	return PostResponse{
 		ID:          post.ID,
 		PostTypeID:  post.PostTypeID,
@@ -27,5 +28,6 @@ func PostRes(post db.CreatePostRow, imgs []db.PostImage) PostResponse {
 		Lat:         post.Lat,
 		CreatedAt:   post.CreatedAt.Time,
 		Images:      imgs,
+		Account:     account,
 	}
 }

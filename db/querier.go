@@ -14,12 +14,15 @@ type Querier interface {
 	CreateComment(ctx context.Context, arg CreateCommentParams) (Post, error)
 	CreatePost(ctx context.Context, arg CreatePostParams) (CreatePostRow, error)
 	DeleteImagePost(ctx context.Context, id int64) error
+	DeletePost(ctx context.Context, id int64) error
 	GetAccountById(ctx context.Context, id int64) (Account, error)
 	GetAccountByUserId(ctx context.Context, userID int64) ([]GetAccountByUserIdRow, error)
 	GetImagePost(ctx context.Context, postID int64) ([]PostImage, error)
+	GetListPost(ctx context.Context, arg GetListPostParams) ([]int64, error)
+	GetPost(ctx context.Context, id int64) (GetPostRow, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (RegisterRow, error)
-	UpdatePost(ctx context.Context, arg UpdatePostParams) (Post, error)
+	UpdatePost(ctx context.Context, arg UpdatePostParams) (UpdatePostRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

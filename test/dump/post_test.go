@@ -115,3 +115,30 @@ func TestUpdatePost(t *testing.T) {
 	require.Equal(t, post.CreatedAt.Time, update.CreatedAt.Time)
 
 }
+
+func TestGetListPost(t *testing.T) {
+	for i := 0; i < 5; i++ {
+		createPostNoPoint(t)
+		createPostImage(t)
+	}
+	arg := db.GetListPostParams{
+		Limit:  5,
+		Offset: 5,
+	}
+	posts, err := testQueries.GetListPost(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, posts)
+	require.Len(t, posts, 5)
+
+}
+
+func TestDeletePost(t *testing.T) {
+	post := createPostNoPoint(t)
+
+	err := testQueries.DeletePost(context.Background(), post.ID)
+	require.NoError(t, err)
+
+	get, err := testQueries.GetPost(context.Background(), post.ID)
+	require.Empty(t, get)
+	require.Error(t, err)
+}

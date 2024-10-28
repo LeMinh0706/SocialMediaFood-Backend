@@ -93,10 +93,84 @@ func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (CreateP
 	return i, err
 }
 
+const deletePost = `-- name: DeletePost :exec
+UPDATE posts SET is_deleted = TRUE
+WHERE id = $1
+`
+
+func (q *Queries) DeletePost(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, deletePost, id)
+	return err
+}
+
+const getListPost = `-- name: GetListPost :many
+SELECT id
+FROM posts
+WHERE is_deleted != TRUE AND is_banned != TRUE
+ORDER BY id DESC
+LIMIT $1 
+OFFSET $2
+`
+
+type GetListPostParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetListPost(ctx context.Context, arg GetListPostParams) ([]int64, error) {
+	rows, err := q.db.Query(ctx, getListPost, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []int64{}
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getPost = `-- name: GetPost :one
+SELECT id, post_type_id, account_id, description, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat, created_at
+FROM posts WHERE id = $1 AND is_deleted != TRUE
+`
+
+type GetPostRow struct {
+	ID          int64              `json:"id"`
+	PostTypeID  int32              `json:"post_type_id"`
+	AccountID   int64              `json:"account_id"`
+	Description pgtype.Text        `json:"description"`
+	Lng         interface{}        `json:"lng"`
+	Lat         interface{}        `json:"lat"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+}
+
+func (q *Queries) GetPost(ctx context.Context, id int64) (GetPostRow, error) {
+	row := q.db.QueryRow(ctx, getPost, id)
+	var i GetPostRow
+	err := row.Scan(
+		&i.ID,
+		&i.PostTypeID,
+		&i.AccountID,
+		&i.Description,
+		&i.Lng,
+		&i.Lat,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const updatePost = `-- name: UpdatePost :one
 UPDATE posts SET description = $2
 WHERE id = $1
-RETURNING id, post_type_id, account_id, post_top_id, description, created_at, location, is_banned, is_deleted
+RETURNING id, post_type_id, account_id, description, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat, created_at
 `
 
 type UpdatePostParams struct {
@@ -104,19 +178,27 @@ type UpdatePostParams struct {
 	Description pgtype.Text `json:"description"`
 }
 
-func (q *Queries) UpdatePost(ctx context.Context, arg UpdatePostParams) (Post, error) {
+type UpdatePostRow struct {
+	ID          int64              `json:"id"`
+	PostTypeID  int32              `json:"post_type_id"`
+	AccountID   int64              `json:"account_id"`
+	Description pgtype.Text        `json:"description"`
+	Lng         interface{}        `json:"lng"`
+	Lat         interface{}        `json:"lat"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+}
+
+func (q *Queries) UpdatePost(ctx context.Context, arg UpdatePostParams) (UpdatePostRow, error) {
 	row := q.db.QueryRow(ctx, updatePost, arg.ID, arg.Description)
-	var i Post
+	var i UpdatePostRow
 	err := row.Scan(
 		&i.ID,
 		&i.PostTypeID,
 		&i.AccountID,
-		&i.PostTopID,
 		&i.Description,
+		&i.Lng,
+		&i.Lat,
 		&i.CreatedAt,
-		&i.Location,
-		&i.IsBanned,
-		&i.IsDeleted,
 	)
 	return i, err
 }
