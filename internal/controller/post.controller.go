@@ -1,17 +1,12 @@
 package controller
 
 import (
-	"fmt"
-	"mime/multipart"
-	"path/filepath"
 	"strconv"
-	"time"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/service"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
-	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/gin-gonic/gin"
 )
 
@@ -46,11 +41,8 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 	}
 
 	files := form.File["images"]
-	if len(files) > 4 {
-		response.ErrorResponse(g, 400, 40005)
-		return
-	}
-	images, err := AddImageFileError(g, files)
+
+	images, err := AddImageFileError(g, 4, files)
 	if err != nil {
 		response.ErrorNonKnow(g, 400, err.Error())
 		return
@@ -66,26 +58,4 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 		return
 	}
 	response.SuccessResponse(g, 201, post)
-}
-
-func AddImageFileError(g *gin.Context, files []*multipart.FileHeader) ([]string, error) {
-	const maxSize = 4 << 20
-	for _, file := range files {
-		if !util.FileExtCheck(file.Filename) {
-			return nil, fmt.Errorf("only accept .jpeg/.jpg/.png/.gif")
-		}
-	}
-
-	var images []string
-	for i, file := range files {
-		if file.Size > maxSize {
-			return nil, fmt.Errorf("images size must less than 4 Mb")
-		}
-		filename := fmt.Sprintf("upload/post/%d_%d%s", time.Now().Unix(), i, filepath.Ext(file.Filename))
-		if err := g.SaveUploadedFile(file, filename); err != nil {
-			return nil, err
-		}
-		images = append(images, filename)
-	}
-	return images, nil
 }

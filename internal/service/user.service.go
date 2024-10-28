@@ -51,12 +51,12 @@ func (us *UserService) Login(ctx context.Context, username, password string) (db
 	user, err := us.userRepo.Login(ctx, username)
 	if err != nil {
 		if err == pgx.ErrNoRows {
-			return res, fmt.Errorf("wrong username or password")
+			return res, fmt.Errorf("wrong username")
 		}
 		return res, err
 	}
 	if err = util.CheckPassword(password, user.HashPassword); err != nil {
-		return res, fmt.Errorf("wrong username or password %v", password)
+		return res, fmt.Errorf("wrong password")
 	}
 	return user, nil
 }

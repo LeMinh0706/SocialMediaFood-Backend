@@ -11,16 +11,22 @@ const (
 	ErrBadRequestPostId   = 40004
 	ErrImageLen           = 40005
 	ErrImageSize          = 40006
+	ErrGender             = 40007
 	ErrUnauthorize        = 40101
 	ErrInvalid            = 40102
 	ErrYourSelf           = 40103
 	ErrUserExist          = 40900
-	ErrLogin              = 40400
+	ErrLogin              = 40104
 	ErrNotFoundUser       = 40401
 	ErrFindPost           = 40402
 	ErrUnlike             = 40403
 	ErrLike               = 40404
 	ErrFileTooLarge       = 41300
+	ErrWrongPassword      = 40105
+	ErrEmailExists        = 40901
+	ErrUsernameChar       = 40008
+	ErrMinPassword        = 40009
+	ErrMinFullname        = 40010
 )
 
 var msg = map[int]string{
@@ -33,16 +39,30 @@ var msg = map[int]string{
 	ErrBadRequestMime:     "Can only use file .png, .jpg, .jpeg, .gif",
 	ErrBadRequestPostId:   "Id must be number, can't convert from this request",
 	ErrImageLen:           "Images shoud less than 4",
+	ErrGender:             "Gender should be 0 (for female) or 1 (for male)",
 	ErrUnauthorize:        "Unauthorize",
 	ErrInvalid:            "Invalid Token",
 	ErrYourSelf:           "Not your self, cant create/update/delete anything for another",
 	ErrUserExist:          "User exist",
-	ErrLogin:              "Wrong username or password",
+	ErrLogin:              "Wrong username",
 	ErrNotFoundUser:       "User not found",
 	ErrFindPost:           "Can not found post or post was deleted",
 	ErrUnlike:             "You didn't like this post yet",
 	ErrLike:               "You have liked post yet",
 	ErrFileTooLarge:       "File too large, only allowed 6MB",
+	ErrWrongPassword:      "Wrong password",
+	ErrEmailExists:        "Email exists",
+	ErrUsernameChar:       "Username need to be between 6 to 16 character",
+	ErrMinPassword:        "Password need at least 8 character",
+	ErrMinFullname:        "Fullname need at least 6 character",
 }
 
 // ErrOutOfDate:   "Token is out of date",
+
+// real err
+var (
+	EmailExists   = "ERROR: duplicate key value violates unique constraint \"users_email_key\" (SQLSTATE 23505)"
+	UserExists    = "ERROR: duplicate key value violates unique constraint \"users_username_key\" (SQLSTATE 23505)"
+	WrongUsername = "wrong username"
+	WrongPassword = "wrong password"
+)
