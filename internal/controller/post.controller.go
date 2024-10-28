@@ -36,7 +36,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 
 	form, err := g.MultipartForm()
 	if err != nil {
-		response.ErrorResponse(g, 400, 40000)
+		response.ErrorResponse(g, 40000)
 		return
 	}
 
@@ -51,7 +51,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 	post, err := pc.postService.CreatePost(g, 1, description, auth.UserId, id, x, y, images)
 	if err != nil {
 		if err.Error() == "not you" {
-			response.ErrorResponse(g, 401, 40103)
+			response.ErrorResponse(g, 40103)
 			return
 		}
 		response.ErrorNonKnow(g, 500, err.Error())

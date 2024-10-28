@@ -43,38 +43,38 @@ func ValidateRegister(g *gin.Context, err error) {
 			switch vali.Tag() {
 			case "min":
 				if vali.Field() == "Username" {
-					response.ErrorResponse(g, 400, response.ErrUsernameChar)
+					response.ErrorResponse(g, 40008)
 					return
 				} else if vali.Field() == "Gender" {
-					response.ErrorResponse(g, 400, response.ErrGender)
+					response.ErrorResponse(g, 40007)
 					return
 				} else if vali.Field() == "Password" {
-					response.ErrorResponse(g, 400, response.ErrMinPassword)
+					response.ErrorResponse(g, 40009)
 					return
 				} else if vali.Field() == "Fullname" {
-					response.ErrorResponse(g, 400, response.ErrMinFullname)
+					response.ErrorResponse(g, 40010)
 					return
 				}
 			case "max":
 				if vali.Field() == "Username" {
-					response.ErrorResponse(g, 400, response.ErrUsernameChar)
+					response.ErrorResponse(g, 40008)
 					return
 				} else if vali.Field() == "Gender" {
-					response.ErrorResponse(g, 400, response.ErrGender)
+					response.ErrorResponse(g, 40007)
 					return
 				}
 			case "required":
 				if vali.Field() == "Username" {
-					response.ErrorResponse(g, 400, response.ErrUsernameChar)
+					response.ErrorResponse(g, 40008)
 					return
 				} else if vali.Field() == "Gender" {
-					response.ErrorResponse(g, 400, response.ErrGender)
+					response.ErrorResponse(g, 40007)
 					return
 				} else if vali.Field() == "Password" {
-					response.ErrorResponse(g, 400, response.ErrMinPassword)
+					response.ErrorResponse(g, 40009)
 					return
 				} else if vali.Field() == "Fullname" {
-					response.ErrorResponse(g, 400, response.ErrMinFullname)
+					response.ErrorResponse(g, 40010)
 					return
 				}
 			}

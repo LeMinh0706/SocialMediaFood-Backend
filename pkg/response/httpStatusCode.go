@@ -44,7 +44,7 @@ var msg = map[int]string{
 	ErrInvalid:            "Invalid Token",
 	ErrYourSelf:           "Not your self, cant create/update/delete anything for another",
 	ErrUserExist:          "User exist",
-	ErrLogin:              "Wrong username",
+	ErrLogin:              "User doesn't exists",
 	ErrNotFoundUser:       "User not found",
 	ErrFindPost:           "Can not found post or post was deleted",
 	ErrUnlike:             "You didn't like this post yet",

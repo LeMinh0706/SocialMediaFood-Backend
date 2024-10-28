@@ -20,7 +20,7 @@ func AuthorizeMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authorizationHeader := ctx.GetHeader(AuthorizationHeaderKey)
 		if len(authorizationHeader) == 0 {
-			response.ErrorResponse(ctx, 401, 40101)
+			response.ErrorResponse(ctx, 40101)
 			ctx.Abort()
 			return
 		}
