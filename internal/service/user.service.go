@@ -63,6 +63,9 @@ func (us *UserService) Login(ctx context.Context, username, password string) (db
 
 func (us *UserService) RegisterTx(ctx context.Context, req db.RegisterRequest) (db.RegisterRow, error) {
 	var res db.RegisterRow
+	if !util.UsernameNotSpace(req.Username) {
+		return res, fmt.Errorf("username don't have a space")
+	}
 	if strings.TrimSpace(req.Email) != "" {
 		if !util.EmailCheck(req.Email) {
 			return res, fmt.Errorf("this mail is invalid")
