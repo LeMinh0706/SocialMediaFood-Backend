@@ -211,10 +211,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "kocanpass"
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "HiroPhent"
                 }
             }
         },

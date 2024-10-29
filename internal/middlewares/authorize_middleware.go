@@ -35,7 +35,7 @@ func AuthorizeMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		accessToken := fields[1]
 		payload, err := tokenMaker.VerifyToken(accessToken)
 		if err != nil {
-			response.ErrorNonKnow(ctx, 401, err.Error())
+			response.ErrorResponse(ctx, 40101)
 			ctx.Abort()
 			return
 		}

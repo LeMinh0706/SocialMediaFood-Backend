@@ -52,8 +52,10 @@ definitions:
   models.LoginRequest:
     properties:
       password:
+        example: kocanpass
         type: string
       username:
+        example: HiroPhent
         type: string
     type: object
   models.LoginResponse:

@@ -14,8 +14,8 @@ type RegisterResponse struct {
 }
 
 type LoginRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" example:"HiroPhent"`
+	Password string `json:"password" example:"kocanpass"`
 }
 
 type LoginResponse struct {

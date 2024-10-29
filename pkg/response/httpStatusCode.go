@@ -40,7 +40,7 @@ var msg = map[int]string{
 	ErrBadRequestPostId:   "Id must be number, can't convert from this request",
 	ErrImageLen:           "Images shoud less than 4",
 	ErrGender:             "Gender should be 0 (for female) or 1 (for male)",
-	ErrUnauthorize:        "Unauthorize",
+	ErrUnauthorize:        "Unauthorized",
 	ErrInvalid:            "Invalid Token",
 	ErrYourSelf:           "Not your self, cant create/update/delete anything for another",
 	ErrUserExist:          "User exist",
