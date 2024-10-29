@@ -8,6 +8,8 @@ CREATE TABLE "users" (
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "is_deleted" bool NOT NULL DEFAULT false
 );
+CREATE INDEX ON "users" ("username");
+
 -- +goose StatementEnd
 
 -- +goose Down
