@@ -17,7 +17,7 @@ type PostService struct {
 	accountService *AccountService
 }
 
-func NewPostRepo(repo *repo.PostRepo, accountService *AccountService) (*PostService, error) {
+func NewPostService(repo *repo.PostRepo, accountService *AccountService) (*PostService, error) {
 	return &PostService{
 		postRepo:       repo,
 		accountService: accountService,

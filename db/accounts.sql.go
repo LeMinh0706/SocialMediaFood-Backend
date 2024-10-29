@@ -23,7 +23,7 @@ INSERT INTO accounts(
     url_background_profile
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8
-) RETURNING id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, address, is_deleted, type, location, is_upgrade
+) RETURNING id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, address, is_deleted, type, location, is_upgrade, banned
 `
 
 type CreateAccountsParams struct {
@@ -63,12 +63,13 @@ func (q *Queries) CreateAccounts(ctx context.Context, arg CreateAccountsParams) 
 		&i.Type,
 		&i.Location,
 		&i.IsUpgrade,
+		&i.Banned,
 	)
 	return i, err
 }
 
 const getAccountById = `-- name: GetAccountById :one
-SELECT id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, address, is_deleted, type, location, is_upgrade FROM accounts
+SELECT id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, address, is_deleted, type, location, is_upgrade, banned FROM accounts
 WHERE id = $1
 LIMIT 1
 `
@@ -90,6 +91,7 @@ func (q *Queries) GetAccountById(ctx context.Context, id int64) (Account, error)
 		&i.Type,
 		&i.Location,
 		&i.IsUpgrade,
+		&i.Banned,
 	)
 	return i, err
 }

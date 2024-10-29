@@ -11,11 +11,10 @@ CREATE TABLE "posts" (
   "is_banned" bool NOT NULL DEFAULT false,
   "is_deleted" bool NOT NULL DEFAULT false
 );
-CREATE INDEX ON "posts" ("account_id");
-
 CREATE INDEX ON "posts" ("post_type_id");
-
 CREATE INDEX ON "posts" ("post_top_id");
+CREATE INDEX ON "posts" ("created_at");
+
 
 ALTER TABLE "posts" ADD FOREIGN KEY ("post_type_id") REFERENCES "post_type" ("id");
 ALTER TABLE "posts" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id");

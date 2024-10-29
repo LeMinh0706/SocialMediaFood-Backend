@@ -12,8 +12,7 @@ import (
 )
 
 func createPostNoPoint(t *testing.T) db.CreatePostRow {
-	user := createRandomUser(t)
-	account := createRandomAccount(t, user.ID, 3)
+	account := createRandomRegister(t)
 	description := util.RandomDescription()
 	arg := db.CreatePostParams{
 		PostTypeID:  1,
@@ -69,8 +68,7 @@ func TestGetImagePost(t *testing.T) {
 }
 
 func TestCreatePostPosition(t *testing.T) {
-	user := createRandomUser(t)
-	account := createRandomAccount(t, user.ID, 3)
+	account := createRandomRegister(t)
 	description := util.RandomDescription()
 	arg := db.CreatePostParams{
 		PostTypeID:     1,

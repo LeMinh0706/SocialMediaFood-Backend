@@ -21,7 +21,7 @@ CREATE TABLE "accounts" (
   "type" int NOT NULL DEFAULT 3,
   "location" geography(Point,4326),
   "is_upgrade" bool DEFAULT false,
-  "banned" varchar DEFAULT 0
+  "banned" varchar NOT NULL DEFAULT 1
 );
 
 CREATE INDEX ON "accounts" ("fullname");

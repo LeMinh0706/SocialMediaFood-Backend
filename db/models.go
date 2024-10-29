@@ -22,6 +22,35 @@ type Account struct {
 	Type                 int32       `json:"type"`
 	Location             interface{} `json:"location"`
 	IsUpgrade            pgtype.Bool `json:"is_upgrade"`
+	Banned               string      `json:"banned"`
+}
+
+type AccountPermission struct {
+	ID             int64  `json:"id"`
+	PermissionName string `json:"permission_name"`
+	AccountID      int64  `json:"account_id"`
+	CanSelectAll   bool   `json:"can_select_all"`
+	CanSelect      bool   `json:"can_select"`
+	CanInsert      bool   `json:"can_insert"`
+	CanUpdate      bool   `json:"can_update"`
+	CanDelete      bool   `json:"can_delete"`
+	CanDoAll       bool   `json:"can_do_all"`
+}
+
+type AccountType struct {
+	ID   int32  `json:"id"`
+	Name string `json:"name"`
+}
+
+type Follower struct {
+	ID            int64  `json:"id"`
+	FollowRequest int64  `json:"follow_request"`
+	FollowAccept  int64  `json:"follow_accept"`
+	Status        string `json:"status"`
+}
+
+type Permission struct {
+	Name string `json:"name"`
 }
 
 type Post struct {
@@ -45,6 +74,13 @@ type PostImage struct {
 type PostType struct {
 	ID   int32  `json:"id"`
 	Name string `json:"name"`
+}
+
+type ReactPost struct {
+	ID        int64 `json:"id"`
+	PostID    int64 `json:"post_id"`
+	AccountID int64 `json:"account_id"`
+	State     int32 `json:"state"`
 }
 
 type User struct {

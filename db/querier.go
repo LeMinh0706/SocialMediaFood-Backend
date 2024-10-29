@@ -11,17 +11,25 @@ import (
 type Querier interface {
 	AddImagePost(ctx context.Context, arg AddImagePostParams) (PostImage, error)
 	CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error)
-	CreateComment(ctx context.Context, arg CreateCommentParams) (Post, error)
+	CreateComment(ctx context.Context, arg CreateCommentParams) (CreateCommentRow, error)
 	CreatePost(ctx context.Context, arg CreatePostParams) (CreatePostRow, error)
+	CreateReact(ctx context.Context, arg CreateReactParams) (ReactPost, error)
+	DeleteComment(ctx context.Context, id int64) error
 	DeleteImagePost(ctx context.Context, id int64) error
 	DeletePost(ctx context.Context, id int64) error
 	GetAccountById(ctx context.Context, id int64) (Account, error)
 	GetAccountByUserId(ctx context.Context, userID int64) ([]GetAccountByUserIdRow, error)
+	GetComment(ctx context.Context, id int64) (GetCommentRow, error)
+	GetFavorite(ctx context.Context, arg GetFavoriteParams) ([]int64, error)
 	GetImagePost(ctx context.Context, postID int64) ([]PostImage, error)
+	//comment
+	GetListComment(ctx context.Context, arg GetListCommentParams) ([]int64, error)
 	GetListPost(ctx context.Context, arg GetListPostParams) ([]int64, error)
 	GetPost(ctx context.Context, id int64) (GetPostRow, error)
+	GetReactPost(ctx context.Context, postID int64) ([]ReactPost, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (RegisterRow, error)
+	UpdateComment(ctx context.Context, arg UpdateCommentParams) (Post, error)
 	UpdatePost(ctx context.Context, arg UpdatePostParams) (UpdatePostRow, error)
 }
 

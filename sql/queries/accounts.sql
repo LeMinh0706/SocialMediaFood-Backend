@@ -12,8 +12,6 @@ INSERT INTO accounts(
     $1, $2, $3, $4, $5, $6, $7, $8
 ) RETURNING * ;
 
--- name: Create
-
 -- name: GetAccountByUserId :many
 SELECT id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, address, is_upgrade,
 ST_X(location::geometry) AS lng, 

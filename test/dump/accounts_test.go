@@ -51,9 +51,14 @@ func createRandomAccount(t *testing.T, user_id int64, typeA int32) db.Account {
 	require.Equal(t, arg.UrlBackgroundProfile, account.UrlBackgroundProfile)
 	return account
 }
-func TestRegister(t *testing.T) {
+
+func createRandomRegister(t *testing.T) db.Account {
 	user := createRandomUser(t)
-	createRandomAccount(t, user.ID, 3)
+	acc := createRandomAccount(t, user.ID, 3)
+	return acc
+}
+func TestRegister(t *testing.T) {
+	createRandomRegister(t)
 }
 
 func TestGetAccount(t *testing.T) {
@@ -74,11 +79,10 @@ func TestGetAccount(t *testing.T) {
 }
 
 func TestGetOneAccount(t *testing.T) {
-	user := createRandomUser(t)
-	acc1 := createRandomAccount(t, user.ID, 3)
+	acc1 := createRandomRegister(t)
 	acc2, err := testQueries.GetAccountById(context.Background(), acc1.ID)
 	require.NotEmpty(t, acc2)
 	require.NoError(t, err)
 
-	require.Equal(t, user.ID, acc2.UserID)
+	require.Equal(t, acc1.UserID, acc2.UserID)
 }
