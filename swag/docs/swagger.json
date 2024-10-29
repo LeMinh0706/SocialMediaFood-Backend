@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "This is SocialFood Swagger.",
-        "title": "SocialFood Documentations",
+        "title": "Foodioo Documentations",
         "contact": {},
         "license": {
             "name": "Apache 2.0",
@@ -11,7 +11,7 @@
         "version": "1.0"
     },
     "host": "foodioo.camenryder.xyz:80",
-    "basePath": "/api/v1",
+    "basePath": "/api",
     "paths": {
         "/accounts/me": {
             "get": {

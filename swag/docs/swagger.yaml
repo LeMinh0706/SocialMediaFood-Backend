@@ -1,4 +1,4 @@
-basePath: /api/v1
+basePath: /api
 definitions:
   db.RegisterRequest:
     properties:
@@ -91,7 +91,7 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: SocialFood Documentations
+  title: Foodioo Documentations
   version: "1.0"
 paths:
   /accounts/me:

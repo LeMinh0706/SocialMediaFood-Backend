@@ -274,9 +274,9 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "foodioo.camenryder.xyz:80",
-	BasePath:         "/api/v1",
+	BasePath:         "/api",
 	Schemes:          []string{},
-	Title:            "SocialFood Documentations",
+	Title:            "Foodioo Documentations",
 	Description:      "This is SocialFood Swagger.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

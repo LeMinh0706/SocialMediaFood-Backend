@@ -9,7 +9,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// @title SocialFood Documentations
+// @title Foodioo Documentations
 // @version 1.0
 // @description This is SocialFood Swagger.
 
@@ -22,7 +22,7 @@ import (
 // @schema bearer
 
 // @host foodioo.camenryder.xyz:80
-// @BasePath /api/v1
+// @BasePath /api
 // @schema http
 func main() {
 	config, err := util.LoadConfig(".")
