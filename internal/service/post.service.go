@@ -139,3 +139,11 @@ func (ps *PostService) DeletePost(ctx context.Context, id, user_id int64) error 
 	}
 	return nil
 }
+
+func (ps *PostService) DeleteImage(ctx context.Context, id int64) error {
+	err := ps.postRepo.DeleteImage(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -107,3 +107,17 @@ func (pc *PostController) DeletePost(g *gin.Context) {
 
 	response.SuccessResponse(g, 204, nil)
 }
+
+func (pc *PostController) DeleteImagePost(g *gin.Context) {
+	str := g.Param("id")
+	id, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 40004)
+		return
+	}
+	if err = pc.postService.DeleteImage(g, id); err != nil {
+		response.ErrorResponse(g, 40402)
+		return
+	}
+	response.SuccessResponse(g, 204, nil)
+}

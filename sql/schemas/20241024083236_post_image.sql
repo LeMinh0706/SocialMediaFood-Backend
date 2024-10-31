@@ -11,7 +11,6 @@ ALTER TABLE "post_image" ADD FOREIGN KEY ("post_id") REFERENCES "posts" ("id");
 
 -- +goose Down
 -- +goose StatementBegin
-ALTER TABLE "post_image" DROP CONSTRAINT IF EXISTS "post_image_post_id_fkey";
 
-DROP TABLE IF EXISTS "post_image";
+DROP TABLE IF EXISTS "post_image" CASCADE;
 -- +goose StatementEnd

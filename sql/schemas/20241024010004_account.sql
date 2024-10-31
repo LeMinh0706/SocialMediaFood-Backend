@@ -1,11 +1,11 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE "account_type" (
-  "id" int PRIMARY KEY,
-  "name" varchar NOT NULL
+CREATE TABLE "role" (
+  "id" serial PRIMARY KEY,
+  "name" varchar
 );
 
-INSERT INTO "account_type" VALUES (1, 'Admin'),(2, 'Owner'),(3, 'User'),(4, 'Reviewer'),(5, 'Moderator');
+INSERT INTO "role" VALUES (1, 'Admin'),(2, 'Owner'),(3, 'User'),(4, 'Reviewer'),(5, 'Moderator');
 
 CREATE TABLE "accounts" (
   "id" bigserial PRIMARY KEY,
@@ -19,24 +19,28 @@ CREATE TABLE "accounts" (
   "address" varchar,
   "is_deleted" bool NOT NULL DEFAULT false,
   "type" int NOT NULL DEFAULT 3,
-  "location" geography(Point,4326),
   "is_upgrade" bool DEFAULT false,
-  "banned" varchar NOT NULL DEFAULT 1
+  "banned" varchar NOT NULL DEFAULT 1,
+  "status_id" int DEFAULT 1
 );
+
+CREATE TABLE "status" (
+  "id" serial PRIMARY KEY,
+  "name" varchar
+);
+INSERT INTO "status" VALUES (1, 'normal');
 
 CREATE INDEX ON "accounts" ("fullname");
 CREATE INDEX ON "accounts" ("user_id");
 ALTER TABLE "accounts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
-ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "account_type" ("id");
+ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "role" ("id");
+ALTER TABLE "accounts" ADD FOREIGN KEY ("status_id") REFERENCES "status" ("id");
 
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-ALTER TABLE "accounts" DROP CONSTRAINT IF EXISTS "accounts_account_type_fkey";
-ALTER TABLE "accounts" DROP CONSTRAINT IF EXISTS "accounts_user_id_fkey";
-
-DROP TABLE IF EXISTS "accounts";
-DROP TABLE IF EXISTS "account_type";
-
+DROP TABLE IF EXISTS "accounts" CASCADE;
+DROP TABLE IF EXISTS "role" CASCADE;
+DROP TABLE IF EXISTS "status" CASCADE;
 -- +goose StatementEnd

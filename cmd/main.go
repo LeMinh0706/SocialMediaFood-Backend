@@ -21,7 +21,7 @@ import (
 // @name Authorization
 // @schema bearer
 
-// @host foodioo.camenryder.xyz:80
+// @host localhost:8070
 // @BasePath /api
 // @schema http
 func main() {

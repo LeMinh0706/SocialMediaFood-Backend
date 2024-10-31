@@ -18,8 +18,6 @@ ALTER TABLE "react_post" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("
 
 -- +goose Down
 -- +goose StatementBegin
-ALTER TABLE "react_post" DROP CONSTRAINT IF EXISTS "react_post_post_id_fkey";
-ALTER TABLE "react_post" DROP CONSTRAINT IF EXISTS "react_post_account_id_fkey";
 
-DROP TABLE IF EXISTS "react_post";
+DROP TABLE IF EXISTS "react_post" CASCADE;
 -- +goose StatementEnd

@@ -23,10 +23,8 @@ ALTER TABLE "posts" ADD FOREIGN KEY ("post_top_id") REFERENCES "posts" ("id");
 
 -- +goose Down
 -- +goose StatementBegin
-ALTER TABLE "posts" DROP CONSTRAINT IF EXISTS "posts_account_id_fkey";
-ALTER TABLE "posts" DROP CONSTRAINT IF EXISTS "posts_post_type_id_fkey";
-ALTER TABLE "posts" DROP CONSTRAINT IF EXISTS "posts_post_top_id_fkey";
 
-DROP TABLE IF EXISTS "posts";
+
+DROP TABLE IF EXISTS "posts" CASCADE;
 
 -- +goose StatementEnd
