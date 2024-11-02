@@ -149,6 +149,7 @@ const getListComment = `-- name: GetListComment :many
 SELECT id
 FROM posts
 WHERE post_top_id = $1 AND post_type_id = 9  
+ORDER BY created_at DESC
 LIMIT $2
 OFFSET $3
 `
@@ -216,7 +217,7 @@ func (q *Queries) GetListPost(ctx context.Context, arg GetListPostParams) ([]int
 
 const getPost = `-- name: GetPost :one
 SELECT id, post_type_id, account_id, description, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat, created_at
-FROM posts WHERE id = $1 AND is_deleted != TRUE AND is_banned != TRUE
+FROM posts WHERE id = $1 AND is_deleted != TRUE AND is_banned != TRUE AND post_type_id != 9
 `
 
 type GetPostRow struct {
@@ -244,21 +245,22 @@ func (q *Queries) GetPost(ctx context.Context, id int64) (GetPostRow, error) {
 	return i, err
 }
 
-const getPostUser = `-- name: GetPostUser :many
+const getUserPost = `-- name: GetUserPost :many
 SELECT id FROM posts 
 WHERE account_id = $1 
+ORDER BY created_at DESC
 LIMIT $2
 OFFSET $3
 `
 
-type GetPostUserParams struct {
+type GetUserPostParams struct {
 	AccountID int64 `json:"account_id"`
 	Limit     int32 `json:"limit"`
 	Offset    int32 `json:"offset"`
 }
 
-func (q *Queries) GetPostUser(ctx context.Context, arg GetPostUserParams) ([]int64, error) {
-	rows, err := q.db.Query(ctx, getPostUser, arg.AccountID, arg.Limit, arg.Offset)
+func (q *Queries) GetUserPost(ctx context.Context, arg GetUserPostParams) ([]int64, error) {
+	rows, err := q.db.Query(ctx, getUserPost, arg.AccountID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

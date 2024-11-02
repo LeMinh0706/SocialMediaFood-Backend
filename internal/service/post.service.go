@@ -68,7 +68,8 @@ func (ps *PostService) CreatePost(ctx context.Context, post_type int32, descript
 		}
 		imgs = append(imgs, i)
 	}
-	res = models.PostRes(post, acc, imgs)
+	accRes := models.AccountPost(acc)
+	res = models.PostRes(post, accRes, imgs)
 	return res, nil
 }
 
@@ -87,7 +88,8 @@ func (ps *PostService) GetPost(ctx context.Context, id int64) (models.PostRespon
 	if err != nil {
 		return res, err
 	}
-	res = models.PostRes(db.CreatePostRow(post), acc, img)
+	accRes := models.AccountPost(acc)
+	res = models.PostRes(db.CreatePostRow(post), accRes, img)
 
 	return res, nil
 }
@@ -114,6 +116,10 @@ func (ps *PostService) GetListPost(ctx context.Context, pageStr, pageSizeStr str
 			return []models.PostResponse{}, err
 		}
 		res = append(res, post)
+	}
+
+	if len(res) == 0 {
+		return []models.PostResponse{}, nil
 	}
 
 	return res, nil
@@ -165,6 +171,48 @@ func (ps *PostService) UpdatePost(ctx context.Context, description string, user_
 	if err != nil {
 		return res, err
 	}
-	res = models.UpdatePostRes(update, acc, post.Images)
+	accRes := models.AccountPost(acc)
+	res = models.UpdatePostRes(update, accRes, post.Images)
+	return res, nil
+}
+
+func (ps *PostService) GetUserPost(ctx context.Context, pageStr, pageSizeStr, account_idStr string) ([]models.PostResponse, error) {
+	var res []models.PostResponse
+
+	page, err := strconv.ParseInt(pageStr, 10, 64)
+	if err != nil {
+		return []models.PostResponse{}, fmt.Errorf("page number")
+	}
+
+	pageSize, err := strconv.ParseInt(pageSizeStr, 10, 64)
+	if err != nil {
+		return []models.PostResponse{}, fmt.Errorf("pagesize number")
+	}
+
+	account_id, err := strconv.ParseInt(account_idStr, 10, 64)
+	if err != nil {
+		return []models.PostResponse{}, fmt.Errorf("account_id number")
+	}
+
+	_, err = ps.accountService.GetAccountById(ctx, account_id)
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+
+	list, err := ps.postRepo.GetUserPost(ctx, int32(page), int32(pageSize), account_id)
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+	for _, id := range list {
+		post, err := ps.GetPost(ctx, id)
+		if err != nil {
+			return []models.PostResponse{}, err
+		}
+		res = append(res, post)
+	}
+	if len(res) == 0 {
+		return []models.PostResponse{}, nil
+
+	}
 	return res, nil
 }

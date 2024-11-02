@@ -54,7 +54,7 @@ func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
 	if err != nil {
 		return nil, err
 	}
-	commentSerice, err := service.NewCommentService(commentRepo)
+	commentSerice, err := service.NewCommentService(commentRepo, accountService, postService)
 	if err != nil {
 		return nil, err
 	}

@@ -4,17 +4,21 @@ import (
 	"log"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/controller"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/service"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
 )
 
-func NewCommentRouter(r *gin.Engine, router *gin.RouterGroup, service *service.CommentService) {
+func NewCommentRouter(r *gin.Engine, router *gin.RouterGroup, service *service.CommentService, token token.Maker) {
 	cc, err := controller.NewCommentController(service)
 	if err != nil {
 		log.Fatal(err)
 	}
 	commentGroup := r.Group(router.BasePath() + "/comments")
+	auth := commentGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
 	{
-		commentGroup.POST("", cc.CreateComment)
+		auth.POST("", cc.CreateComment)
+		commentGroup.GET("", cc.GetListComment)
 	}
 }

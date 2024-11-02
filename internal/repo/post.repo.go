@@ -37,6 +37,14 @@ func (repo *PostRepo) GetListPost(ctx context.Context, page, pageSize int32) ([]
 	return repo.queries.GetListPost(ctx, db.GetListPostParams{Limit: pageSize, Offset: (page - 1) * pageSize})
 }
 
+func (repo *PostRepo) GetUserPost(ctx context.Context, page, pageSize int32, account_id int64) ([]int64, error) {
+	return repo.queries.GetUserPost(ctx, db.GetUserPostParams{
+		AccountID: account_id,
+		Limit:     pageSize,
+		Offset:    (page - 1) * pageSize,
+	})
+}
+
 func (repo *PostRepo) GetPost(ctx context.Context, id int64) (db.GetPostRow, error) {
 	return repo.queries.GetPost(ctx, id)
 }

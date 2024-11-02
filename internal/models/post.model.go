@@ -15,7 +15,7 @@ type PostResponse struct {
 	Lat         interface{}    `json:"lat"`
 	CreatedAt   time.Time      `json:"created_at"`
 	Images      []db.PostImage `json:"images"`
-	Account     db.Account     `json:"account"`
+	Account     AccountForPost `json:"account"`
 }
 
 type UpdatePostRequest struct {
@@ -23,7 +23,7 @@ type UpdatePostRequest struct {
 	Description string `json:"description"`
 }
 
-func PostRes(post db.CreatePostRow, account db.Account, imgs []db.PostImage) PostResponse {
+func PostRes(post db.CreatePostRow, account AccountForPost, imgs []db.PostImage) PostResponse {
 	return PostResponse{
 		ID:          post.ID,
 		PostTypeID:  post.PostTypeID,
@@ -37,7 +37,7 @@ func PostRes(post db.CreatePostRow, account db.Account, imgs []db.PostImage) Pos
 	}
 }
 
-func UpdatePostRes(post db.UpdatePostRow, account db.Account, imgs []db.PostImage) PostResponse {
+func UpdatePostRes(post db.UpdatePostRow, account AccountForPost, imgs []db.PostImage) PostResponse {
 	return PostResponse{
 		ID:          post.ID,
 		PostTypeID:  post.PostTypeID,

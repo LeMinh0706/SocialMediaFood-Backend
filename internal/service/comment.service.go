@@ -2,26 +2,101 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/models"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/repo"
 )
 
 type CommentService struct {
-	commentRepo *repo.CommentRepo
+	commentRepo    *repo.CommentRepo
+	accountService *AccountService
+	postService    *PostService
 }
 
-func NewCommentService(repo *repo.CommentRepo) (*CommentService, error) {
+func NewCommentService(repo *repo.CommentRepo, accountService *AccountService, postService *PostService) (*CommentService, error) {
 	return &CommentService{
-		commentRepo: repo,
+		commentRepo:    repo,
+		accountService: accountService,
+		postService:    postService,
 	}, nil
 }
 
-func (cs *CommentService) CreateComment(ctx context.Context, arg db.CreateCommentParams) (db.CreateCommentRow, error) {
-	var res db.CreateCommentRow
+func (cs *CommentService) CreateComment(ctx context.Context, arg db.CreateCommentParams) (models.CommentResponse, error) {
+	var res models.CommentResponse
+
+	_, err := cs.postService.GetPost(ctx, arg.PostTopID.Int64)
+	if err != nil {
+		return res, err
+	}
+	acc, err := cs.accountService.GetAccountById(ctx, arg.AccountID)
+	if err != nil {
+		return res, err
+	}
+
 	comment, err := cs.commentRepo.CreateComment(ctx, arg)
 	if err != nil {
 		return res, err
 	}
-	return comment, nil
+	accRes := models.AccountPost(acc)
+	res = models.CommentRes(accRes, db.GetCommentRow(comment))
+	return res, nil
+}
+
+func (cs *CommentService) GetComment(ctx context.Context, id int64) (models.CommentResponse, error) {
+	var res models.CommentResponse
+	comment, err := cs.commentRepo.GetComment(ctx, id)
+	if err != nil {
+		return res, nil
+	}
+
+	acc, err := cs.accountService.GetAccountById(ctx, comment.AccountID)
+	if err != nil {
+		return res, nil
+	}
+	accRes := models.AccountPost(acc)
+
+	res = models.CommentRes(accRes, comment)
+	return res, nil
+}
+
+func (cs *CommentService) GetListComment(ctx context.Context, pageStr, pageSizeStr, idStr string) ([]models.CommentResponse, error) {
+	var res []models.CommentResponse
+	page, err := strconv.ParseInt(pageStr, 10, 64)
+	if err != nil {
+		return []models.CommentResponse{}, fmt.Errorf("page number")
+	}
+
+	pageSize, err := strconv.ParseInt(pageSizeStr, 10, 64)
+	if err != nil {
+		return []models.CommentResponse{}, fmt.Errorf("pagesize number")
+	}
+
+	post_id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return []models.CommentResponse{}, fmt.Errorf("post_id number")
+	}
+
+	_, err = cs.postService.GetPost(ctx, post_id)
+	if err != nil {
+		return nil, err
+	}
+
+	list, err := cs.commentRepo.GetListComment(ctx, int32(page), int32(pageSize), post_id)
+	if err != nil {
+		return []models.CommentResponse{}, err
+	}
+	for _, id := range list {
+		comment, err := cs.GetComment(ctx, id)
+		if err != nil {
+			return []models.CommentResponse{}, err
+		}
+		res = append(res, comment)
+	}
+	if len(res) == 0 {
+		return []models.CommentResponse{}, nil
+	}
+	return res, nil
 }

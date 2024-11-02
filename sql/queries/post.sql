@@ -23,15 +23,16 @@ OFFSET $2;
 
 -- name: GetPost :one
 SELECT id, post_type_id, account_id, description, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat, created_at
-FROM posts WHERE id = $1 AND is_deleted != TRUE AND is_banned != TRUE;
+FROM posts WHERE id = $1 AND is_deleted != TRUE AND is_banned != TRUE AND post_type_id != 9;
 
 -- name: DeletePost :exec
 UPDATE posts SET is_deleted = TRUE
 WHERE id = $1;
 
--- name: GetPostUser :many
+-- name: GetUserPost :many
 SELECT id FROM posts 
 WHERE account_id = $1 
+ORDER BY created_at DESC
 LIMIT $2
 OFFSET $3;
 
@@ -41,6 +42,7 @@ OFFSET $3;
 SELECT id
 FROM posts
 WHERE post_top_id = $1 AND post_type_id = 9  
+ORDER BY created_at DESC
 LIMIT $2
 OFFSET $3;
 

@@ -68,7 +68,18 @@ func (pc *PostController) GetListPost(g *gin.Context) {
 
 	posts, err := pc.postService.GetListPost(g, page, pageSize)
 	if err != nil {
-		response.ErrorNonKnow(g, 500, err.Error())
+		GetListErr(g, err)
+	}
+	response.SuccessResponse(g, 200, posts)
+}
+
+func (pc *PostController) GetUserPost(g *gin.Context) {
+	account_id := g.Query("account_id")
+	page := g.Query("page")
+	pageSize := g.Query("page_size")
+	posts, err := pc.postService.GetUserPost(g, page, pageSize, account_id)
+	if err != nil {
+		GetListErr(g, err)
 		return
 	}
 	response.SuccessResponse(g, 200, posts)
