@@ -27,6 +27,7 @@ const (
 	ErrUsernameChar       = 40008
 	ErrMinPassword        = 40009
 	ErrMinFullname        = 40010
+	ContentNull           = 40011
 )
 
 var msg = map[int]string{
@@ -55,6 +56,7 @@ var msg = map[int]string{
 	ErrUsernameChar:       "Username need to be between 6 to 16 character",
 	ErrMinPassword:        "Password need at least 8 character",
 	ErrMinFullname:        "Fullname need at least 6 character",
+	ContentNull:           "Description for comment can't null",
 }
 
 // ErrOutOfDate:   "Token is out of date",

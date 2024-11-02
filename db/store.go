@@ -81,7 +81,7 @@ func (store *Store) CreateAccountTx(ctx context.Context, arg RegisterRequest) (R
 			UserID:               user.ID,
 			Fullname:             arg.Fullname,
 			Gender:               pgtype.Int4{Int32: arg.Gender, Valid: true},
-			Type:                 3,
+			RoleID:               3,
 			UrlAvatar:            util.RandomAvatar(arg.Gender),
 			UrlBackgroundProfile: background,
 		})

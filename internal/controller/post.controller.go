@@ -4,10 +4,12 @@ import (
 	"strconv"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/models"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/service"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5"
 )
 
 type PostController struct {
@@ -120,4 +122,28 @@ func (pc *PostController) DeleteImagePost(g *gin.Context) {
 		return
 	}
 	response.SuccessResponse(g, 204, nil)
+}
+
+func (pc *PostController) UpdatePost(g *gin.Context) {
+	var req models.UpdatePostRequest
+	if err := g.ShouldBindJSON(&req); err != nil {
+		response.ErrorResponse(g, 40000)
+		return
+	}
+	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+
+	update, err := pc.postService.UpdatePost(g, req.Description, auth.UserId, req.ID)
+	if err != nil {
+		if err.Error() == "not you" {
+			response.ErrorResponse(g, 40103)
+			return
+		}
+		if err == pgx.ErrNoRows {
+			response.ErrorResponse(g, 40402)
+			return
+		}
+		response.ErrorNonKnow(g, 500, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 200, update)
 }

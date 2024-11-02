@@ -18,7 +18,26 @@ type PostResponse struct {
 	Account     db.Account     `json:"account"`
 }
 
+type UpdatePostRequest struct {
+	ID          int64  `json:"id"`
+	Description string `json:"description"`
+}
+
 func PostRes(post db.CreatePostRow, account db.Account, imgs []db.PostImage) PostResponse {
+	return PostResponse{
+		ID:          post.ID,
+		PostTypeID:  post.PostTypeID,
+		AccountID:   post.AccountID,
+		Description: post.Description.String,
+		Lng:         post.Lng,
+		Lat:         post.Lat,
+		CreatedAt:   post.CreatedAt.Time,
+		Images:      imgs,
+		Account:     account,
+	}
+}
+
+func UpdatePostRes(post db.UpdatePostRow, account db.Account, imgs []db.PostImage) PostResponse {
 	return PostResponse{
 		ID:          post.ID,
 		PostTypeID:  post.PostTypeID,

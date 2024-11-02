@@ -18,12 +18,13 @@ INSERT INTO accounts(
     gender,
     country,
     language,
-    type,
+    role_id,
     url_avatar,
-    url_background_profile
+    url_background_profile,
+    is_upgrade
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8
-) RETURNING id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, address, is_deleted, type, location, is_upgrade, banned
+    $1, $2, $3, $4, $5, $6, $7, $8, false
+) RETURNING id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, address, is_deleted, role_id, is_upgrade, banned, introduce
 `
 
 type CreateAccountsParams struct {
@@ -32,7 +33,7 @@ type CreateAccountsParams struct {
 	Gender               pgtype.Int4 `json:"gender"`
 	Country              pgtype.Text `json:"country"`
 	Language             pgtype.Text `json:"language"`
-	Type                 int32       `json:"type"`
+	RoleID               int32       `json:"role_id"`
 	UrlAvatar            string      `json:"url_avatar"`
 	UrlBackgroundProfile string      `json:"url_background_profile"`
 }
@@ -44,7 +45,7 @@ func (q *Queries) CreateAccounts(ctx context.Context, arg CreateAccountsParams) 
 		arg.Gender,
 		arg.Country,
 		arg.Language,
-		arg.Type,
+		arg.RoleID,
 		arg.UrlAvatar,
 		arg.UrlBackgroundProfile,
 	)
@@ -60,16 +61,16 @@ func (q *Queries) CreateAccounts(ctx context.Context, arg CreateAccountsParams) 
 		&i.Language,
 		&i.Address,
 		&i.IsDeleted,
-		&i.Type,
-		&i.Location,
+		&i.RoleID,
 		&i.IsUpgrade,
 		&i.Banned,
+		&i.Introduce,
 	)
 	return i, err
 }
 
 const getAccountById = `-- name: GetAccountById :one
-SELECT id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, address, is_deleted, type, location, is_upgrade, banned FROM accounts
+SELECT id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, address, is_deleted, role_id, is_upgrade, banned, introduce FROM accounts
 WHERE id = $1
 LIMIT 1
 `
@@ -88,20 +89,19 @@ func (q *Queries) GetAccountById(ctx context.Context, id int64) (Account, error)
 		&i.Language,
 		&i.Address,
 		&i.IsDeleted,
-		&i.Type,
-		&i.Location,
+		&i.RoleID,
 		&i.IsUpgrade,
 		&i.Banned,
+		&i.Introduce,
 	)
 	return i, err
 }
 
 const getAccountByUserId = `-- name: GetAccountByUserId :many
-SELECT id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, address, is_upgrade,
-ST_X(location::geometry) AS lng, 
-ST_Y(location::geometry) AS lat
+SELECT id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, role_id, address, is_upgrade
 FROM accounts
 WHERE user_id = $1
+ORDER BY id
 `
 
 type GetAccountByUserIdRow struct {
@@ -113,10 +113,9 @@ type GetAccountByUserIdRow struct {
 	Gender               pgtype.Int4 `json:"gender"`
 	Country              pgtype.Text `json:"country"`
 	Language             pgtype.Text `json:"language"`
+	RoleID               int32       `json:"role_id"`
 	Address              pgtype.Text `json:"address"`
 	IsUpgrade            pgtype.Bool `json:"is_upgrade"`
-	Lng                  interface{} `json:"lng"`
-	Lat                  interface{} `json:"lat"`
 }
 
 func (q *Queries) GetAccountByUserId(ctx context.Context, userID int64) ([]GetAccountByUserIdRow, error) {
@@ -137,10 +136,9 @@ func (q *Queries) GetAccountByUserId(ctx context.Context, userID int64) ([]GetAc
 			&i.Gender,
 			&i.Country,
 			&i.Language,
+			&i.RoleID,
 			&i.Address,
 			&i.IsUpgrade,
-			&i.Lng,
-			&i.Lat,
 		); err != nil {
 			return nil, err
 		}

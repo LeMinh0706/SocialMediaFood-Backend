@@ -12,6 +12,7 @@ type Querier interface {
 	AddImagePost(ctx context.Context, arg AddImagePostParams) (PostImage, error)
 	CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error)
 	CreateComment(ctx context.Context, arg CreateCommentParams) (CreateCommentRow, error)
+	CreateOwnerBranch(ctx context.Context, arg CreateOwnerBranchParams) (CreateOwnerBranchRow, error)
 	CreatePost(ctx context.Context, arg CreatePostParams) (CreatePostRow, error)
 	CreateReact(ctx context.Context, arg CreateReactParams) (ReactPost, error)
 	DeleteComment(ctx context.Context, id int64) error
@@ -26,10 +27,11 @@ type Querier interface {
 	GetListComment(ctx context.Context, arg GetListCommentParams) ([]int64, error)
 	GetListPost(ctx context.Context, arg GetListPostParams) ([]int64, error)
 	GetPost(ctx context.Context, id int64) (GetPostRow, error)
+	GetPostUser(ctx context.Context, arg GetPostUserParams) ([]int64, error)
 	GetReactPost(ctx context.Context, postID int64) ([]ReactPost, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (RegisterRow, error)
-	UpdateComment(ctx context.Context, arg UpdateCommentParams) (Post, error)
+	UpdateComment(ctx context.Context, arg UpdateCommentParams) (UpdateCommentRow, error)
 	UpdatePost(ctx context.Context, arg UpdatePostParams) (UpdatePostRow, error)
 }
 

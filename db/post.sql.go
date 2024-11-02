@@ -216,7 +216,7 @@ func (q *Queries) GetListPost(ctx context.Context, arg GetListPostParams) ([]int
 
 const getPost = `-- name: GetPost :one
 SELECT id, post_type_id, account_id, description, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat, created_at
-FROM posts WHERE id = $1 AND is_deleted != TRUE
+FROM posts WHERE id = $1 AND is_deleted != TRUE AND is_banned != TRUE
 `
 
 type GetPostRow struct {
@@ -244,10 +244,43 @@ func (q *Queries) GetPost(ctx context.Context, id int64) (GetPostRow, error) {
 	return i, err
 }
 
+const getPostUser = `-- name: GetPostUser :many
+SELECT id FROM posts 
+WHERE account_id = $1 
+LIMIT $2
+OFFSET $3
+`
+
+type GetPostUserParams struct {
+	AccountID int64 `json:"account_id"`
+	Limit     int32 `json:"limit"`
+	Offset    int32 `json:"offset"`
+}
+
+func (q *Queries) GetPostUser(ctx context.Context, arg GetPostUserParams) ([]int64, error) {
+	rows, err := q.db.Query(ctx, getPostUser, arg.AccountID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []int64{}
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateComment = `-- name: UpdateComment :one
 UPDATE posts SET description = $2
 WHERE id = $1
-RETURNING id, post_type_id, account_id, post_top_id, description, created_at, location, is_banned, is_deleted
+RETURNING id, account_id, post_top_id, description, created_at
 `
 
 type UpdateCommentParams struct {
@@ -255,19 +288,23 @@ type UpdateCommentParams struct {
 	Description pgtype.Text `json:"description"`
 }
 
-func (q *Queries) UpdateComment(ctx context.Context, arg UpdateCommentParams) (Post, error) {
+type UpdateCommentRow struct {
+	ID          int64              `json:"id"`
+	AccountID   int64              `json:"account_id"`
+	PostTopID   pgtype.Int8        `json:"post_top_id"`
+	Description pgtype.Text        `json:"description"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+}
+
+func (q *Queries) UpdateComment(ctx context.Context, arg UpdateCommentParams) (UpdateCommentRow, error) {
 	row := q.db.QueryRow(ctx, updateComment, arg.ID, arg.Description)
-	var i Post
+	var i UpdateCommentRow
 	err := row.Scan(
 		&i.ID,
-		&i.PostTypeID,
 		&i.AccountID,
 		&i.PostTopID,
 		&i.Description,
 		&i.CreatedAt,
-		&i.Location,
-		&i.IsBanned,
-		&i.IsDeleted,
 	)
 	return i, err
 }

@@ -29,7 +29,7 @@ func (as *AccountService) CreateAccount(ctx context.Context, user_id int64, full
 	return account, nil
 }
 
-// Tam thoi chi lay account theo tu token, chua co thong tin khac 24/10
+// Tam thoi chi lay account theo tu token, chua co thong tin khac
 func (as *AccountService) GetAccountUser(ctx context.Context, user_id int64) ([]models.AccountResponse, error) {
 	list, err := as.accountRepo.GetAccountByUserId(ctx, user_id)
 	if err != nil {

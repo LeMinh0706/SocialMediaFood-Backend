@@ -23,5 +23,6 @@ func NewPostRouter(r *gin.Engine, router *gin.RouterGroup, service *service.Post
 		postGroup.DELETE("/images/:id", pc.DeleteImagePost)
 		auth.POST("", pc.CreatePost)
 		auth.DELETE(":id", pc.DeletePost)
+		auth.PUT("", pc.UpdatePost)
 	}
 }

@@ -40,8 +40,6 @@ definitions:
         type: boolean
       language:
         type: string
-      lat: {}
-      lng: {}
       url_avatar:
         type: string
       url_background_profile:

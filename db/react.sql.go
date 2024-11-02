@@ -16,7 +16,7 @@ INSERT INTO react_post (
     state
 ) VALUES (
     $1, $2, $3
-) RETURNING id, post_id, account_id, state
+) RETURNING id, account_id, post_id, state
 `
 
 type CreateReactParams struct {
@@ -30,8 +30,8 @@ func (q *Queries) CreateReact(ctx context.Context, arg CreateReactParams) (React
 	var i ReactPost
 	err := row.Scan(
 		&i.ID,
-		&i.PostID,
 		&i.AccountID,
+		&i.PostID,
 		&i.State,
 	)
 	return i, err
@@ -72,7 +72,7 @@ func (q *Queries) GetFavorite(ctx context.Context, arg GetFavoriteParams) ([]int
 }
 
 const getReactPost = `-- name: GetReactPost :many
-SELECT id, post_id, account_id, state FROM react_post
+SELECT id, account_id, post_id, state FROM react_post
 WHERE post_id = $1
 `
 
@@ -87,8 +87,8 @@ func (q *Queries) GetReactPost(ctx context.Context, postID int64) ([]ReactPost, 
 		var i ReactPost
 		if err := rows.Scan(
 			&i.ID,
-			&i.PostID,
 			&i.AccountID,
+			&i.PostID,
 			&i.State,
 		); err != nil {
 			return nil, err

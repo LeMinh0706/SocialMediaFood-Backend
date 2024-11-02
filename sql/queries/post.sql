@@ -23,12 +23,17 @@ OFFSET $2;
 
 -- name: GetPost :one
 SELECT id, post_type_id, account_id, description, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat, created_at
-FROM posts WHERE id = $1 AND is_deleted != TRUE;
+FROM posts WHERE id = $1 AND is_deleted != TRUE AND is_banned != TRUE;
 
 -- name: DeletePost :exec
 UPDATE posts SET is_deleted = TRUE
 WHERE id = $1;
 
+-- name: GetPostUser :many
+SELECT id FROM posts 
+WHERE account_id = $1 
+LIMIT $2
+OFFSET $3;
 
 --comment
 
@@ -57,7 +62,7 @@ INSERT INTO posts (
 -- name: UpdateComment :one
 UPDATE posts SET description = $2
 WHERE id = $1
-RETURNING *;
+RETURNING id, account_id, post_top_id, description, created_at;
 
 -- name: DeleteComment :exec
 DELETE FROM posts 

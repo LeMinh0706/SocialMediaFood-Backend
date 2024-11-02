@@ -3,18 +3,16 @@ package models
 import "github.com/LeMinh0706/SocialMediaFood-Backend/db"
 
 type AccountResponse struct {
-	ID                   int64       `json:"id"`
-	UserID               int64       `json:"user_id"`
-	Fullname             string      `json:"fullname"`
-	UrlAvatar            string      `json:"url_avatar"`
-	UrlBackgroundProfile string      `json:"url_background_profile"`
-	Gender               int32       `json:"gender"`
-	Country              string      `json:"country"`
-	Language             string      `json:"language"`
-	Address              string      `json:"address"`
-	IsUpgrade            bool        `json:"is_upgrade"`
-	Lng                  interface{} `json:"lng"`
-	Lat                  interface{} `json:"lat"`
+	ID                   int64  `json:"id"`
+	UserID               int64  `json:"user_id"`
+	Fullname             string `json:"fullname"`
+	UrlAvatar            string `json:"url_avatar"`
+	UrlBackgroundProfile string `json:"url_background_profile"`
+	Gender               int32  `json:"gender"`
+	Country              string `json:"country"`
+	Language             string `json:"language"`
+	Address              string `json:"address"`
+	IsUpgrade            bool   `json:"is_upgrade"`
 }
 
 func AccountRes(account db.GetAccountByUserIdRow) AccountResponse {
@@ -29,8 +27,6 @@ func AccountRes(account db.GetAccountByUserIdRow) AccountResponse {
 		Language:             account.Language.String,
 		Address:              account.Address.String,
 		IsUpgrade:            account.IsUpgrade.Bool,
-		Lng:                  account.Lng,
-		Lat:                  account.Lat,
 	}
 }
 

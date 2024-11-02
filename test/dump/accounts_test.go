@@ -36,7 +36,7 @@ func createRandomAccount(t *testing.T, user_id int64, typeA int32) db.Account {
 		UserID:               user_id,
 		Fullname:             util.RandomString(6),
 		Gender:               pgtype.Int4{Int32: gender, Valid: true},
-		Type:                 typeA,
+		RoleID:               typeA,
 		UrlAvatar:            util.RandomAvatar(gender),
 		UrlBackgroundProfile: db.GetBackground(),
 	}
@@ -71,11 +71,11 @@ func TestGetAccount(t *testing.T) {
 	createRandomAccount(t, user.ID, 3)
 	createRandomAccount(t, user.ID, 2)
 	createRandomAccount(t, user.ID, 2)
-	createRandomAccount(t, user.ID, 2)
+	// createRandomAccount(t, user.ID, 2)
 	acc, err := testQueries.GetAccountByUserId(context.Background(), user.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, acc)
-	require.Len(t, acc, 4)
+	require.Len(t, acc, 3)
 }
 
 func TestGetOneAccount(t *testing.T) {

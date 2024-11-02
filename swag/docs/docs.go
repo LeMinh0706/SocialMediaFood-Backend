@@ -194,8 +194,6 @@ const docTemplate = `{
                 "language": {
                     "type": "string"
                 },
-                "lat": {},
-                "lng": {},
                 "url_avatar": {
                     "type": "string"
                 },

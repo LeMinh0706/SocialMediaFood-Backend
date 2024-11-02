@@ -147,3 +147,24 @@ func (ps *PostService) DeleteImage(ctx context.Context, id int64) error {
 	}
 	return nil
 }
+
+func (ps *PostService) UpdatePost(ctx context.Context, description string, user_id, id int64) (models.PostResponse, error) {
+	var res models.PostResponse
+	post, err := ps.GetPost(ctx, id)
+	if err != nil {
+		return res, err
+	}
+	acc, err := ps.accountService.GetAccountById(ctx, post.AccountID)
+	if err != nil {
+		return res, err
+	}
+	if user_id != acc.UserID {
+		return res, fmt.Errorf("not you")
+	}
+	update, err := ps.postRepo.UpdatePost(ctx, db.UpdatePostParams{ID: id, Description: pgtype.Text{String: description, Valid: true}})
+	if err != nil {
+		return res, err
+	}
+	res = models.UpdatePostRes(update, acc, post.Images)
+	return res, nil
+}

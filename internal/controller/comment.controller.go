@@ -20,7 +20,7 @@ func NewCommentController(service *service.CommentService) (*CommentController, 
 func (cc *CommentController) CreateComment(g *gin.Context) {
 	var req models.CommentRequest
 	if err := g.ShouldBindJSON(&req); err != nil {
-		response.ErrorNonKnow(g, 400, err.Error())
+		response.ErrorResponse(g, 40011)
 		return
 	}
 	request := models.CommentReq(req)
