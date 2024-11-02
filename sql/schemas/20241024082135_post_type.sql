@@ -4,7 +4,7 @@ CREATE TABLE "post_type" (
   "id" int PRIMARY KEY,
   "name" varchar NOT NULL
 );
-INSERT INTO "post_type" VALUES (1, 'Normal'),(2, 'Premium'),(3, 'Rating'),(4, 'Avatar'),(5, 'Background'),(9, 'Comment');
+INSERT INTO "post_type" VALUES (1, 'Normal'),(2, 'Premium'),(3, 'Avatar'),(4, 'Background'),(9, 'Comment');
 
 -- +goose StatementEnd
 

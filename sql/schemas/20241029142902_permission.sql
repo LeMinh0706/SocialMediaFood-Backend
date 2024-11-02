@@ -1,9 +1,14 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE "account_permission" (
-  "id" bigserial PRIMARY KEY,
-  "permission_name" varchar NOT NULL,
-  "account_id" bigint NOT NULL,
+CREATE TABLE "permissions" (
+  "id" serial PRIMARY KEY,
+  "name" varchar NOT NULL
+);
+
+CREATE TABLE "role_permission" (
+  "id" serial PRIMARY KEY,
+  "per_id" int,
+  "role_id" int,
   "can_select_all" bool NOT NULL DEFAULT false,
   "can_select" bool NOT NULL DEFAULT false,
   "can_insert" bool NOT NULL DEFAULT false,
@@ -12,23 +17,13 @@ CREATE TABLE "account_permission" (
   "can_do_all" bool NOT NULL DEFAULT false
 );
 
-CREATE TABLE "permission" (
-  "name" varchar PRIMARY KEY
-);
-
-CREATE INDEX ON "account_permission" ("account_id");
-
-CREATE INDEX ON "account_permission" ("permission_name");
-ALTER TABLE "account_permission" ADD FOREIGN KEY ("permission_name") REFERENCES "permission" ("name");
-
-ALTER TABLE "account_permission" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id");
+ALTER TABLE "role_permission" ADD FOREIGN KEY ("per_id") REFERENCES "permissions" ("id");
+ALTER TABLE "role_permission" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id");
 
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-ALTER TABLE "account_permission" DROP CONSTRAINT IF EXISTS "account_permission_acccount_id_fkey";
-ALTER TABLE "account_permission" DROP CONSTRAINT IF EXISTS "account_permission_permission_name_fkey";
-DROP TABLE IF EXISTS "account_permission";
-DROP TABLE IF EXISTS "permission";
+DROP TABLE IF EXISTS "role_permission" CASCADE;
+DROP TABLE IF EXISTS "permissions" CASCADE;
 -- +goose StatementEnd

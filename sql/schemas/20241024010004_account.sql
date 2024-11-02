@@ -18,23 +18,16 @@ CREATE TABLE "accounts" (
   "language" varchar,
   "address" varchar,
   "is_deleted" bool NOT NULL DEFAULT false,
-  "type" int NOT NULL DEFAULT 3,
-  "is_upgrade" bool DEFAULT false,
-  "banned" varchar NOT NULL DEFAULT 1,
-  "status_id" int DEFAULT 1
+  "role_id" int NOT NULL DEFAULT 3,
+  "is_upgrade" bool,
+  "banned" bigint DEFAULT 0,
+  "introduce" varchar
 );
-
-CREATE TABLE "status" (
-  "id" serial PRIMARY KEY,
-  "name" varchar
-);
-INSERT INTO "status" VALUES (1, 'normal');
 
 CREATE INDEX ON "accounts" ("fullname");
 CREATE INDEX ON "accounts" ("user_id");
 ALTER TABLE "accounts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
-ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "role" ("id");
-ALTER TABLE "accounts" ADD FOREIGN KEY ("status_id") REFERENCES "status" ("id");
+ALTER TABLE "accounts" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id");
 
 -- +goose StatementEnd
 
@@ -42,5 +35,4 @@ ALTER TABLE "accounts" ADD FOREIGN KEY ("status_id") REFERENCES "status" ("id");
 -- +goose StatementBegin
 DROP TABLE IF EXISTS "accounts" CASCADE;
 DROP TABLE IF EXISTS "role" CASCADE;
-DROP TABLE IF EXISTS "status" CASCADE;
 -- +goose StatementEnd

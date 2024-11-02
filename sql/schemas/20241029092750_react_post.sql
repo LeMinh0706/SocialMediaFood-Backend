@@ -2,8 +2,8 @@
 -- +goose StatementBegin
 CREATE TABLE "react_post" (
   "id" bigserial PRIMARY KEY,
-  "post_id" bigint NOT NULL,
   "account_id" bigint NOT NULL,
+  "post_id" bigint NOT NULL,
   "state" int NOT NULL DEFAULT 1
 );
 CREATE INDEX ON "react_post" ("post_id");
