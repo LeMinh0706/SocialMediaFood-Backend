@@ -29,6 +29,8 @@ const (
 	ErrMinFullname        = 40010
 	ContentNull           = 40011
 	ErrAccountID          = 40012
+	ErrPositionField      = 40013
+	ErrImageWasDelete     = 40408
 )
 
 var msg = map[int]string{
@@ -59,6 +61,8 @@ var msg = map[int]string{
 	ErrMinFullname:        "Fullname need at least 6 character",
 	ContentNull:           "Description for comment can't null",
 	ErrAccountID:          "Account id must be number",
+	ErrPositionField:      "X and Y must be both fill or both empty",
+	ErrImageWasDelete:     "Image not found or was deleted",
 }
 
 // ErrOutOfDate:   "Token is out of date",

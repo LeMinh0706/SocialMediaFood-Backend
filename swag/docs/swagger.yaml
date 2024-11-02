@@ -1,5 +1,14 @@
 basePath: /api
 definitions:
+  db.PostImage:
+    properties:
+      id:
+        type: integer
+      post_id:
+        type: integer
+      url_image:
+        type: string
+    type: object
   db.RegisterRequest:
     properties:
       email:
@@ -23,6 +32,21 @@ definitions:
     - fullname
     - password
     - username
+    type: object
+  models.AccountForPost:
+    properties:
+      fullname:
+        type: string
+      id:
+        type: integer
+      role_id:
+        type: integer
+      url_avatar:
+        type: string
+      url_background_profile:
+        type: string
+      user_id:
+        type: integer
     type: object
   models.AccountResponse:
     properties:
@@ -61,6 +85,27 @@ definitions:
       access_token:
         type: string
     type: object
+  models.PostResponse:
+    properties:
+      account:
+        $ref: '#/definitions/models.AccountForPost'
+      account_id:
+        type: integer
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      images:
+        items:
+          $ref: '#/definitions/db.PostImage'
+        type: array
+      lat: {}
+      lng: {}
+      post_type_id:
+        type: integer
+    type: object
   models.RegisterResponse:
     properties:
       created_at:
@@ -73,6 +118,13 @@ definitions:
         type: string
     required:
     - username
+    type: object
+  models.UpdatePostRequest:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
     type: object
   response.ErrSwaggerJson:
     properties:
@@ -115,6 +167,198 @@ paths:
       summary: It's you
       tags:
       - accounts
+  /posts:
+    get:
+      consumes:
+      - application/json
+      description: Get list post with page and page size (Limit-Offset)
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.PostResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Get list post
+      tags:
+      - Posts
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create post
+      parameters:
+      - description: Description
+        in: formData
+        name: description
+        type: string
+      - description: Account ID
+        in: formData
+        name: account_id
+        required: true
+        type: string
+      - description: Direct X
+        in: formData
+        name: direct_x
+        type: string
+      - description: Direct Y
+        in: formData
+        name: direct_y
+        type: string
+      - collectionFormat: csv
+        description: Images post
+        in: formData
+        items:
+          type: file
+        name: images
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.PostResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Create post
+      tags:
+      - Posts
+  /posts/:
+    put:
+      consumes:
+      - application/json
+      description: Just update content post
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdatePostRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.PostResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Update post
+      tags:
+      - Posts
+  /posts/images/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete image when update post (maybe)
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Delete Image
+      tags:
+      - Posts
+  /posts/person:
+    get:
+      consumes:
+      - application/json
+      description: Get list post with account_id, page and page size (Limit-Offset)
+      parameters:
+      - description: Account ID
+        in: query
+        name: account_id
+        required: true
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.PostResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Get list post
+      tags:
+      - Posts
+  /posts/soft-delete/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Just Delete post
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Delete post
+      tags:
+      - Posts
   /users/login:
     post:
       consumes:

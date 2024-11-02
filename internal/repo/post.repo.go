@@ -49,6 +49,10 @@ func (repo *PostRepo) GetPost(ctx context.Context, id int64) (db.GetPostRow, err
 	return repo.queries.GetPost(ctx, id)
 }
 
+func (repo *PostRepo) GetImageById(ctx context.Context, id int64) (db.PostImage, error) {
+	return repo.queries.GetImage(ctx, id)
+}
+
 func (repo *PostRepo) DeletePost(ctx context.Context, id int64) error {
 	return repo.queries.DeletePost(ctx, id)
 }

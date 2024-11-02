@@ -20,10 +20,10 @@ func NewPostRouter(r *gin.Engine, router *gin.RouterGroup, service *service.Post
 	{
 		postGroup.GET("", pc.GetListPost)
 		postGroup.GET("/person", pc.GetUserPost)
-		postGroup.GET(":id", pc.GetPost)
-		postGroup.DELETE("/images/:id", pc.DeleteImagePost)
+		// postGroup.GET(":id", pc.GetPost)
+		auth.DELETE("/images/:id", pc.DeleteImagePost)
 		auth.POST("", pc.CreatePost)
-		auth.DELETE(":id", pc.DeletePost)
+		auth.POST("/soft-delete/:id", pc.DeletePost)
 		auth.PUT("", pc.UpdatePost)
 	}
 }

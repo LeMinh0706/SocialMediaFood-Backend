@@ -22,6 +22,7 @@ type Querier interface {
 	GetAccountByUserId(ctx context.Context, userID int64) ([]GetAccountByUserIdRow, error)
 	GetComment(ctx context.Context, id int64) (GetCommentRow, error)
 	GetFavorite(ctx context.Context, arg GetFavoriteParams) ([]int64, error)
+	GetImage(ctx context.Context, id int64) (PostImage, error)
 	GetImagePost(ctx context.Context, postID int64) ([]PostImage, error)
 	//comment
 	GetListComment(ctx context.Context, arg GetListCommentParams) ([]int64, error)

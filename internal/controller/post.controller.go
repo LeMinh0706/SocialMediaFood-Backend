@@ -22,6 +22,21 @@ func NewPostController(service *service.PostService) (*PostController, error) {
 	}, nil
 }
 
+// Post godoc
+// @Summary      Create post
+// @Description  Create post
+// @Tags         Posts
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        description formData string false "Description"
+// @Param        account_id formData string true "Account ID"
+// @Param        direct_x formData string false "Direct X"
+// @Param        direct_y formData string false "Direct Y"
+// @Param        images formData []file false "Images post"
+// @Security BearerAuth
+// @Success      200  {object}  models.PostResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts [post]
 func (pc *PostController) CreatePost(g *gin.Context) {
 
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
@@ -33,6 +48,10 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 	}
 	x := g.PostForm("direct_x")
 	y := g.PostForm("direct_y")
+	if (x == "" && y != "") || (x != "" && y == "") {
+		response.ErrorResponse(g, 40013)
+		return
+	}
 
 	description := g.PostForm("description")
 
@@ -62,6 +81,17 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 	response.SuccessResponse(g, 201, post)
 }
 
+// Post godoc
+// @Summary      Get list post
+// @Description  Get list post with page and page size (Limit-Offset)
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Param        page query int true "Page"
+// @Param        page_size query int true "Page size"
+// @Success      200  {object}  []models.PostResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts [get]
 func (pc *PostController) GetListPost(g *gin.Context) {
 	page := g.Query("page")
 	pageSize := g.Query("page_size")
@@ -73,6 +103,18 @@ func (pc *PostController) GetListPost(g *gin.Context) {
 	response.SuccessResponse(g, 200, posts)
 }
 
+// Post godoc
+// @Summary      Get list post
+// @Description  Get list post with account_id, page and page size (Limit-Offset)
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Param        account_id query int true "Account ID"
+// @Param        page query int true "Page"
+// @Param        page_size query int true "Page size"
+// @Success      200  {object}  []models.PostResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts/person [get]
 func (pc *PostController) GetUserPost(g *gin.Context) {
 	account_id := g.Query("account_id")
 	page := g.Query("page")
@@ -100,6 +142,17 @@ func (pc *PostController) GetPost(g *gin.Context) {
 	response.SuccessResponse(g, 200, post)
 }
 
+// Post godoc
+// @Summary      Delete post
+// @Description  Just Delete post
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "ID"
+// @Security BearerAuth
+// @Success      204  "No content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts/soft-delete/{id} [post]
 func (pc *PostController) DeletePost(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 
@@ -121,6 +174,17 @@ func (pc *PostController) DeletePost(g *gin.Context) {
 	response.SuccessResponse(g, 204, nil)
 }
 
+// Post godoc
+// @Summary      Delete Image
+// @Description  Delete image when update post (maybe)
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "ID"
+// @Security BearerAuth
+// @Success      204  "No content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts/images/{id} [delete]
 func (pc *PostController) DeleteImagePost(g *gin.Context) {
 	str := g.Param("id")
 	id, err := strconv.ParseInt(str, 10, 64)
@@ -129,12 +193,27 @@ func (pc *PostController) DeleteImagePost(g *gin.Context) {
 		return
 	}
 	if err = pc.postService.DeleteImage(g, id); err != nil {
+		if err == pgx.ErrNoRows {
+			response.ErrorResponse(g, 40408)
+			return
+		}
 		response.ErrorResponse(g, 40402)
 		return
 	}
 	response.SuccessResponse(g, 204, nil)
 }
 
+// Post godoc
+// @Summary      Update post
+// @Description  Just update content post
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Param        request body models.UpdatePostRequest true "request"
+// @Security BearerAuth
+// @Success      201  {object} 	models.PostResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts/ [put]
 func (pc *PostController) UpdatePost(g *gin.Context) {
 	var req models.UpdatePostRequest
 	if err := g.ShouldBindJSON(&req); err != nil {
