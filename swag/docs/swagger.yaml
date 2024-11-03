@@ -167,7 +167,7 @@ definitions:
       message:
         type: string
     type: object
-host: http://foodioo.camenryder.xyz:80
+host: foodioo.camenryder.xyz:80
 info:
   contact: {}
   description: This is SocialFood Swagger.

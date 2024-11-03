@@ -10,7 +10,7 @@
         },
         "version": "1.0"
     },
-    "host": "http://foodioo.camenryder.xyz:80",
+    "host": "foodioo.camenryder.xyz:80",
     "basePath": "/api",
     "paths": {
         "/accounts/me": {
