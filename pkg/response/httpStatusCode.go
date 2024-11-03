@@ -46,7 +46,7 @@ var msg = map[int]string{
 	ErrGender:             "Gender should be 0 (for female) or 1 (for male)",
 	ErrUnauthorize:        "Unauthorized",
 	ErrInvalid:            "Invalid Token",
-	ErrYourSelf:           "Not your self, cant create/update/delete anything for another",
+	ErrYourSelf:           "Not your self, cant create/update/delete anything for another user",
 	ErrUserExist:          "User exist",
 	ErrLogin:              "User doesn't exists",
 	ErrNotFoundUser:       "User not found",

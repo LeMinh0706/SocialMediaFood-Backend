@@ -101,6 +101,13 @@ func GetListErr(g *gin.Context, err error) {
 	case "no rows in result set":
 		response.ErrorResponse(g, 40402)
 		return
+	case "not you":
+		response.ErrorResponse(g, 40103)
+		return
+	case "id number":
+		response.ErrorResponse(g, 40004)
+		return
 	}
+
 	response.ErrorNonKnow(g, 500, err.Error())
 }

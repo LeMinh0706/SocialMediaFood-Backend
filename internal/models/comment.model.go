@@ -13,6 +13,10 @@ type CommentRequest struct {
 	Description string `json:"description" binding:"required"`
 }
 
+type UpdateCommentRequest struct {
+	Description string `json:"description" binding:"required"`
+}
+
 type CommentResponse struct {
 	ID          int64          `json:"id"`
 	Account     AccountForPost `json:"account"`

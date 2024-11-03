@@ -71,6 +71,32 @@ definitions:
       user_id:
         type: integer
     type: object
+  models.CommentRequest:
+    properties:
+      account_id:
+        type: integer
+      description:
+        type: string
+      post_top_id:
+        type: integer
+    required:
+    - account_id
+    - description
+    - post_top_id
+    type: object
+  models.CommentResponse:
+    properties:
+      account:
+        $ref: '#/definitions/models.AccountForPost'
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      post_top_id:
+        type: integer
+    type: object
   models.LoginRequest:
     properties:
       password:
@@ -118,6 +144,13 @@ definitions:
         type: string
     required:
     - username
+    type: object
+  models.UpdateCommentRequest:
+    properties:
+      description:
+        type: string
+    required:
+    - description
     type: object
   models.UpdatePostRequest:
     properties:
@@ -167,6 +200,127 @@ paths:
       summary: It's you
       tags:
       - accounts
+  /comments:
+    get:
+      consumes:
+      - application/json
+      description: Get list post with post_top_id, page and page size (Limit-Offset)
+      parameters:
+      - description: Post ID
+        in: query
+        name: post_id
+        required: true
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.CommentResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Get list post
+      tags:
+      - Comments
+    post:
+      consumes:
+      - application/json
+      description: Create comment
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CommentResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Create comment
+      tags:
+      - Comments
+  /comments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete comment
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Delete Comment
+      tags:
+      - Comments
+    put:
+      consumes:
+      - application/json
+      description: Just update content post
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CommentResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Update Comment
+      tags:
+      - Comments
   /posts:
     get:
       consumes:

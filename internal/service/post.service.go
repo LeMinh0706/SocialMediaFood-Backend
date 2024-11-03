@@ -36,7 +36,7 @@ func (ps *PostService) CreatePost(ctx context.Context, post_type int32, descript
 		location = pgtype.Text{Valid: false}
 	}
 
-	acc, err := ps.accountService.GetAccountById(ctx, account_id)
+	acc, err := ps.accountService.GetAccountForAction(ctx, user_id, account_id)
 	if err != nil {
 		return res, fmt.Errorf("account not found")
 	}
@@ -131,12 +131,9 @@ func (ps *PostService) DeletePost(ctx context.Context, id, user_id int64) error 
 		return err
 	}
 
-	acc, err := ps.accountService.GetAccountById(ctx, post.AccountID)
+	_, err = ps.accountService.GetAccountForAction(ctx, user_id, post.AccountID)
 	if err != nil {
 		return err
-	}
-	if acc.UserID != user_id {
-		return fmt.Errorf("not you")
 	}
 
 	err = ps.postRepo.DeletePost(ctx, id)
@@ -164,12 +161,9 @@ func (ps *PostService) UpdatePost(ctx context.Context, description string, user_
 	if err != nil {
 		return res, err
 	}
-	acc, err := ps.accountService.GetAccountById(ctx, post.AccountID)
+	acc, err := ps.accountService.GetAccountForAction(ctx, user_id, post.AccountID)
 	if err != nil {
 		return res, err
-	}
-	if user_id != acc.UserID {
-		return res, fmt.Errorf("not you")
 	}
 	update, err := ps.postRepo.UpdatePost(ctx, db.UpdatePostParams{ID: id, Description: pgtype.Text{String: description, Valid: true}})
 	if err != nil {

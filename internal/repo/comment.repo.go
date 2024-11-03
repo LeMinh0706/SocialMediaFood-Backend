@@ -32,3 +32,11 @@ func (repo *CommentRepo) GetListComment(ctx context.Context, page, pageSize int3
 		Offset:    (page - 1) * pageSize,
 	})
 }
+
+func (repo *CommentRepo) UpdateComment(ctx context.Context, arg db.UpdateCommentParams) (db.UpdateCommentRow, error) {
+	return repo.queries.UpdateComment(ctx, arg)
+}
+
+func (repo *CommentRepo) DeleteComment(ctx context.Context, id int64) error {
+	return repo.queries.DeleteComment(ctx, id)
+}
