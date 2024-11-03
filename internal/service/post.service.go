@@ -38,7 +38,7 @@ func (ps *PostService) CreatePost(ctx context.Context, post_type int32, descript
 
 	acc, err := ps.accountService.GetAccountForAction(ctx, user_id, account_id)
 	if err != nil {
-		return res, fmt.Errorf("account not found")
+		return res, err
 	}
 
 	if user_id != acc.UserID {
