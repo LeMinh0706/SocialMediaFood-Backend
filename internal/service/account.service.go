@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/models"
@@ -29,7 +30,7 @@ func (as *AccountService) CreateAccount(ctx context.Context, user_id int64, full
 	return account, nil
 }
 
-// Tam thoi chi lay account theo tu token, chua co thong tin khac 24/10
+// Tam thoi chi lay account theo tu token, chua co thong tin khac
 func (as *AccountService) GetAccountUser(ctx context.Context, user_id int64) ([]models.AccountResponse, error) {
 	list, err := as.accountRepo.GetAccountByUserId(ctx, user_id)
 	if err != nil {
@@ -45,5 +46,19 @@ func (as *AccountService) GetAccountById(ctx context.Context, id int64) (db.Acco
 	if err != nil {
 		return res, err
 	}
+
+	return account, nil
+}
+
+func (as *AccountService) GetAccountForAction(ctx context.Context, user_id, id int64) (db.Account, error) {
+	var res db.Account
+	account, err := as.accountRepo.GetAccountBydId(ctx, id)
+	if err != nil {
+		return res, err
+	}
+	if account.UserID != user_id {
+		return res, fmt.Errorf("not you")
+	}
+
 	return account, nil
 }

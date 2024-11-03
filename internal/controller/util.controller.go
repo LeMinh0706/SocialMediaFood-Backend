@@ -83,3 +83,31 @@ func ValidateRegister(g *gin.Context, err error) {
 		return
 	}
 }
+
+func GetListErr(g *gin.Context, err error) {
+	switch err.Error() {
+	case "page number":
+		response.ErrorResponse(g, 40001)
+		return
+	case "pageSize number":
+		response.ErrorResponse(g, 40002)
+		return
+	case "account_id number":
+		response.ErrorResponse(g, 40012)
+		return
+	case "post_id number":
+		response.ErrorResponse(g, 40004)
+		return
+	case "no rows in result set":
+		response.ErrorResponse(g, 40402)
+		return
+	case "not you":
+		response.ErrorResponse(g, 40103)
+		return
+	case "id number":
+		response.ErrorResponse(g, 40004)
+		return
+	}
+
+	response.ErrorNonKnow(g, 500, err.Error())
+}

@@ -37,10 +37,30 @@ func (repo *PostRepo) GetListPost(ctx context.Context, page, pageSize int32) ([]
 	return repo.queries.GetListPost(ctx, db.GetListPostParams{Limit: pageSize, Offset: (page - 1) * pageSize})
 }
 
+func (repo *PostRepo) GetUserPost(ctx context.Context, page, pageSize int32, account_id int64) ([]int64, error) {
+	return repo.queries.GetUserPost(ctx, db.GetUserPostParams{
+		AccountID: account_id,
+		Limit:     pageSize,
+		Offset:    (page - 1) * pageSize,
+	})
+}
+
 func (repo *PostRepo) GetPost(ctx context.Context, id int64) (db.GetPostRow, error) {
 	return repo.queries.GetPost(ctx, id)
 }
 
+func (repo *PostRepo) GetImageById(ctx context.Context, id int64) (db.PostImage, error) {
+	return repo.queries.GetImage(ctx, id)
+}
+
 func (repo *PostRepo) DeletePost(ctx context.Context, id int64) error {
 	return repo.queries.DeletePost(ctx, id)
+}
+
+func (repo *PostRepo) DeleteImage(ctx context.Context, id int64) error {
+	return repo.queries.DeleteImagePost(ctx, id)
+}
+
+func (repo *PostRepo) UpdatePost(ctx context.Context, arg db.UpdatePostParams) (db.UpdatePostRow, error) {
+	return repo.queries.UpdatePost(ctx, arg)
 }

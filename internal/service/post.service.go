@@ -17,7 +17,7 @@ type PostService struct {
 	accountService *AccountService
 }
 
-func NewPostRepo(repo *repo.PostRepo, accountService *AccountService) (*PostService, error) {
+func NewPostService(repo *repo.PostRepo, accountService *AccountService) (*PostService, error) {
 	return &PostService{
 		postRepo:       repo,
 		accountService: accountService,
@@ -36,7 +36,7 @@ func (ps *PostService) CreatePost(ctx context.Context, post_type int32, descript
 		location = pgtype.Text{Valid: false}
 	}
 
-	acc, err := ps.accountService.GetAccountById(ctx, account_id)
+	acc, err := ps.accountService.GetAccountForAction(ctx, user_id, account_id)
 	if err != nil {
 		return res, fmt.Errorf("account not found")
 	}
@@ -68,7 +68,8 @@ func (ps *PostService) CreatePost(ctx context.Context, post_type int32, descript
 		}
 		imgs = append(imgs, i)
 	}
-	res = models.PostRes(post, acc, imgs)
+	accRes := models.AccountPost(acc)
+	res = models.PostRes(post, accRes, imgs)
 	return res, nil
 }
 
@@ -87,7 +88,8 @@ func (ps *PostService) GetPost(ctx context.Context, id int64) (models.PostRespon
 	if err != nil {
 		return res, err
 	}
-	res = models.PostRes(db.CreatePostRow(post), acc, img)
+	accRes := models.AccountPost(acc)
+	res = models.PostRes(db.CreatePostRow(post), accRes, img)
 
 	return res, nil
 }
@@ -116,6 +118,10 @@ func (ps *PostService) GetListPost(ctx context.Context, pageStr, pageSizeStr str
 		res = append(res, post)
 	}
 
+	if len(res) == 0 {
+		return []models.PostResponse{}, nil
+	}
+
 	return res, nil
 }
 
@@ -125,12 +131,9 @@ func (ps *PostService) DeletePost(ctx context.Context, id, user_id int64) error 
 		return err
 	}
 
-	acc, err := ps.accountService.GetAccountById(ctx, post.AccountID)
+	_, err = ps.accountService.GetAccountForAction(ctx, user_id, post.AccountID)
 	if err != nil {
 		return err
-	}
-	if acc.UserID != user_id {
-		return fmt.Errorf("not you")
 	}
 
 	err = ps.postRepo.DeletePost(ctx, id)
@@ -138,4 +141,76 @@ func (ps *PostService) DeletePost(ctx context.Context, id, user_id int64) error 
 		return err
 	}
 	return nil
+}
+
+func (ps *PostService) DeleteImage(ctx context.Context, id int64) error {
+	_, err := ps.postRepo.GetImageById(ctx, id)
+	if err != nil {
+		return err
+	}
+	err = ps.postRepo.DeleteImage(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ps *PostService) UpdatePost(ctx context.Context, description string, user_id, id int64) (models.PostResponse, error) {
+	var res models.PostResponse
+	post, err := ps.GetPost(ctx, id)
+	if err != nil {
+		return res, err
+	}
+	acc, err := ps.accountService.GetAccountForAction(ctx, user_id, post.AccountID)
+	if err != nil {
+		return res, err
+	}
+	update, err := ps.postRepo.UpdatePost(ctx, db.UpdatePostParams{ID: id, Description: pgtype.Text{String: description, Valid: true}})
+	if err != nil {
+		return res, err
+	}
+	accRes := models.AccountPost(acc)
+	res = models.UpdatePostRes(update, accRes, post.Images)
+	return res, nil
+}
+
+func (ps *PostService) GetUserPost(ctx context.Context, pageStr, pageSizeStr, account_idStr string) ([]models.PostResponse, error) {
+	var res []models.PostResponse
+
+	page, err := strconv.ParseInt(pageStr, 10, 64)
+	if err != nil {
+		return []models.PostResponse{}, fmt.Errorf("page number")
+	}
+
+	pageSize, err := strconv.ParseInt(pageSizeStr, 10, 64)
+	if err != nil {
+		return []models.PostResponse{}, fmt.Errorf("pagesize number")
+	}
+
+	account_id, err := strconv.ParseInt(account_idStr, 10, 64)
+	if err != nil {
+		return []models.PostResponse{}, fmt.Errorf("account_id number")
+	}
+
+	_, err = ps.accountService.GetAccountById(ctx, account_id)
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+
+	list, err := ps.postRepo.GetUserPost(ctx, int32(page), int32(pageSize), account_id)
+	if err != nil {
+		return []models.PostResponse{}, err
+	}
+	for _, id := range list {
+		post, err := ps.GetPost(ctx, id)
+		if err != nil {
+			return []models.PostResponse{}, err
+		}
+		res = append(res, post)
+	}
+	if len(res) == 0 {
+		return []models.PostResponse{}, nil
+
+	}
+	return res, nil
 }

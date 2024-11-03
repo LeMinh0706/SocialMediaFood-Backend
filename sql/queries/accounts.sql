@@ -5,19 +5,19 @@ INSERT INTO accounts(
     gender,
     country,
     language,
-    type,
+    role_id,
     url_avatar,
-    url_background_profile
+    url_background_profile,
+    is_upgrade
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8
+    $1, $2, $3, $4, $5, $6, $7, $8, false
 ) RETURNING * ;
 
 -- name: GetAccountByUserId :many
-SELECT id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, address, is_upgrade,
-ST_X(location::geometry) AS lng, 
-ST_Y(location::geometry) AS lat
+SELECT id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, role_id, address, is_upgrade
 FROM accounts
-WHERE user_id = $1;
+WHERE user_id = $1
+ORDER BY id;
 
 -- name: GetAccountById :one
 SELECT * FROM accounts

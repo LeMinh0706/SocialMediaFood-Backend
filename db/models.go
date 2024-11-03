@@ -19,9 +19,35 @@ type Account struct {
 	Language             pgtype.Text `json:"language"`
 	Address              pgtype.Text `json:"address"`
 	IsDeleted            bool        `json:"is_deleted"`
-	Type                 int32       `json:"type"`
-	Location             interface{} `json:"location"`
+	RoleID               int32       `json:"role_id"`
 	IsUpgrade            pgtype.Bool `json:"is_upgrade"`
+	Banned               pgtype.Int8 `json:"banned"`
+	Introduce            pgtype.Text `json:"introduce"`
+}
+
+type AccountStatus struct {
+	ID        int64 `json:"id"`
+	AccountID int64 `json:"account_id"`
+	StatusID  int64 `json:"status_id"`
+	CreatedAt int64 `json:"created_at"`
+}
+
+type Follower struct {
+	ID         int64  `json:"id"`
+	FromFollow int64  `json:"from_follow"`
+	ToFollow   int64  `json:"to_follow"`
+	Status     string `json:"status"`
+}
+
+type Locate struct {
+	ID        int64       `json:"id"`
+	AccountID int64       `json:"account_id"`
+	Location  interface{} `json:"location"`
+}
+
+type Permission struct {
+	ID   int32  `json:"id"`
+	Name string `json:"name"`
 }
 
 type Post struct {
@@ -44,6 +70,35 @@ type PostImage struct {
 
 type PostType struct {
 	ID   int32  `json:"id"`
+	Name string `json:"name"`
+}
+
+type ReactPost struct {
+	ID        int64 `json:"id"`
+	AccountID int64 `json:"account_id"`
+	PostID    int64 `json:"post_id"`
+	State     int32 `json:"state"`
+}
+
+type Role struct {
+	ID   int32       `json:"id"`
+	Name pgtype.Text `json:"name"`
+}
+
+type RolePermission struct {
+	ID           int32       `json:"id"`
+	PerID        pgtype.Int4 `json:"per_id"`
+	RoleID       pgtype.Int4 `json:"role_id"`
+	CanSelectAll bool        `json:"can_select_all"`
+	CanSelect    bool        `json:"can_select"`
+	CanInsert    bool        `json:"can_insert"`
+	CanUpdate    bool        `json:"can_update"`
+	CanDelete    bool        `json:"can_delete"`
+	CanDoAll     bool        `json:"can_do_all"`
+}
+
+type Status struct {
+	ID   int64  `json:"id"`
 	Name string `json:"name"`
 }
 

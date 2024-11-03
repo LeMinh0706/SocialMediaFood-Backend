@@ -40,6 +40,18 @@ func (q *Queries) DeleteImagePost(ctx context.Context, id int64) error {
 	return err
 }
 
+const getImage = `-- name: GetImage :one
+SELECT id, url_image, post_id FROM post_image
+WHERE id = $1
+`
+
+func (q *Queries) GetImage(ctx context.Context, id int64) (PostImage, error) {
+	row := q.db.QueryRow(ctx, getImage, id)
+	var i PostImage
+	err := row.Scan(&i.ID, &i.UrlImage, &i.PostID)
+	return i, err
+}
+
 const getImagePost = `-- name: GetImagePost :many
 SELECT id, url_image, post_id FROM post_image 
 WHERE post_id = $1

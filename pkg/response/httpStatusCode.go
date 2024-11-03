@@ -27,6 +27,10 @@ const (
 	ErrUsernameChar       = 40008
 	ErrMinPassword        = 40009
 	ErrMinFullname        = 40010
+	ContentNull           = 40011
+	ErrAccountID          = 40012
+	ErrPositionField      = 40013
+	ErrImageWasDelete     = 40408
 )
 
 var msg = map[int]string{
@@ -42,7 +46,7 @@ var msg = map[int]string{
 	ErrGender:             "Gender should be 0 (for female) or 1 (for male)",
 	ErrUnauthorize:        "Unauthorized",
 	ErrInvalid:            "Invalid Token",
-	ErrYourSelf:           "Not your self, cant create/update/delete anything for another",
+	ErrYourSelf:           "Not your self, cant create/update/delete anything for another user",
 	ErrUserExist:          "User exist",
 	ErrLogin:              "User doesn't exists",
 	ErrNotFoundUser:       "User not found",
@@ -55,6 +59,10 @@ var msg = map[int]string{
 	ErrUsernameChar:       "Username need to be between 6 to 16 character",
 	ErrMinPassword:        "Password need at least 8 character",
 	ErrMinFullname:        "Fullname need at least 6 character",
+	ContentNull:           "Description for comment can't null",
+	ErrAccountID:          "Account id must be number",
+	ErrPositionField:      "X and Y must be both fill or both empty",
+	ErrImageWasDelete:     "Image not found or was deleted",
 }
 
 // ErrOutOfDate:   "Token is out of date",
