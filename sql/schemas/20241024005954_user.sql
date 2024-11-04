@@ -1,5 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
+ALTER DATABASE "SocialFood" SET timezone TO 'Asia/Ho_Chi_Minh';
 CREATE TABLE "users" (
   "id" bigserial PRIMARY KEY,
   "email" varchar UNIQUE,
