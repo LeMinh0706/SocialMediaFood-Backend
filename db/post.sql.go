@@ -247,7 +247,7 @@ func (q *Queries) GetPost(ctx context.Context, id int64) (GetPostRow, error) {
 
 const getUserPost = `-- name: GetUserPost :many
 SELECT id FROM posts 
-WHERE account_id = $1 
+WHERE account_id = $1 AND is_deleted != TRUE AND is_banned != TRUE AND post_type_id != 9
 ORDER BY created_at DESC
 LIMIT $2
 OFFSET $3

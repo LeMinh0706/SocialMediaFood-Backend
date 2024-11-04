@@ -10,6 +10,7 @@ import (
 
 type Querier interface {
 	AddImagePost(ctx context.Context, arg AddImagePostParams) (PostImage, error)
+	CountReactPost(ctx context.Context, postID int64) (int64, error)
 	CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error)
 	CreateComment(ctx context.Context, arg CreateCommentParams) (CreateCommentRow, error)
 	CreateOwnerBranch(ctx context.Context, arg CreateOwnerBranchParams) (CreateOwnerBranchRow, error)
@@ -18,6 +19,8 @@ type Querier interface {
 	DeleteComment(ctx context.Context, id int64) error
 	DeleteImagePost(ctx context.Context, id int64) error
 	DeletePost(ctx context.Context, id int64) error
+	DeleteReact(ctx context.Context, arg DeleteReactParams) error
+	ForgotPassword(ctx context.Context, arg ForgotPasswordParams) (ForgotPasswordRow, error)
 	GetAccountById(ctx context.Context, id int64) (Account, error)
 	GetAccountByUserId(ctx context.Context, userID int64) ([]GetAccountByUserIdRow, error)
 	GetComment(ctx context.Context, id int64) (GetCommentRow, error)
@@ -28,12 +31,14 @@ type Querier interface {
 	GetListComment(ctx context.Context, arg GetListCommentParams) ([]int64, error)
 	GetListPost(ctx context.Context, arg GetListPostParams) ([]int64, error)
 	GetPost(ctx context.Context, id int64) (GetPostRow, error)
-	GetReactPost(ctx context.Context, postID int64) ([]ReactPost, error)
+	GetReact(ctx context.Context, arg GetReactParams) (int64, error)
+	GetReactPost(ctx context.Context, arg GetReactPostParams) ([]GetReactPostRow, error)
 	GetUserPost(ctx context.Context, arg GetUserPostParams) ([]int64, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (RegisterRow, error)
 	UpdateComment(ctx context.Context, arg UpdateCommentParams) (UpdateCommentRow, error)
 	UpdatePost(ctx context.Context, arg UpdatePostParams) (UpdatePostRow, error)
+	UpdateState(ctx context.Context, arg UpdateStateParams) (ReactPost, error)
 }
 
 var _ Querier = (*Queries)(nil)
