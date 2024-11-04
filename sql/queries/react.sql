@@ -17,6 +17,10 @@ WHERE post_id = $1
 LIMIT $2
 OFFSET $3;
 
+-- name: CountReactPost :exec
+SELECT count(id) FROM react_post
+WHERE post_id = $1;
+
 -- name: GetFavorite :many
 SELECT post_id FROM react_post
 WHERE account_id = $1
@@ -32,3 +36,4 @@ RETURNING * ;
 -- name: DeleteReact :exec
 DELETE FROM react_post
 WHERE post_id = $1 AND account_id = $2;
+

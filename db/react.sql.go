@@ -9,6 +9,16 @@ import (
 	"context"
 )
 
+const countReactPost = `-- name: CountReactPost :exec
+SELECT count(id) FROM react_post
+WHERE post_id = $1
+`
+
+func (q *Queries) CountReactPost(ctx context.Context, postID int64) error {
+	_, err := q.db.Exec(ctx, countReactPost, postID)
+	return err
+}
+
 const createReact = `-- name: CreateReact :one
 INSERT INTO react_post (
     account_id,

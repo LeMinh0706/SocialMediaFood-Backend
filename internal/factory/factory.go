@@ -43,7 +43,9 @@ func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
 	}
 
 	reactRepo, err := repo.NewReactRepo(queries)
-
+	if err != nil {
+		return nil, err
+	}
 	//Service
 	accountService, err := service.NewAccountService(accountRepo)
 	if err != nil {
@@ -61,7 +63,7 @@ func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
 	if err != nil {
 		return nil, err
 	}
-	reactService, err := service.NewReactService(reactRepo)
+	reactService, err := service.NewReactService(reactRepo, accountService)
 	if err != nil {
 		return nil, err
 	}

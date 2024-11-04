@@ -16,5 +16,6 @@ func NewReactRouter(r *gin.Engine, router *gin.RouterGroup, service *service.Rea
 	reactGroup := r.Group(router.BasePath() + "/react")
 	{
 		reactGroup.POST("", rc.CreateReact)
+		reactGroup.GET("", rc.GetReactPost)
 	}
 }

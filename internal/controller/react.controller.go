@@ -30,3 +30,16 @@ func (rc *ReactController) CreateReact(g *gin.Context) {
 	}
 	response.SuccessResponse(g, 201, react)
 }
+
+func (rc *ReactController) GetReactPost(g *gin.Context) {
+	page := g.Query("page")
+	pageSize := g.Query("page_size")
+	post_id := g.Query("post_id")
+
+	reacts, err := rc.reactService.GetReactPost(g, post_id, page, pageSize)
+	if err != nil {
+		response.ErrorNonKnow(g, 500, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 200, reacts)
+}

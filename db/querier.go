@@ -10,6 +10,7 @@ import (
 
 type Querier interface {
 	AddImagePost(ctx context.Context, arg AddImagePostParams) (PostImage, error)
+	CountReactPost(ctx context.Context, postID int64) error
 	CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error)
 	CreateComment(ctx context.Context, arg CreateCommentParams) (CreateCommentRow, error)
 	CreateOwnerBranch(ctx context.Context, arg CreateOwnerBranchParams) (CreateOwnerBranchRow, error)
