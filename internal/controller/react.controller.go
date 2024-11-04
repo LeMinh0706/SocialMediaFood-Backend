@@ -43,3 +43,31 @@ func (rc *ReactController) GetReactPost(g *gin.Context) {
 	}
 	response.SuccessResponse(g, 200, reacts)
 }
+
+func (rc *ReactController) UpdateReact(g *gin.Context) {
+	var req db.UpdateStateParams
+	if err := g.ShouldBindJSON(&req); err != nil {
+		response.ErrorResponse(g, 40000)
+		return
+	}
+	update, err := rc.reactService.UpdateState(g, req.AccountID, req.PostID, req.State)
+	if err != nil {
+		response.ErrorNonKnow(g, 500, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 201, update)
+}
+
+func (rc *ReactController) UnlikePost(g *gin.Context) {
+	var req db.DeleteReactParams
+	if err := g.ShouldBindJSON(&req); err != nil {
+		response.ErrorResponse(g, 40000)
+		return
+	}
+	err := rc.reactService.UnlikePost(g, req.AccountID, req.PostID)
+	if err != nil {
+		response.ErrorNonKnow(g, 500, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 204, nil)
+}

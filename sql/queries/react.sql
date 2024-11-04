@@ -17,7 +17,7 @@ WHERE post_id = $1
 LIMIT $2
 OFFSET $3;
 
--- name: CountReactPost :exec
+-- name: CountReactPost :one
 SELECT count(id) FROM react_post
 WHERE post_id = $1;
 
@@ -29,8 +29,8 @@ LIMIT $2
 OFFSET $3;
 
 -- name: UpdateState :one
-UPDATE react_post SET state = $2
-WHERE id = $1
+UPDATE react_post SET state = $3
+WHERE post_id = $1 AND account_id = $2
 RETURNING * ;
 
 -- name: DeleteReact :exec

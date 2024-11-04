@@ -17,5 +17,7 @@ func NewReactRouter(r *gin.Engine, router *gin.RouterGroup, service *service.Rea
 	{
 		reactGroup.POST("", rc.CreateReact)
 		reactGroup.GET("", rc.GetReactPost)
+		reactGroup.PUT("", rc.UpdateReact)
+		reactGroup.DELETE("", rc.UnlikePost)
 	}
 }

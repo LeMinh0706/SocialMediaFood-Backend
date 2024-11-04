@@ -9,14 +9,16 @@ import (
 	"context"
 )
 
-const countReactPost = `-- name: CountReactPost :exec
+const countReactPost = `-- name: CountReactPost :one
 SELECT count(id) FROM react_post
 WHERE post_id = $1
 `
 
-func (q *Queries) CountReactPost(ctx context.Context, postID int64) error {
-	_, err := q.db.Exec(ctx, countReactPost, postID)
-	return err
+func (q *Queries) CountReactPost(ctx context.Context, postID int64) (int64, error) {
+	row := q.db.QueryRow(ctx, countReactPost, postID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
 }
 
 const createReact = `-- name: CreateReact :one
@@ -152,18 +154,19 @@ func (q *Queries) GetReactPost(ctx context.Context, arg GetReactPostParams) ([]G
 }
 
 const updateState = `-- name: UpdateState :one
-UPDATE react_post SET state = $2
-WHERE id = $1
+UPDATE react_post SET state = $3
+WHERE post_id = $1 AND account_id = $2
 RETURNING id, account_id, post_id, state
 `
 
 type UpdateStateParams struct {
-	ID    int64 `json:"id"`
-	State int32 `json:"state"`
+	PostID    int64 `json:"post_id"`
+	AccountID int64 `json:"account_id"`
+	State     int32 `json:"state"`
 }
 
 func (q *Queries) UpdateState(ctx context.Context, arg UpdateStateParams) (ReactPost, error) {
-	row := q.db.QueryRow(ctx, updateState, arg.ID, arg.State)
+	row := q.db.QueryRow(ctx, updateState, arg.PostID, arg.AccountID, arg.State)
 	var i ReactPost
 	err := row.Scan(
 		&i.ID,
