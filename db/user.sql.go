@@ -11,6 +11,29 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const forgotPassword = `-- name: ForgotPassword :one
+UPDATE users SET hash_password = $2
+WHERE id = $1 
+RETURNING id, created_at
+`
+
+type ForgotPasswordParams struct {
+	ID           int64  `json:"id"`
+	HashPassword string `json:"hash_password"`
+}
+
+type ForgotPasswordRow struct {
+	ID        int64              `json:"id"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+}
+
+func (q *Queries) ForgotPassword(ctx context.Context, arg ForgotPasswordParams) (ForgotPasswordRow, error) {
+	row := q.db.QueryRow(ctx, forgotPassword, arg.ID, arg.HashPassword)
+	var i ForgotPasswordRow
+	err := row.Scan(&i.ID, &i.CreatedAt)
+	return i, err
+}
+
 const login = `-- name: Login :one
 SELECT id, username, hash_password FROM users
 WHERE username = $1
