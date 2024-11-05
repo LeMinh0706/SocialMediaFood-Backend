@@ -16,6 +16,7 @@ type PostResponse struct {
 	CreatedAt   time.Time      `json:"created_at"`
 	Images      []db.PostImage `json:"images"`
 	Account     AccountForPost `json:"account"`
+	TotalLike   int64          `json:"total_like"`
 }
 
 type UpdatePostRequest struct {
@@ -23,7 +24,7 @@ type UpdatePostRequest struct {
 	Description string `json:"description"`
 }
 
-func PostRes(post db.CreatePostRow, account AccountForPost, imgs []db.PostImage) PostResponse {
+func PostRes(post db.CreatePostRow, account AccountForPost, imgs []db.PostImage, totalLike int64) PostResponse {
 	return PostResponse{
 		ID:          post.ID,
 		PostTypeID:  post.PostTypeID,
@@ -34,6 +35,7 @@ func PostRes(post db.CreatePostRow, account AccountForPost, imgs []db.PostImage)
 		CreatedAt:   post.CreatedAt.Time,
 		Images:      imgs,
 		Account:     account,
+		TotalLike:   totalLike,
 	}
 }
 

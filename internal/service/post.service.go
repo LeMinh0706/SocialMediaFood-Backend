@@ -69,7 +69,7 @@ func (ps *PostService) CreatePost(ctx context.Context, post_type int32, descript
 		imgs = append(imgs, i)
 	}
 	accRes := models.AccountPost(acc)
-	res = models.PostRes(post, accRes, imgs)
+	res = models.PostRes(post, accRes, imgs, 0)
 	return res, nil
 }
 
@@ -88,8 +88,12 @@ func (ps *PostService) GetPost(ctx context.Context, id int64) (models.PostRespon
 	if err != nil {
 		return res, err
 	}
+	like, err := ps.postRepo.CountLike(ctx, id)
+	if err != nil {
+		return res, err
+	}
 	accRes := models.AccountPost(acc)
-	res = models.PostRes(db.CreatePostRow(post), accRes, img)
+	res = models.PostRes(db.CreatePostRow(post), accRes, img, like)
 
 	return res, nil
 }

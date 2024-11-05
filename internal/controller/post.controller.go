@@ -99,6 +99,7 @@ func (pc *PostController) GetListPost(g *gin.Context) {
 	posts, err := pc.postService.GetListPost(g, page, pageSize)
 	if err != nil {
 		GetListErr(g, err)
+		return
 	}
 	response.SuccessResponse(g, 200, posts)
 }
