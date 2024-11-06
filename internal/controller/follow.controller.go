@@ -31,6 +31,30 @@ func (fc *FollowController) GetFollowStatus(g *gin.Context) {
 	response.SuccessResponse(g, 201, res)
 }
 
+func (fc *FollowController) GetFollow(g *gin.Context) {
+	from_id := g.Query("from_id")
+	page := g.Query("page")
+	pageSize := g.Query("page_size")
+	follow, err := fc.followService.GetFollow(g, from_id, page, pageSize)
+	if err != nil {
+		GetListErr(g, err)
+		return
+	}
+	response.SuccessResponse(g, 200, follow)
+}
+
+func (fc *FollowController) GetFollower(g *gin.Context) {
+	from_id := g.Query("from_id")
+	page := g.Query("page")
+	pageSize := g.Query("page_size")
+	follow, err := fc.followService.GetFollower(g, from_id, page, pageSize)
+	if err != nil {
+		GetListErr(g, err)
+		return
+	}
+	response.SuccessResponse(g, 200, follow)
+}
+
 func (fc *FollowController) CreateRequest(g *gin.Context) {
 	var req models.FollowRequest
 	if err := g.ShouldBindJSON(&req); err != nil {
@@ -43,6 +67,18 @@ func (fc *FollowController) CreateRequest(g *gin.Context) {
 		return
 	}
 	response.SuccessResponse(g, 201, res)
+}
+
+func (fc *FollowController) GetFriend(g *gin.Context) {
+	from_id := g.Query("from_id")
+	page := g.Query("page")
+	pageSize := g.Query("page_size")
+	follow, err := fc.followService.GetFriend(g, from_id, page, pageSize)
+	if err != nil {
+		GetListErr(g, err)
+		return
+	}
+	response.SuccessResponse(g, 201, follow)
 }
 
 func (fc *FollowController) UpdateFriend(g *gin.Context) {

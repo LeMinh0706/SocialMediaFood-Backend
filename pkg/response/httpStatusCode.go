@@ -34,6 +34,7 @@ const (
 	HaveFollow            = 40111
 	AcceptForbidden       = 40303
 	TheirFriend           = 40411
+	WaitngAccept          = 40412
 )
 
 var msg = map[int]string{
@@ -64,11 +65,12 @@ var msg = map[int]string{
 	ErrMinFullname:        "Fullname need at least 6 character",
 	ContentNull:           "Description for comment can't null",
 	ErrAccountID:          "Account id must be number",
-	ErrPositionField:      "X and Y must be both fill or both empty",
+	ErrPositionField:      "LNG or Lat must be both fill or both empty",
 	ErrImageWasDelete:     "Image not found or was deleted",
 	HaveFollow:            "You have followed this person",
 	AcceptForbidden:       "Waiting for accepted",
 	TheirFriend:           "You're their friend",
+	WaitngAccept:          "They're waiting for your accept",
 }
 
 // ErrOutOfDate:   "Token is out of date",

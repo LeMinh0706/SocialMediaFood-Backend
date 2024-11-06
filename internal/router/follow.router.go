@@ -19,6 +19,9 @@ func NewFollowRouter(r *gin.Engine, router *gin.RouterGroup, service *service.Fo
 		followGroup.GET("", fc.GetFollowStatus)
 		followGroup.PUT("", fc.UpdateFriend)
 		followGroup.DELETE("", fc.DeleteFollow)
+		followGroup.GET("/self", fc.GetFollow)
+		followGroup.GET("/other", fc.GetFollower)
+		followGroup.GET("/friend", fc.GetFriend)
 	}
 
 }

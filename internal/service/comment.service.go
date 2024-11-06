@@ -41,8 +41,8 @@ func (cs *CommentService) CreateComment(ctx context.Context, user_id int64, arg 
 	if err != nil {
 		return res, err
 	}
-	accRes := models.AccountPost(acc)
-	res = models.CommentRes(accRes, db.GetCommentRow(comment))
+
+	res = models.CommentRes(acc, db.GetCommentRow(comment))
 	return res, nil
 }
 
@@ -57,9 +57,8 @@ func (cs *CommentService) GetComment(ctx context.Context, id int64) (models.Comm
 	if err != nil {
 		return res, nil
 	}
-	accRes := models.AccountPost(acc)
 
-	res = models.CommentRes(accRes, comment)
+	res = models.CommentRes(acc, comment)
 	return res, nil
 }
 
@@ -125,8 +124,7 @@ func (cs *CommentService) UpdateComment(ctx context.Context, idStr string, user_
 	if err != nil {
 		return res, err
 	}
-	accRes := models.AccountPost(acc)
-	res = models.CommentRes(accRes, db.GetCommentRow(update))
+	res = models.CommentRes(acc, db.GetCommentRow(update))
 	return res, nil
 }
 

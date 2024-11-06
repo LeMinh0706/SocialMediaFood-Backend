@@ -30,8 +30,8 @@ func NewPostController(service *service.PostService) (*PostController, error) {
 // @Produce      json
 // @Param        description formData string false "Description"
 // @Param        account_id formData string true "Account ID"
-// @Param        direct_x formData string false "Direct X"
-// @Param        direct_y formData string false "Direct Y"
+// @Param        lng formData string false "Lng"
+// @Param        lat formData string false "Lat"
 // @Param        images formData []file false "Images post"
 // @Security BearerAuth
 // @Success      200  {object}  models.PostResponse
@@ -46,8 +46,8 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 		response.ErrorNonKnow(g, 400, err.Error())
 		return
 	}
-	x := g.PostForm("direct_x")
-	y := g.PostForm("direct_y")
+	x := g.PostForm("lng")
+	y := g.PostForm("lat")
 	if (x == "" && y != "") || (x != "" && y == "") {
 		response.ErrorResponse(g, 40013)
 		return

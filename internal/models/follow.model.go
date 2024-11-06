@@ -11,3 +11,8 @@ type FollowRespone struct {
 	FromFollow db.Follower `json:"from_follow"`
 	ToFollow   db.Follower `json:"to_follow"`
 }
+
+type ListFollow struct {
+	YourFollows []AccountForPost `json:"your_follows"`
+	Total       int64            `json:"total"`
+}

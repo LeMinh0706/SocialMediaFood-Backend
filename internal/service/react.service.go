@@ -63,8 +63,7 @@ func (rs *ReactService) GetReactPost(ctx context.Context, post_idStr, pageStr, p
 		if err != nil {
 			return res, err
 		}
-		accRes := models.AccountPost(acc)
-		result := models.ReactResponse{ID: react.ID, Account: accRes}
+		result := models.ReactResponse{ID: react.ID, Account: acc}
 		list = append(list, result)
 	}
 	total, err := rs.reactRepo.CountLike(ctx, post_id)

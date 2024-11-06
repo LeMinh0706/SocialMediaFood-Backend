@@ -68,8 +68,7 @@ func (ps *PostService) CreatePost(ctx context.Context, post_type int32, descript
 		}
 		imgs = append(imgs, i)
 	}
-	accRes := models.AccountPost(acc)
-	res = models.PostRes(post, accRes, imgs, 0)
+	res = models.PostRes(post, acc, imgs, 0)
 	return res, nil
 }
 
@@ -92,8 +91,7 @@ func (ps *PostService) GetPost(ctx context.Context, id int64) (models.PostRespon
 	if err != nil {
 		return res, err
 	}
-	accRes := models.AccountPost(acc)
-	res = models.PostRes(db.CreatePostRow(post), accRes, img, like)
+	res = models.PostRes(db.CreatePostRow(post), acc, img, like)
 
 	return res, nil
 }
@@ -173,8 +171,7 @@ func (ps *PostService) UpdatePost(ctx context.Context, description string, user_
 	if err != nil {
 		return res, err
 	}
-	accRes := models.AccountPost(acc)
-	res = models.UpdatePostRes(update, accRes, post.Images)
+	res = models.UpdatePostRes(update, acc, post.Images)
 	return res, nil
 }
 

@@ -10,6 +10,9 @@ import (
 
 type Querier interface {
 	AddImagePost(ctx context.Context, arg AddImagePostParams) (PostImage, error)
+	CountFollow(ctx context.Context, fromFollow int64) (int64, error)
+	CountFollower(ctx context.Context, fromFollow int64) (int64, error)
+	CountFriend(ctx context.Context, fromFollow int64) (int64, error)
 	CountReactPost(ctx context.Context, postID int64) (int64, error)
 	CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error)
 	CreateComment(ctx context.Context, arg CreateCommentParams) (CreateCommentRow, error)
@@ -37,6 +40,9 @@ type Querier interface {
 	GetReact(ctx context.Context, arg GetReactParams) (int64, error)
 	GetReactPost(ctx context.Context, arg GetReactPostParams) ([]GetReactPostRow, error)
 	GetUserPost(ctx context.Context, arg GetUserPostParams) ([]int64, error)
+	GetYourFollow(ctx context.Context, arg GetYourFollowParams) ([]int64, error)
+	GetYourFollower(ctx context.Context, arg GetYourFollowerParams) ([]int64, error)
+	GetYourFriend(ctx context.Context, arg GetYourFriendParams) ([]int64, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (RegisterRow, error)
 	UpdateComment(ctx context.Context, arg UpdateCommentParams) (UpdateCommentRow, error)
