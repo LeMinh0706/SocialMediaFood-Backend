@@ -107,6 +107,15 @@ func GetListErr(g *gin.Context, err error) {
 	case "id number":
 		response.ErrorResponse(g, 40004)
 		return
+	case "can't accept":
+		response.ErrorResponse(g, 40303)
+		return
+	case "their friend":
+		response.ErrorResponse(g, 40411)
+		return
+	case "ERROR: duplicate key value violates unique constraint \"follower_to_follow_from_follow_idx\" (SQLSTATE 23505)":
+		response.ErrorResponse(g, 40111)
+		return
 	}
 
 	response.ErrorNonKnow(g, 500, err.Error())

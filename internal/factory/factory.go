@@ -13,6 +13,7 @@ type Factory struct {
 	PostService    *service.PostService
 	CommentService *service.CommentService
 	ReactService   *service.ReactService
+	FollowService  *service.FollowService
 }
 
 // Đang sửa lại thành cấu trúc cũ thì thành như này
@@ -67,6 +68,10 @@ func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
 	if err != nil {
 		return nil, err
 	}
+	followService, err := service.NewFollowService(queries, accountService)
+	if err != nil {
+		return nil, err
+	}
 
 	///return
 	return &Factory{
@@ -75,5 +80,6 @@ func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
 		PostService:    postService,
 		CommentService: commentSerice,
 		ReactService:   reactService,
+		FollowService:  followService,
 	}, nil
 }

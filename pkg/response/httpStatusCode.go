@@ -31,6 +31,9 @@ const (
 	ErrAccountID          = 40012
 	ErrPositionField      = 40013
 	ErrImageWasDelete     = 40408
+	HaveFollow            = 40111
+	AcceptForbidden       = 40303
+	TheirFriend           = 40411
 )
 
 var msg = map[int]string{
@@ -63,6 +66,9 @@ var msg = map[int]string{
 	ErrAccountID:          "Account id must be number",
 	ErrPositionField:      "X and Y must be both fill or both empty",
 	ErrImageWasDelete:     "Image not found or was deleted",
+	HaveFollow:            "You have followed this person",
+	AcceptForbidden:       "Waiting for accepted",
+	TheirFriend:           "You're their friend",
 }
 
 // ErrOutOfDate:   "Token is out of date",
@@ -73,4 +79,5 @@ var (
 	UserExists    = "ERROR: duplicate key value violates unique constraint \"users_username_key\" (SQLSTATE 23505)"
 	WrongUsername = "wrong username"
 	WrongPassword = "wrong password"
+	FollowGhost   = "ERROR: insert or update on table \"follower\" violates foreign key constraint \"follower_to_follow_fkey\" (SQLSTATE 23503)"
 )
