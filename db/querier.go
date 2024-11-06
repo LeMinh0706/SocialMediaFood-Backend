@@ -26,9 +26,10 @@ type Querier interface {
 	DeletePost(ctx context.Context, id int64) error
 	DeleteReact(ctx context.Context, arg DeleteReactParams) error
 	ForgotPassword(ctx context.Context, arg ForgotPasswordParams) (ForgotPasswordRow, error)
-	GetAccountById(ctx context.Context, id int64) (Account, error)
-	GetAccountByUserId(ctx context.Context, userID int64) ([]GetAccountByUserIdRow, error)
+	GetAccountById(ctx context.Context, id int64) (GetAccountByIdRow, error)
+	GetAccountByUserId(ctx context.Context, userID int64) ([]int64, error)
 	GetComment(ctx context.Context, id int64) (GetCommentRow, error)
+	GetDetailAccount(ctx context.Context, id int64) (Account, error)
 	GetFavorite(ctx context.Context, arg GetFavoriteParams) ([]int64, error)
 	GetFollowStatus(ctx context.Context, arg GetFollowStatusParams) (Follower, error)
 	GetImage(ctx context.Context, id int64) (PostImage, error)

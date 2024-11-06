@@ -1,3 +1,3 @@
 package post
 
-type PostImplement interface{}
+type IPostService interface{}

@@ -1,3 +1,3 @@
 package react
 
-type ReactImplement interface{}
+type IReactService interface{}

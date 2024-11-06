@@ -1,3 +1,3 @@
 package follower
 
-type FollowerImplement interface{}
+type IFollowerService interface{}

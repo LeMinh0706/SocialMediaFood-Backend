@@ -14,13 +14,17 @@ INSERT INTO accounts(
 ) RETURNING * ;
 
 -- name: GetAccountByUserId :many
-SELECT id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, role_id, address, is_upgrade
+SELECT id
 FROM accounts
 WHERE user_id = $1
 ORDER BY id;
 
--- name: GetAccountById :one
+-- name: GetDetailAccount :one
 SELECT * FROM accounts
+WHERE id = $1;
+
+-- name: GetAccountById :one
+SELECT id, user_id, fullname, url_avatar, url_background_profile, role_id FROM accounts
 WHERE id = $1
 LIMIT 1;
 

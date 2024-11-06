@@ -3,7 +3,6 @@ package server
 import (
 	"fmt"
 
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/router"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/gin-gonic/gin"
@@ -30,7 +29,7 @@ func NewServer(db *pgxpool.Pool, config util.Config) (*Server, error) {
 		DBConn:     db,
 	}
 
-	router.NewRouter(server.Router, server.Config, server.TokenMaker, server.DBConn)
+	server.NewRouter()
 	return server, nil
 }
 

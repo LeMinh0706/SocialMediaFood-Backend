@@ -1,3 +1,3 @@
 package comment
 
-type CommentImplement interface{}
+type ICommentService interface{}
