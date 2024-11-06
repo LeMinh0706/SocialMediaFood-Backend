@@ -1,0 +1,3 @@
+package follower
+
+func NewFollowerRouter(){}
