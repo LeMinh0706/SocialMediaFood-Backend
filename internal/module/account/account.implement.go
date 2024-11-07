@@ -11,4 +11,8 @@ type IAccountService interface {
 	GetAccountById(ctx context.Context, id int64) (db.GetAccountByIdRow, error)
 	GetAccount(ctx context.Context, id int64) (db.Account, error)
 	GetAccountAction(ctx context.Context, id, user_id int64) (db.GetAccountByIdRow, error)
+	UpdateName(ctx context.Context, id, user_id int64, name string) (AccountResponse, error)
+	UpdateAvatar(ctx context.Context, id, user_id int64, url_avatar string) (AccountResponse, error)
+	UpdateBackground(ctx context.Context, id, user_id int64, url_background string) (AccountResponse, error)
+	Backup(ctx context.Context)
 }

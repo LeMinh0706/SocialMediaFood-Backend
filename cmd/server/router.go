@@ -5,6 +5,7 @@ import (
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/factory"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/account"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/user"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/swag/docs"
 	swaggerfiles "github.com/swaggo/files" // swagger embed files
@@ -23,6 +24,7 @@ func (s *Server) NewRouter() {
 		Static(s.Router)
 		user.NewUserRouter(s.Router, a, fac.UserService, s.TokenMaker, s.Config)
 		account.NewAccountRouter(s.Router, a, fac.AccountService, s.TokenMaker)
+		post.NewPostRouter(s.Router, a, fac.PostService, s.TokenMaker)
 	}
 
 	s.Router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

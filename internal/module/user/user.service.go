@@ -15,6 +15,11 @@ type UserService struct {
 	store   *db.Store
 }
 
+// Backup implements IUserService.
+func (u *UserService) Backup(ctx context.Context) {
+	panic("unimplemented")
+}
+
 // Login implements IUserService.
 func (u *UserService) Login(ctx context.Context, username string, password string) (db.LoginRow, error) {
 	var res db.LoginRow

@@ -8,7 +8,7 @@ const (
 	ErrBadRequestPage     = 40001
 	ErrBadRequestPageSize = 40002
 	ErrBadRequestMime     = 40003
-	ErrBadRequestPostId   = 40004
+	ErrBadRequestId       = 40004
 	ErrImageLen           = 40005
 	ErrImageSize          = 40006
 	ErrGender             = 40007
@@ -35,6 +35,9 @@ const (
 	AcceptForbidden       = 40303
 	TheirFriend           = 40411
 	WaitngAccept          = 40412
+	ErrBadLngLat          = 40020
+	ErrSaveImage          = 40021
+	ErrEmptyContent       = 40022
 )
 
 var msg = map[int]string{
@@ -42,10 +45,11 @@ var msg = map[int]string{
 	CodeSuccess:           "Success",
 	DeleteSuccess:         "Delete no error",
 	ErrBadRequest:         "Bad request",
-	ErrBadRequestPage:     "Page should be number",
-	ErrBadRequestPageSize: "Page size should be number",
+	ErrBadRequestPage:     "Page should be number and greater 1",
+	ErrBadRequestPageSize: "Page size should be number and greater 1",
+	ErrBadLngLat:          "Lat, Lng should be number",
 	ErrBadRequestMime:     "Can only use file .png, .jpg, .jpeg, .gif",
-	ErrBadRequestPostId:   "Id must be number, can't convert from this request",
+	ErrBadRequestId:       "Id must be number, can't convert from this request",
 	ErrImageLen:           "Images shoud less than 4",
 	ErrGender:             "Gender should be 0 (for female) or 1 (for male)",
 	ErrUnauthorize:        "Unauthorized",
@@ -57,7 +61,7 @@ var msg = map[int]string{
 	ErrFindPost:           "Can not found post or post was deleted",
 	ErrUnlike:             "You didn't like this post yet",
 	ErrLike:               "You have liked post yet",
-	ErrFileTooLarge:       "File too large, only allowed 6MB",
+	ErrFileTooLarge:       "File too large, only allowed 4MB",
 	ErrWrongPassword:      "Wrong password",
 	ErrEmailExists:        "Email exists",
 	ErrUsernameChar:       "Username need to be between 6 to 16 character",
@@ -71,6 +75,8 @@ var msg = map[int]string{
 	AcceptForbidden:       "Waiting for accepted",
 	TheirFriend:           "You're their friend",
 	WaitngAccept:          "They're waiting for your accept",
+	ErrSaveImage:          "Failed to save image",
+	ErrEmptyContent:       "Description or images can't be empty",
 }
 
 // ErrOutOfDate:   "Token is out of date",

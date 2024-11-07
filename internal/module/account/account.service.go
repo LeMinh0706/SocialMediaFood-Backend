@@ -11,6 +11,26 @@ type AccountService struct {
 	queries *db.Queries
 }
 
+// UpdateAvatar implements IAccountService.
+func (a *AccountService) UpdateAvatar(ctx context.Context, id int64, user_id int64, url_avatar string) (AccountResponse, error) {
+	panic("unimplemented")
+}
+
+// UpdateBackground implements IAccountService.
+func (a *AccountService) UpdateBackground(ctx context.Context, id int64, user_id int64, url_background string) (AccountResponse, error) {
+	panic("unimplemented")
+}
+
+// UpdateName implements IAccountService.
+func (a *AccountService) UpdateName(ctx context.Context, id int64, user_id int64, name string) (AccountResponse, error) {
+	panic("unimplemented")
+}
+
+// Backup implements IAccountService.
+func (a *AccountService) Backup(ctx context.Context) {
+	panic("unimplemented")
+}
+
 // GetAccount implements IAccountService.
 func (a *AccountService) GetAccount(ctx context.Context, id int64) (db.Account, error) {
 	acc, err := a.queries.GetDetailAccount(ctx, id)
@@ -27,7 +47,7 @@ func (a *AccountService) GetAccountAction(ctx context.Context, id int64, user_id
 	if err != nil {
 		return res, err
 	}
-	if acc.ID != user_id {
+	if acc.UserID != user_id {
 		return res, fmt.Errorf("not you")
 	}
 	return acc, nil

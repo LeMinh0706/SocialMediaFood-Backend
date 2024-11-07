@@ -37,10 +37,10 @@ type Querier interface {
 	//comment
 	GetListComment(ctx context.Context, arg GetListCommentParams) ([]int64, error)
 	GetListPost(ctx context.Context, arg GetListPostParams) ([]int64, error)
+	GetPersonPost(ctx context.Context, arg GetPersonPostParams) ([]int64, error)
 	GetPost(ctx context.Context, id int64) (GetPostRow, error)
 	GetReact(ctx context.Context, arg GetReactParams) (int64, error)
 	GetReactPost(ctx context.Context, arg GetReactPostParams) ([]GetReactPostRow, error)
-	GetUserPost(ctx context.Context, arg GetUserPostParams) ([]int64, error)
 	GetYourFollow(ctx context.Context, arg GetYourFollowParams) ([]int64, error)
 	GetYourFollower(ctx context.Context, arg GetYourFollowerParams) ([]int64, error)
 	GetYourFriend(ctx context.Context, arg GetYourFriendParams) ([]int64, error)
