@@ -45,7 +45,7 @@ func (rc *ReactController) CreateReact(g *gin.Context) {
 	response.SuccessResponse(g, 201, react)
 }
 
-// Post godoc
+// React godoc
 // @Summary      Get list reactions
 // @Description  Get list reactions with post_id, page and page size (Limit-Offset)
 // @Tags         React
@@ -71,7 +71,7 @@ func (rc *ReactController) GetReactPost(g *gin.Context) {
 	response.SuccessResponse(g, 200, reacts)
 }
 
-// Post godoc
+// React godoc
 // @Summary      Update react
 // @Description  Just update reaction type 1 for like, 2 for hearth, 3 for sad, 4 for angry
 // @Tags         React
@@ -97,7 +97,7 @@ func (rc *ReactController) UpdateReact(g *gin.Context) {
 	response.SuccessResponse(g, 201, update)
 }
 
-// Post godoc
+// React godoc
 // @Summary      Delete Reactions
 // @Description  Delete your reaction with post_id
 // @Tags         React

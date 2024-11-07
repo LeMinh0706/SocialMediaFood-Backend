@@ -113,6 +113,7 @@ func (pc *PostController) GetListPost(g *gin.Context) {
 // @Param        account_id query int true "Account ID"
 // @Param        page query int true "Page"
 // @Param        page_size query int true "Page Size"
+// @Security BearerAuth
 // @Success      200  {object}  []models.PostResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /posts/person [get]

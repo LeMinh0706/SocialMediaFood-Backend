@@ -16,6 +16,17 @@ definitions:
       post_id:
         type: integer
     type: object
+  db.Follower:
+    properties:
+      from_follow:
+        type: integer
+      id:
+        type: integer
+      status:
+        type: string
+      to_follow:
+        type: integer
+    type: object
   db.PostImage:
     properties:
       id:
@@ -132,6 +143,29 @@ definitions:
         type: integer
       post_top_id:
         type: integer
+    type: object
+  models.FollowRequest:
+    properties:
+      from_follow:
+        type: integer
+      to_follow:
+        type: integer
+    type: object
+  models.FollowRespone:
+    properties:
+      from_follow:
+        $ref: '#/definitions/db.Follower'
+      to_follow:
+        $ref: '#/definitions/db.Follower'
+    type: object
+  models.ListFollow:
+    properties:
+      total:
+        type: integer
+      your_follows:
+        items:
+          $ref: '#/definitions/models.AccountForPost'
+        type: array
     type: object
   models.ListReactResponse:
     properties:
@@ -375,6 +409,228 @@ paths:
       summary: Update Comment
       tags:
       - Comments
+  /follow:
+    delete:
+      consumes:
+      - application/json
+      description: You will unfollow to another and we will delete two record in db
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/db.DeleteReactParams'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Delete your follow
+      tags:
+      - Follower
+    get:
+      consumes:
+      - application/json
+      description: Get status in wall of other person
+      parameters:
+      - description: From Your Account
+        in: query
+        name: from_follow
+        required: true
+        type: integer
+      - description: To Account
+        in: query
+        name: to_follow
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Follower'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Get follower status
+      tags:
+      - Follower
+    post:
+      consumes:
+      - application/json
+      description: Create follow for to another user
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.FollowRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.FollowRespone'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Create follow
+      tags:
+      - Follower
+    put:
+      consumes:
+      - application/json
+      description: Make you guy become a friend
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.FollowRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.FollowRespone'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Update Friend
+      tags:
+      - Follower
+  /follow/friend:
+    get:
+      consumes:
+      - application/json
+      description: Get your friend list
+      parameters:
+      - description: Your AccountID
+        in: query
+        name: from_id
+        required: true
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ListFollow'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Get list friend
+      tags:
+      - Follower
+  /follow/other:
+    get:
+      consumes:
+      - application/json
+      description: Get list account follow you
+      parameters:
+      - description: Your AccountID
+        in: query
+        name: from_id
+        required: true
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ListFollow'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Get list follower
+      tags:
+      - Follower
+  /follow/self:
+    get:
+      consumes:
+      - application/json
+      description: Get list account you follow
+      parameters:
+      - description: Your AccountID
+        in: query
+        name: from_id
+        required: true
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ListFollow'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Get list follower
+      tags:
+      - Follower
   /posts:
     get:
       consumes:
@@ -538,6 +794,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
       summary: Get list post
       tags:
       - Posts

@@ -28,7 +28,7 @@ func NewRouter(g *gin.Engine, config util.Config, token token.Maker, pgx *pgxpoo
 		NewPostRouter(g, a, fac.PostService, token)
 		NewCommentRouter(g, a, fac.CommentService, token)
 		NewReactRouter(g, a, fac.ReactService, token)
-		NewFollowRouter(g, a, fac.FollowService)
+		NewFollowRouter(g, a, fac.FollowService, token)
 	}
 
 	g.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
