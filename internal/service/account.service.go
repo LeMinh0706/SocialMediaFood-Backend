@@ -40,18 +40,18 @@ func (as *AccountService) GetAccountUser(ctx context.Context, user_id int64) ([]
 	return res, nil
 }
 
-func (as *AccountService) GetAccountById(ctx context.Context, id int64) (db.Account, error) {
-	var res db.Account
+func (as *AccountService) GetAccountById(ctx context.Context, id int64) (models.AccountForPost, error) {
+	var res models.AccountForPost
 	account, err := as.accountRepo.GetAccountBydId(ctx, id)
 	if err != nil {
 		return res, err
 	}
-
-	return account, nil
+	res = models.AccountPost(account)
+	return res, nil
 }
 
-func (as *AccountService) GetAccountForAction(ctx context.Context, user_id, id int64) (db.Account, error) {
-	var res db.Account
+func (as *AccountService) GetAccountForAction(ctx context.Context, user_id, id int64) (models.AccountForPost, error) {
+	var res models.AccountForPost
 	account, err := as.accountRepo.GetAccountBydId(ctx, id)
 	if err != nil {
 		return res, err
@@ -59,6 +59,6 @@ func (as *AccountService) GetAccountForAction(ctx context.Context, user_id, id i
 	if account.UserID != user_id {
 		return res, fmt.Errorf("not you")
 	}
-
-	return account, nil
+	res = models.AccountPost(account)
+	return res, nil
 }

@@ -149,3 +149,27 @@ func (q *Queries) GetAccountByUserId(ctx context.Context, userID int64) ([]GetAc
 	}
 	return items, nil
 }
+
+const updateName = `-- name: UpdateName :one
+UPDATE accounts SET fullname = $2
+WHERE id = $1
+RETURNING id, user_id, fullname
+`
+
+type UpdateNameParams struct {
+	ID       int64  `json:"id"`
+	Fullname string `json:"fullname"`
+}
+
+type UpdateNameRow struct {
+	ID       int64  `json:"id"`
+	UserID   int64  `json:"user_id"`
+	Fullname string `json:"fullname"`
+}
+
+func (q *Queries) UpdateName(ctx context.Context, arg UpdateNameParams) (UpdateNameRow, error) {
+	row := q.db.QueryRow(ctx, updateName, arg.ID, arg.Fullname)
+	var i UpdateNameRow
+	err := row.Scan(&i.ID, &i.UserID, &i.Fullname)
+	return i, err
+}
