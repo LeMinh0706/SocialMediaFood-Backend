@@ -259,9 +259,6 @@ host: foodioo.camenryder.xyz:80
 info:
   contact: {}
   description: This is SocialFood Swagger.
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Foodioo Documentations
   version: "1.0"
 paths:
