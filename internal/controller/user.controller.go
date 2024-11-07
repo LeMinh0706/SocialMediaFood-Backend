@@ -27,7 +27,7 @@ func NewUserController(service *service.UserService, config util.Config, token t
 // User godoc
 // @Summary      Login user
 // @Description  Login to be more handsome
-// @Tags         users
+// @Tags         Users
 // @Accept       json
 // @Produce      json
 // @Param        request body models.LoginRequest true "request"
@@ -66,7 +66,7 @@ func (uc *UserController) Login(g *gin.Context) {
 // User godoc
 // @Summary      Register user
 // @Description  Join with us
-// @Tags         users
+// @Tags         Users
 // @Accept       json
 // @Produce      json
 // @Param        request body db.RegisterRequest true "request"

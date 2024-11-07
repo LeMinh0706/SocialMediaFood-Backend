@@ -88,7 +88,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        page query int true "Page"
-// @Param        page_size query int true "Page size"
+// @Param        page_size query int true "Page Size"
 // @Success      200  {object}  []models.PostResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /posts [get]
@@ -112,7 +112,7 @@ func (pc *PostController) GetListPost(g *gin.Context) {
 // @Produce      json
 // @Param        account_id query int true "Account ID"
 // @Param        page query int true "Page"
-// @Param        page_size query int true "Page size"
+// @Param        page_size query int true "Page Size"
 // @Success      200  {object}  []models.PostResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /posts/person [get]
@@ -214,7 +214,7 @@ func (pc *PostController) DeleteImagePost(g *gin.Context) {
 // @Security BearerAuth
 // @Success      201  {object} 	models.PostResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
-// @Router       /posts/ [put]
+// @Router       /posts [put]
 func (pc *PostController) UpdatePost(g *gin.Context) {
 	var req models.UpdatePostRequest
 	if err := g.ShouldBindJSON(&req); err != nil {

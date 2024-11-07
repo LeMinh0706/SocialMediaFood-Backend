@@ -22,8 +22,12 @@ func NewReactService(repo *repo.ReactRepo, accountService *AccountService) (*Rea
 	}, nil
 }
 
-func (rs *ReactService) CreateReact(ctx context.Context, arg db.CreateReactParams) (db.ReactPost, error) {
+func (rs *ReactService) CreateReact(ctx context.Context, arg db.CreateReactParams, user_id int64) (db.ReactPost, error) {
 	var res db.ReactPost
+	account, _ := rs.accountService.GetAccountById(ctx, arg.AccountID)
+	if account.UserID != user_id {
+		return res, fmt.Errorf("not you")
+	}
 	react, err := rs.reactRepo.CreateReact(ctx, db.CreateReactParams{
 		AccountID: arg.AccountID,
 		PostID:    arg.PostID,
@@ -82,7 +86,11 @@ func (rs *ReactService) GetReact(ctx context.Context, post_id, account_id int64)
 	return id, nil
 }
 
-func (rs *ReactService) UpdateState(ctx context.Context, account_id, post_id int64, state int32) (db.ReactPost, error) {
+func (rs *ReactService) UpdateState(ctx context.Context, account_id, post_id int64, state int32, user_id int64) (db.ReactPost, error) {
+	_, err := rs.accountService.GetAccountForAction(ctx, user_id, account_id)
+	if err != nil {
+		return db.ReactPost{}, err
+	}
 	update, err := rs.reactRepo.UpdateState(ctx, post_id, account_id, state)
 	if err != nil {
 		return db.ReactPost{}, err
@@ -90,8 +98,12 @@ func (rs *ReactService) UpdateState(ctx context.Context, account_id, post_id int
 	return update, nil
 }
 
-func (rs *ReactService) UnlikePost(ctx context.Context, account_id, post_id int64) error {
-	err := rs.reactRepo.UnlikePost(ctx, post_id, account_id)
+func (rs *ReactService) UnlikePost(ctx context.Context, account_id, post_id, user_id int64) error {
+	_, err := rs.accountService.GetAccountForAction(ctx, user_id, account_id)
+	if err != nil {
+		return err
+	}
+	err = rs.reactRepo.UnlikePost(ctx, post_id, account_id)
 	if err != nil {
 		return err
 	}

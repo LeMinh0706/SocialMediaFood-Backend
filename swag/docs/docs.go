@@ -34,7 +34,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "Accounts"
                 ],
                 "summary": "It's you",
                 "responses": {
@@ -86,7 +86,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "Page size",
+                        "description": "Page Size",
                         "name": "page_size",
                         "in": "query",
                         "required": true
@@ -267,7 +267,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "Page size",
+                        "description": "Page Size",
                         "name": "page_size",
                         "in": "query",
                         "required": true
@@ -281,6 +281,49 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/models.PostResponse"
                             }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Just update content post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Update post",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdatePostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.PostResponse"
                         }
                     },
                     "500": {
@@ -324,14 +367,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Direct X",
-                        "name": "direct_x",
+                        "description": "Lng",
+                        "name": "lng",
                         "in": "formData"
                     },
                     {
                         "type": "string",
-                        "description": "Direct Y",
-                        "name": "direct_y",
+                        "description": "Lat",
+                        "name": "lat",
                         "in": "formData"
                     },
                     {
@@ -348,51 +391,6 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.PostResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            }
-        },
-        "/posts/": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Just update content post",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Posts"
-                ],
-                "summary": "Update post",
-                "parameters": [
-                    {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.UpdatePostRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/models.PostResponse"
                         }
@@ -476,7 +474,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "Page size",
+                        "description": "Page Size",
                         "name": "page_size",
                         "in": "query",
                         "required": true
@@ -541,6 +539,189 @@ const docTemplate = `{
                 }
             }
         },
+        "/react": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get list reactions with post_id, page and page size (Limit-Offset)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "React"
+                ],
+                "summary": "Get list reactions",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "PostID",
+                        "name": "post_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page Size",
+                        "name": "page_size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ListReactResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Just update reaction type 1 for like, 2 for hearth, 3 for sad, 4 for angry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "React"
+                ],
+                "summary": "Update react",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/db.UpdateStateParams"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/db.ReactPost"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create reaction for post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "React"
+                ],
+                "summary": "Create reacttion",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/db.CreateReactParams"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/db.ReactPost"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete your reaction with post_id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "React"
+                ],
+                "summary": "Delete Reactions",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/db.DeleteReactParams"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/users/login": {
             "post": {
                 "description": "Login to be more handsome",
@@ -551,7 +732,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Login user",
                 "parameters": [
@@ -591,7 +772,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Register user",
                 "parameters": [
@@ -623,6 +804,31 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "db.CreateReactParams": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "integer"
+                },
+                "post_id": {
+                    "type": "integer"
+                },
+                "state": {
+                    "type": "integer"
+                }
+            }
+        },
+        "db.DeleteReactParams": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "integer"
+                },
+                "post_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "db.PostImage": {
             "type": "object",
             "properties": {
@@ -634,6 +840,23 @@ const docTemplate = `{
                 },
                 "url_image": {
                     "type": "string"
+                }
+            }
+        },
+        "db.ReactPost": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "post_id": {
+                    "type": "integer"
+                },
+                "state": {
+                    "type": "integer"
                 }
             }
         },
@@ -666,6 +889,20 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 16,
                     "minLength": 6
+                }
+            }
+        },
+        "db.UpdateStateParams": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "integer"
+                },
+                "post_id": {
+                    "type": "integer"
+                },
+                "state": {
+                    "type": "integer"
                 }
             }
         },
@@ -766,6 +1003,20 @@ const docTemplate = `{
                 }
             }
         },
+        "models.ListReactResponse": {
+            "type": "object",
+            "properties": {
+                "react": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ReactResponse"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "models.LoginRequest": {
             "type": "object",
             "properties": {
@@ -814,6 +1065,20 @@ const docTemplate = `{
                 "lat": {},
                 "lng": {},
                 "post_type_id": {
+                    "type": "integer"
+                },
+                "total_like": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.ReactResponse": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "$ref": "#/definitions/models.AccountForPost"
+                },
+                "id": {
                     "type": "integer"
                 }
             }

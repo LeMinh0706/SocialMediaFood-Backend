@@ -23,7 +23,7 @@ func NewAccountController(service *service.AccountService, token token.Maker) (*
 // account godoc
 // @Summary      It's you
 // @Description  Login to be more handsome
-// @Tags         accounts
+// @Tags         Accounts
 // @Accept       json
 // @Produce      json
 // @Security BearerAuth

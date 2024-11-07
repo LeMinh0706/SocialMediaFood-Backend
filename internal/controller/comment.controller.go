@@ -60,7 +60,7 @@ func (cc *CommentController) CreateComment(g *gin.Context) {
 // @Produce      json
 // @Param        post_id query int true "Post ID"
 // @Param        page query int true "Page"
-// @Param        page_size query int true "Page size"
+// @Param        page_size query int true "Page Size"
 // @Success      200  {object}  []models.CommentResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /comments [get]
