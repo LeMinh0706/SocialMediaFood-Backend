@@ -14,12 +14,12 @@ type UserController struct {
 	token   token.Maker
 }
 
-func NewUserController(service IUserService, config util.Config, token token.Maker) (*UserController, error) {
+func NewUserController(service IUserService, config util.Config, token token.Maker) *UserController {
 	return &UserController{
 		service: service,
 		config:  config,
 		token:   token,
-	}, nil
+	}
 }
 
 func (uc *UserController) Login(g *gin.Context) {

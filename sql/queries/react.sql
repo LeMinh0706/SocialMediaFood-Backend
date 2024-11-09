@@ -8,10 +8,10 @@ INSERT INTO react_post (
 ) RETURNING *;
 
 -- name: GetReact :one
-SELECT id FROM react_post
+SELECT * FROM react_post
 WHERE account_id = $1 AND post_id = $2;
 
--- name: GetReactPost :many
+-- name: GetListReact :many
 SELECT id, account_id FROM react_post
 WHERE post_id = $1
 LIMIT $2

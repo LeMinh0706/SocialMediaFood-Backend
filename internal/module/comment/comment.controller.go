@@ -16,11 +16,11 @@ type CommentController struct {
 	token   token.Maker
 }
 
-func NewCommentController(service ICommentService, token token.Maker) (*CommentController, error) {
+func NewCommentController(service ICommentService, token token.Maker) *CommentController {
 	return &CommentController{
 		service: service,
 		token:   token,
-	}, nil
+	}
 }
 
 func (cc *CommentController) CreateComment(g *gin.Context) {

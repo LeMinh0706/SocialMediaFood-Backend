@@ -14,11 +14,11 @@ type AccountController struct {
 	token   token.Maker
 }
 
-func NewAccountController(service IAccountService, token token.Maker) (*AccountController, error) {
+func NewAccountController(service IAccountService, token token.Maker) *AccountController {
 	return &AccountController{
 		service: service,
 		token:   token,
-	}, nil
+	}
 }
 
 func (ac *AccountController) GetAccount(g *gin.Context) {
