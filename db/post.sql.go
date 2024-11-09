@@ -11,6 +11,18 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const countComment = `-- name: CountComment :one
+SELECT count(id) FROM posts
+WHERE post_top_id = $1
+`
+
+func (q *Queries) CountComment(ctx context.Context, postTopID pgtype.Int8) (int64, error) {
+	row := q.db.QueryRow(ctx, countComment, postTopID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createComment = `-- name: CreateComment :one
 INSERT INTO posts (
     post_type_id,

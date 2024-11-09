@@ -28,7 +28,7 @@ func NewServer(db *pgxpool.Pool, config util.Config) (*Server, error) {
 		TokenMaker: tokenMaker,
 		DBConn:     db,
 	}
-
+	EnableCors(server.Router)
 	server.NewRouter()
 	return server, nil
 }

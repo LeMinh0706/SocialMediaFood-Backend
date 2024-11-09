@@ -10,7 +10,6 @@ type Config struct {
 	DBDriver            string        `mapstructure:"DB_DRIVER"`
 	DBSource            string        `mapstructure:"DB_SOURCE"`
 	ServerAddress       string        `mapstructure:"SERVER_ADDRESS"`
-	GrpcAddress         string        `mapstructure:"GRPC_ADDRESS"`
 	SecretKey           string        `mapstructure:"SECRET_KEY"`
 	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
 	MaxConns            int32         `mapstructure:"MAX_CONNS"`

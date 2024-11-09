@@ -9,6 +9,6 @@ type IPostService interface {
 	GetPersonPost(ctx context.Context, acoount_id int64, page, pageSize int32) ([]PostResponse, error)
 	UpdateContentPost(ctx context.Context, desciption string, id, user_id int64) (PostResponse, error)
 	DeletePost(ctx context.Context, id, user_id int64) error
-	DeleteImage(ctx context.Context, id int64)
+	DeleteImage(ctx context.Context, id, user_id int64) error
 	Backup(ctx context.Context)
 }

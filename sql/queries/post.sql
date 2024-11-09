@@ -70,3 +70,7 @@ RETURNING id, account_id, post_top_id, description, created_at;
 -- name: DeleteComment :exec
 DELETE FROM posts 
 WHERE id = $1;
+
+-- name: CountComment :one
+SELECT count(id) FROM posts
+WHERE post_top_id = $1;

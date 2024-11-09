@@ -32,12 +32,13 @@ func (a *AccountService) Backup(ctx context.Context) {
 }
 
 // GetAccount implements IAccountService.
-func (a *AccountService) GetAccount(ctx context.Context, id int64) (db.Account, error) {
+func (a *AccountService) GetAccount(ctx context.Context, id int64) (AccountResponse, error) {
 	acc, err := a.queries.GetDetailAccount(ctx, id)
 	if err != nil {
-		return db.Account{}, err
+		return AccountResponse{}, err
 	}
-	return acc, nil
+	res := AccountRes(acc)
+	return res, nil
 }
 
 // GetAccountAction implements IAccountService.
@@ -71,7 +72,7 @@ func (a *AccountService) GetAccountByUserId(ctx context.Context, user_id int64) 
 	}
 	for _, element := range list {
 		acc, _ := a.GetAccount(ctx, element)
-		res = append(res, AccountRes(acc))
+		res = append(res, acc)
 	}
 	return res, nil
 }

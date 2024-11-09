@@ -94,19 +94,41 @@ func (p *PostService) CreatePost(ctx context.Context, description string, lng st
 		imgs = append(imgs, images)
 	}
 
-	res = PostRes(post, acc, imgs, 0)
+	res = PostRes(post, acc, imgs, 0, 0)
 
 	return res, nil
 }
 
 // DeleteImage implements IPostService.
-func (p *PostService) DeleteImage(ctx context.Context, id int64) {
-	panic("unimplemented")
+func (p *PostService) DeleteImage(ctx context.Context, id int64, user_id int64) error {
+	image, _ := p.queries.GetImage(ctx, id)
+	post, _ := p.GetPost(ctx, image.PostID)
+	_, err := p.accountService.GetAccountAction(ctx, post.AccountID, user_id)
+	if err != nil {
+		return err
+	}
+	err = p.queries.DeleteImagePost(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // DeletePost implements IPostService.
 func (p *PostService) DeletePost(ctx context.Context, id int64, user_id int64) error {
-	panic("unimplemented")
+	post, err := p.GetPost(ctx, id)
+	if err != nil {
+		return err
+	}
+	_, err = p.accountService.GetAccountAction(ctx, post.AccountID, user_id)
+	if err != nil {
+		return err
+	}
+	err = p.queries.DeletePost(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // GetPost implements IPostService.
@@ -119,13 +141,32 @@ func (p *PostService) GetPost(ctx context.Context, id int64) (PostResponse, erro
 	acc, _ := p.queries.GetAccountById(ctx, post.AccountID)
 	imgs, _ := p.queries.GetImagePost(ctx, post.ID)
 	likes, _ := p.queries.CountReactPost(ctx, post.ID)
-	res = GetPostRes(post, acc, imgs, likes)
+	comments, _ := p.queries.CountComment(ctx, pgtype.Int8{Int64: id, Valid: true})
+	res = GetPostRes(post, acc, imgs, likes, comments)
 	return res, nil
 }
 
 // UpdateContentPost implements IPostService.
 func (p *PostService) UpdateContentPost(ctx context.Context, desciption string, id int64, user_id int64) (PostResponse, error) {
-	panic("unimplemented")
+	var res PostResponse
+	post, err := p.GetPost(ctx, id)
+	if err != nil {
+		return res, err
+	}
+	acc, err := p.accountService.GetAccountAction(ctx, post.AccountID, user_id)
+	if err != nil {
+		return res, err
+	}
+	update, err := p.queries.UpdatePost(ctx, db.UpdatePostParams{
+		ID:          id,
+		Description: ConvertDescription(desciption),
+	})
+
+	if err != nil {
+		return res, err
+	}
+	res = PostRes(db.CreatePostRow(update), acc, post.Images, post.TotalLike, post.TotalComment)
+	return res, nil
 }
 
 func NewPostService(queries *db.Queries, account account.IAccountService) IPostService {

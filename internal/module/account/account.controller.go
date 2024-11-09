@@ -1,6 +1,8 @@
 package account
 
 import (
+	"strconv"
+
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
@@ -17,6 +19,21 @@ func NewAccountController(service IAccountService, token token.Maker) (*AccountC
 		service: service,
 		token:   token,
 	}, nil
+}
+
+func (ac *AccountController) GetAccount(g *gin.Context) {
+	idStr := g.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, response.ErrAccountID)
+		return
+	}
+	acc, err := ac.service.GetAccount(g, id)
+	if err != nil {
+		response.ErrorResponse(g, 40414)
+		return
+	}
+	response.SuccessResponse(g, 200, acc)
 }
 
 func (ac *AccountController) GetMe(g *gin.Context) {

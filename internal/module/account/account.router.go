@@ -17,5 +17,6 @@ func NewAccountRouter(r *gin.Engine, group *gin.RouterGroup, service IAccountSer
 	auth := accountGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
 	{
 		auth.GET("/me", ac.GetMe)
+		auth.GET("/:id", ac.GetAccount)
 	}
 }

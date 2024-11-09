@@ -6,10 +6,13 @@ package db
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Querier interface {
 	AddImagePost(ctx context.Context, arg AddImagePostParams) (PostImage, error)
+	CountComment(ctx context.Context, postTopID pgtype.Int8) (int64, error)
 	CountFollow(ctx context.Context, fromFollow int64) (int64, error)
 	CountFollower(ctx context.Context, fromFollow int64) (int64, error)
 	CountFriend(ctx context.Context, fromFollow int64) (int64, error)

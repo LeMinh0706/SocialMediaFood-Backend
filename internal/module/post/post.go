@@ -16,45 +16,48 @@ import (
 )
 
 type PostResponse struct {
-	ID          int64                `json:"id"`
-	PostTypeID  int32                `json:"post_type_id"`
-	AccountID   int64                `json:"account_id"`
-	Description string               `json:"description"`
-	Lng         interface{}          `json:"lng"`
-	Lat         interface{}          `json:"lat"`
-	CreatedAt   time.Time            `json:"created_at"`
-	Images      []db.PostImage       `json:"images"`
-	Account     db.GetAccountByIdRow `json:"account"`
-	TotalLike   int64                `json:"total_like"`
+	ID           int64                `json:"id"`
+	PostTypeID   int32                `json:"post_type_id"`
+	AccountID    int64                `json:"account_id"`
+	Description  string               `json:"description"`
+	Lng          interface{}          `json:"lng"`
+	Lat          interface{}          `json:"lat"`
+	CreatedAt    time.Time            `json:"created_at"`
+	Images       []db.PostImage       `json:"images"`
+	Account      db.GetAccountByIdRow `json:"account"`
+	TotalLike    int64                `json:"total_like"`
+	TotalComment int64                `json:"total_comment"`
 }
 
-func PostRes(post db.CreatePostRow, account db.GetAccountByIdRow, imgs []db.PostImage, totalLike int64) PostResponse {
+func PostRes(post db.CreatePostRow, account db.GetAccountByIdRow, imgs []db.PostImage, totalLike, totalComment int64) PostResponse {
 	return PostResponse{
-		ID:          post.ID,
-		PostTypeID:  post.PostTypeID,
-		AccountID:   post.AccountID,
-		Description: post.Description.String,
-		Lng:         post.Lng,
-		Lat:         post.Lat,
-		CreatedAt:   post.CreatedAt.Time,
-		Images:      imgs,
-		Account:     account,
-		TotalLike:   totalLike,
+		ID:           post.ID,
+		PostTypeID:   post.PostTypeID,
+		AccountID:    post.AccountID,
+		Description:  post.Description.String,
+		Lng:          post.Lng,
+		Lat:          post.Lat,
+		CreatedAt:    post.CreatedAt.Time,
+		Images:       imgs,
+		Account:      account,
+		TotalLike:    totalLike,
+		TotalComment: totalComment,
 	}
 }
 
-func GetPostRes(post db.GetPostRow, account db.GetAccountByIdRow, imgs []db.PostImage, totalLike int64) PostResponse {
+func GetPostRes(post db.GetPostRow, account db.GetAccountByIdRow, imgs []db.PostImage, totalLike, total_comment int64) PostResponse {
 	return PostResponse{
-		ID:          post.ID,
-		PostTypeID:  post.PostTypeID,
-		AccountID:   post.AccountID,
-		Description: post.Description.String,
-		Lng:         post.Lng,
-		Lat:         post.Lat,
-		CreatedAt:   post.CreatedAt.Time,
-		Images:      imgs,
-		Account:     account,
-		TotalLike:   totalLike,
+		ID:           post.ID,
+		PostTypeID:   post.PostTypeID,
+		AccountID:    post.AccountID,
+		Description:  post.Description.String,
+		Lng:          post.Lng,
+		Lat:          post.Lat,
+		CreatedAt:    post.CreatedAt.Time,
+		Images:       imgs,
+		Account:      account,
+		TotalLike:    totalLike,
+		TotalComment: total_comment,
 	}
 }
 

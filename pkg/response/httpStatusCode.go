@@ -38,6 +38,7 @@ const (
 	ErrBadLngLat          = 40020
 	ErrSaveImage          = 40021
 	ErrEmptyContent       = 40022
+	ErrAccountExists      = 40414
 )
 
 var msg = map[int]string{
@@ -77,6 +78,7 @@ var msg = map[int]string{
 	WaitngAccept:          "They're waiting for your accept",
 	ErrSaveImage:          "Failed to save image",
 	ErrEmptyContent:       "Description or images can't be empty",
+	ErrAccountExists:      "This account doesn't exist",
 }
 
 // ErrOutOfDate:   "Token is out of date",

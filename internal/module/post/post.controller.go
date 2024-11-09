@@ -8,6 +8,7 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5"
 )
 
 type PostController struct {
@@ -58,6 +59,10 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 
 	post, err := pc.service.CreatePost(g, description, lat, lng, images, account_id, auth.UserId)
 	if err != nil {
+		if err.Error() == "not you" {
+			response.ErrorResponse(g, response.ErrYourSelf)
+			return
+		}
 		response.ErrorNonKnow(g, 500, err.Error())
 		return
 	}
@@ -99,4 +104,68 @@ func (pc *PostController) GetPersonPost(g *gin.Context) {
 		return
 	}
 	response.SuccessResponse(g, 200, list)
+}
+
+func (pc *PostController) UpdateContentPost(g *gin.Context) {
+	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+	idStr := g.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, response.ErrBadRequestId)
+		return
+	}
+	description := g.PostForm("description")
+	update, err := pc.service.UpdateContentPost(g, description, id, auth.UserId)
+	if err != nil {
+		CheckPostStringError(g, err)
+		return
+	}
+	response.SuccessResponse(g, 201, update)
+}
+
+func (pc *PostController) DeleteImage(g *gin.Context) {
+	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+	idStr := g.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, response.ErrBadRequestId)
+		return
+	}
+	err = pc.service.DeleteImage(g, id, auth.UserId)
+	if err != nil {
+		CheckPostStringError(g, err)
+		return
+	}
+	response.SuccessResponse(g, 204, nil)
+}
+
+func (pc *PostController) DeletePost(g *gin.Context) {
+	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+	idStr := g.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, response.ErrBadRequestId)
+		return
+	}
+	err = pc.service.DeletePost(g, id, auth.UserId)
+	if err != nil {
+		CheckPostStringError(g, err)
+		return
+	}
+	response.SuccessResponse(g, 204, nil)
+}
+
+func CheckPostStringError(g *gin.Context, err error) {
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			response.ErrorResponse(g, response.ErrFindPost)
+			return
+		}
+		if err.Error() == "not you" {
+			response.ErrorResponse(g, response.ErrYourSelf)
+			return
+		}
+		response.ErrorNonKnow(g, 500, err.Error())
+		return
+	}
 }
