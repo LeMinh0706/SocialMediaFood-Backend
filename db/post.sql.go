@@ -31,7 +31,7 @@ INSERT INTO posts (
     description
 ) VALUES (
     9, $1, $2, $3 
-) RETURNING id, account_id, post_top_id, description, created_at
+) RETURNING id, post_type_id, account_id, post_top_id, description, created_at
 `
 
 type CreateCommentParams struct {
@@ -42,6 +42,7 @@ type CreateCommentParams struct {
 
 type CreateCommentRow struct {
 	ID          int64              `json:"id"`
+	PostTypeID  int32              `json:"post_type_id"`
 	AccountID   int64              `json:"account_id"`
 	PostTopID   pgtype.Int8        `json:"post_top_id"`
 	Description pgtype.Text        `json:"description"`
@@ -53,6 +54,7 @@ func (q *Queries) CreateComment(ctx context.Context, arg CreateCommentParams) (C
 	var i CreateCommentRow
 	err := row.Scan(
 		&i.ID,
+		&i.PostTypeID,
 		&i.AccountID,
 		&i.PostTopID,
 		&i.Description,
@@ -130,13 +132,14 @@ func (q *Queries) DeletePost(ctx context.Context, id int64) error {
 }
 
 const getComment = `-- name: GetComment :one
-SELECT id, account_id, post_top_id, description, created_at 
+SELECT id, post_type_id, account_id, post_top_id, description, created_at 
 FROM posts
 WHERE id = $1
 `
 
 type GetCommentRow struct {
 	ID          int64              `json:"id"`
+	PostTypeID  int32              `json:"post_type_id"`
 	AccountID   int64              `json:"account_id"`
 	PostTopID   pgtype.Int8        `json:"post_top_id"`
 	Description pgtype.Text        `json:"description"`
@@ -148,6 +151,7 @@ func (q *Queries) GetComment(ctx context.Context, id int64) (GetCommentRow, erro
 	var i GetCommentRow
 	err := row.Scan(
 		&i.ID,
+		&i.PostTypeID,
 		&i.AccountID,
 		&i.PostTopID,
 		&i.Description,
@@ -295,7 +299,7 @@ func (q *Queries) GetPost(ctx context.Context, id int64) (GetPostRow, error) {
 const updateComment = `-- name: UpdateComment :one
 UPDATE posts SET description = $2
 WHERE id = $1
-RETURNING id, account_id, post_top_id, description, created_at
+RETURNING id, post_type_id, account_id, post_top_id, description, created_at
 `
 
 type UpdateCommentParams struct {
@@ -305,6 +309,7 @@ type UpdateCommentParams struct {
 
 type UpdateCommentRow struct {
 	ID          int64              `json:"id"`
+	PostTypeID  int32              `json:"post_type_id"`
 	AccountID   int64              `json:"account_id"`
 	PostTopID   pgtype.Int8        `json:"post_top_id"`
 	Description pgtype.Text        `json:"description"`
@@ -316,6 +321,7 @@ func (q *Queries) UpdateComment(ctx context.Context, arg UpdateCommentParams) (U
 	var i UpdateCommentRow
 	err := row.Scan(
 		&i.ID,
+		&i.PostTypeID,
 		&i.AccountID,
 		&i.PostTopID,
 		&i.Description,

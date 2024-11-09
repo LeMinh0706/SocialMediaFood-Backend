@@ -39,6 +39,7 @@ const (
 	ErrSaveImage          = 40021
 	ErrEmptyContent       = 40022
 	ErrAccountExists      = 40414
+	ErrDeleteComment      = 40119
 )
 
 var msg = map[int]string{
@@ -79,6 +80,7 @@ var msg = map[int]string{
 	ErrSaveImage:          "Failed to save image",
 	ErrEmptyContent:       "Description or images can't be empty",
 	ErrAccountExists:      "This account doesn't exist",
+	ErrDeleteComment:      "Comment not found",
 }
 
 // ErrOutOfDate:   "Token is out of date",

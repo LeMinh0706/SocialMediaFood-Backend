@@ -29,6 +29,7 @@ func NewServer(db *pgxpool.Pool, config util.Config) (*Server, error) {
 		DBConn:     db,
 	}
 	EnableCors(server.Router)
+	server.Router.MaxMultipartMemory = 4 << 20
 	server.NewRouter()
 	return server, nil
 }

@@ -48,7 +48,7 @@ LIMIT $2
 OFFSET $3;
 
 -- name: GetComment :one
-SELECT id, account_id, post_top_id, description, created_at 
+SELECT id, post_type_id, account_id, post_top_id, description, created_at 
 FROM posts
 WHERE id = $1;
 
@@ -60,12 +60,12 @@ INSERT INTO posts (
     description
 ) VALUES (
     9, $1, $2, $3 
-) RETURNING id, account_id, post_top_id, description, created_at;
+) RETURNING id, post_type_id, account_id, post_top_id, description, created_at;
 
 -- name: UpdateComment :one
 UPDATE posts SET description = $2
 WHERE id = $1
-RETURNING id, account_id, post_top_id, description, created_at;
+RETURNING id, post_type_id, account_id, post_top_id, description, created_at;
 
 -- name: DeleteComment :exec
 DELETE FROM posts 
