@@ -70,6 +70,15 @@ const docTemplate = `{
                     "Accounts"
                 ],
                 "summary": "Profile api",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

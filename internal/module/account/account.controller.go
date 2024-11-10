@@ -27,6 +27,7 @@ func NewAccountController(service IAccountService, token token.Maker) *AccountCo
 // @Tags         Accounts
 // @Accept       json
 // @Produce      json
+// @Param        id path int true "ID"
 // @Security BearerAuth
 // @Success      200  {object}  AccountResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
