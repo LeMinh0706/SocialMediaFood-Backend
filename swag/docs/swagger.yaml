@@ -1,12 +1,50 @@
 basePath: /api
 definitions:
-  db.CreateReactParams:
+  account.AccountResponse:
     properties:
+      address:
+        type: string
+      country:
+        type: string
+      fullname:
+        type: string
+      gender:
+        type: integer
+      id:
+        type: integer
+      is_upgrade:
+        type: boolean
+      language:
+        type: string
+      url_avatar:
+        type: string
+      url_background_profile:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  comment.CommentResponse:
+    properties:
+      account:
+        $ref: '#/definitions/db.GetAccountByIdRow'
       account_id:
         type: integer
-      post_id:
+      description:
+        type: string
+      id:
         type: integer
-      state:
+      image:
+        $ref: '#/definitions/db.PostImage'
+      post_top_id:
+        type: integer
+      post_type_id:
+        type: integer
+    type: object
+  db.DeleteFollowParams:
+    properties:
+      from_follow:
+        type: integer
+      to_follow:
         type: integer
     type: object
   db.DeleteReactParams:
@@ -16,11 +54,24 @@ definitions:
       post_id:
         type: integer
     type: object
-  db.Follower:
+  db.GetAccountByIdRow:
+    properties:
+      fullname:
+        type: string
+      id:
+        type: integer
+      role_id:
+        type: integer
+      url_avatar:
+        type: string
+      url_background_profile:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  db.GetFollowStatusRow:
     properties:
       from_follow:
-        type: integer
-      id:
         type: integer
       status:
         type: string
@@ -71,6 +122,13 @@ definitions:
     - password
     - username
     type: object
+  db.UpdateFriendParams:
+    properties:
+      from_follow:
+        type: integer
+      to_follow:
+        type: integer
+    type: object
   db.UpdateStateParams:
     properties:
       account_id:
@@ -80,120 +138,40 @@ definitions:
       state:
         type: integer
     type: object
-  models.AccountForPost:
-    properties:
-      fullname:
-        type: string
-      id:
-        type: integer
-      role_id:
-        type: integer
-      url_avatar:
-        type: string
-      url_background_profile:
-        type: string
-      user_id:
-        type: integer
-    type: object
-  models.AccountResponse:
-    properties:
-      address:
-        type: string
-      country:
-        type: string
-      fullname:
-        type: string
-      gender:
-        type: integer
-      id:
-        type: integer
-      is_upgrade:
-        type: boolean
-      language:
-        type: string
-      url_avatar:
-        type: string
-      url_background_profile:
-        type: string
-      user_id:
-        type: integer
-    type: object
-  models.CommentRequest:
-    properties:
-      account_id:
-        type: integer
-      description:
-        type: string
-      post_top_id:
-        type: integer
-    required:
-    - account_id
-    - description
-    - post_top_id
-    type: object
-  models.CommentResponse:
+  follower.AccountFollowResponse:
     properties:
       account:
-        $ref: '#/definitions/models.AccountForPost'
-      created_at:
+        $ref: '#/definitions/db.GetAccountByIdRow'
+      status:
         type: string
-      description:
-        type: string
-      id:
+    type: object
+  follower.CreateFollowRequest:
+    properties:
+      from_id:
         type: integer
-      post_top_id:
+      to_id:
         type: integer
     type: object
-  models.FollowRequest:
+  follower.FollowResponse:
     properties:
       from_follow:
-        type: integer
+        $ref: '#/definitions/follower.AccountFollowResponse'
       to_follow:
-        type: integer
+        $ref: '#/definitions/follower.AccountFollowResponse'
     type: object
-  models.FollowRespone:
+  follower.ListFollow:
     properties:
-      from_follow:
-        $ref: '#/definitions/db.Follower'
-      to_follow:
-        $ref: '#/definitions/db.Follower'
-    type: object
-  models.ListFollow:
-    properties:
-      total:
-        type: integer
-      your_follows:
+      account:
         items:
-          $ref: '#/definitions/models.AccountForPost'
-        type: array
-    type: object
-  models.ListReactResponse:
-    properties:
-      react:
-        items:
-          $ref: '#/definitions/models.ReactResponse'
+          $ref: '#/definitions/db.GetAccountByIdRow'
         type: array
       total:
         type: integer
     type: object
-  models.LoginRequest:
-    properties:
-      password:
-        example: kocanpass
-        type: string
-      username:
-        example: HiroPhent
-        type: string
-    type: object
-  models.LoginResponse:
-    properties:
-      access_token:
-        type: string
-    type: object
-  models.PostResponse:
+  post.PostResponse:
     properties:
       account:
-        $ref: '#/definitions/models.AccountForPost'
+        $ref: '#/definitions/db.GetAccountByIdRow'
       account_id:
         type: integer
       created_at:
@@ -210,17 +188,67 @@ definitions:
       lng: {}
       post_type_id:
         type: integer
+      total_comment:
+        type: integer
       total_like:
         type: integer
     type: object
-  models.ReactResponse:
+  react.ListReactResponse:
     properties:
-      account:
-        $ref: '#/definitions/models.AccountForPost'
-      id:
+      react:
+        items:
+          $ref: '#/definitions/react.ReactResponse'
+        type: array
+      total:
         type: integer
     type: object
-  models.RegisterResponse:
+  react.ReactRequest:
+    properties:
+      account_id:
+        type: integer
+      post_id:
+        type: integer
+    type: object
+  react.ReactResponse:
+    properties:
+      account:
+        $ref: '#/definitions/db.GetAccountByIdRow'
+      id:
+        type: integer
+      post_id:
+        type: integer
+      state:
+        type: integer
+    type: object
+  response.ErrSwaggerJson:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+  user.LoginRequest:
+    properties:
+      password:
+        example: kocanpass
+        minLength: 8
+        type: string
+      username:
+        example: HiroPhent
+        maxLength: 16
+        minLength: 6
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  user.LoginResponse:
+    properties:
+      access_token:
+        type: string
+    type: object
+  user.RegisterResponse:
     properties:
       created_at:
         type: string
@@ -233,28 +261,6 @@ definitions:
     required:
     - username
     type: object
-  models.UpdateCommentRequest:
-    properties:
-      description:
-        type: string
-    required:
-    - description
-    type: object
-  models.UpdatePostRequest:
-    properties:
-      description:
-        type: string
-      id:
-        type: integer
-    type: object
-  response.ErrSwaggerJson:
-    properties:
-      code:
-        type: integer
-      data: {}
-      message:
-        type: string
-    type: object
 host: localhost:8070
 info:
   contact: {}
@@ -265,11 +271,32 @@ info:
   title: Foodioo Documentations
   version: "1.0"
 paths:
+  /accounts/{id}:
+    get:
+      consumes:
+      - application/json
+      description: To see the account, fetch profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/account.AccountResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Profile api
+      tags:
+      - Accounts
   /accounts/me:
     get:
       consumes:
       - application/json
-      description: Login to be more handsome
+      description: All your account is in here ->
       produces:
       - application/json
       responses:
@@ -277,7 +304,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.AccountResponse'
+              $ref: '#/definitions/account.AccountResponse'
             type: array
         "500":
           description: Internal Server Error
@@ -294,7 +321,7 @@ paths:
       - application/json
       description: Get list post with post_top_id, page and page size (Limit-Offset)
       parameters:
-      - description: Post ID
+      - description: PostID
         in: query
         name: post_id
         required: true
@@ -316,33 +343,83 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.CommentResponse'
+              $ref: '#/definitions/comment.CommentResponse'
             type: array
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
       summary: Get list post
       tags:
       - Comments
     post:
       consumes:
-      - application/json
+      - multipart/form-data
       description: Create comment
       parameters:
-      - description: request
-        in: body
-        name: request
+      - description: PostID
+        in: formData
+        name: post_id
         required: true
-        schema:
-          $ref: '#/definitions/models.CommentRequest'
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: AccountID
+        in: formData
+        name: account_id
+        required: true
+        type: string
+      - description: Image comment
+        in: formData
+        name: image
+        type: file
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.CommentResponse'
+            $ref: '#/definitions/comment.CommentResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Create comment
+      tags:
+      - Comments
+    put:
+      consumes:
+      - multipart/form-data
+      description: Create comment
+      parameters:
+      - description: CommentID
+        in: formData
+        name: id
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Image comment
+        in: formData
+        name: image
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/comment.CommentResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -377,39 +454,7 @@ paths:
       summary: Delete Comment
       tags:
       - Comments
-    put:
-      consumes:
-      - application/json
-      description: Just update content post
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.UpdateCommentRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.CommentResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrSwaggerJson'
-      security:
-      - BearerAuth: []
-      summary: Update Comment
-      tags:
-      - Comments
-  /follow:
+  /follower:
     delete:
       consumes:
       - application/json
@@ -420,7 +465,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/db.DeleteReactParams'
+          $ref: '#/definitions/db.DeleteFollowParams'
       produces:
       - application/json
       responses:
@@ -438,16 +483,27 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get status in wall of other person
+      description: 'Get list follower from user with 3 types: "accept", "request",
+        "friend"'
       parameters:
-      - description: From Your Account
+      - description: Status
         in: query
-        name: from_follow
+        name: status
+        required: true
+        type: string
+      - description: From Account
+        in: query
+        name: from_id
         required: true
         type: integer
-      - description: To Account
+      - description: Page
         in: query
-        name: to_follow
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
         required: true
         type: integer
       produces:
@@ -456,14 +512,14 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/db.Follower'
+            $ref: '#/definitions/follower.ListFollow'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrSwaggerJson'
       security:
       - BearerAuth: []
-      summary: Get follower status
+      summary: Get list Follower
       tags:
       - Follower
     post:
@@ -476,14 +532,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.FollowRequest'
+          $ref: '#/definitions/follower.CreateFollowRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.FollowRespone'
+            $ref: '#/definitions/follower.FollowResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -503,14 +559,12 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.FollowRequest'
+          $ref: '#/definitions/db.UpdateFriendParams'
       produces:
       - application/json
       responses:
         "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.FollowRespone'
+          description: no content
         "500":
           description: Internal Server Error
           schema:
@@ -520,25 +574,20 @@ paths:
       summary: Update Friend
       tags:
       - Follower
-  /follow/friend:
+  /follower/status:
     get:
       consumes:
       - application/json
-      description: Get your friend list
+      description: To see the relationship from your to another
       parameters:
-      - description: Your AccountID
+      - description: From your
         in: query
         name: from_id
         required: true
         type: integer
-      - description: Page
+      - description: To person
         in: query
-        name: page
-        required: true
-        type: integer
-      - description: Page Size
-        in: query
-        name: page_size
+        name: to_id
         required: true
         type: integer
       produces:
@@ -547,88 +596,14 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.ListFollow'
+            $ref: '#/definitions/db.GetFollowStatusRow'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrSwaggerJson'
       security:
       - BearerAuth: []
-      summary: Get list friend
-      tags:
-      - Follower
-  /follow/other:
-    get:
-      consumes:
-      - application/json
-      description: Get list account follow you
-      parameters:
-      - description: Your AccountID
-        in: query
-        name: from_id
-        required: true
-        type: integer
-      - description: Page
-        in: query
-        name: page
-        required: true
-        type: integer
-      - description: Page Size
-        in: query
-        name: page_size
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ListFollow'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrSwaggerJson'
-      security:
-      - BearerAuth: []
-      summary: Get list follower
-      tags:
-      - Follower
-  /follow/self:
-    get:
-      consumes:
-      - application/json
-      description: Get list account you follow
-      parameters:
-      - description: Your AccountID
-        in: query
-        name: from_id
-        required: true
-        type: integer
-      - description: Page
-        in: query
-        name: page
-        required: true
-        type: integer
-      - description: Page Size
-        in: query
-        name: page_size
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ListFollow'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrSwaggerJson'
-      security:
-      - BearerAuth: []
-      summary: Get list follower
+      summary: Get status from your and the other
       tags:
       - Follower
   /posts:
@@ -654,7 +629,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.PostResponse'
+              $ref: '#/definitions/post.PostResponse'
             type: array
         "500":
           description: Internal Server Error
@@ -698,7 +673,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.PostResponse'
+            $ref: '#/definitions/post.PostResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -708,24 +683,28 @@ paths:
       summary: Create post
       tags:
       - Posts
+  /posts/{id}:
     put:
       consumes:
       - application/json
       description: Just update content post
       parameters:
-      - description: request
-        in: body
-        name: request
+      - description: ID
+        in: path
+        name: id
         required: true
-        schema:
-          $ref: '#/definitions/models.UpdatePostRequest'
+        type: integer
+      - description: Description
+        in: formData
+        name: description
+        type: string
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.PostResponse'
+            $ref: '#/definitions/post.PostResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -788,7 +767,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.PostResponse'
+              $ref: '#/definitions/post.PostResponse'
             type: array
         "500":
           description: Internal Server Error
@@ -828,7 +807,7 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Delete your reaction with post_id
+      description: Delete your reaction with on any post
       parameters:
       - description: request
         in: body
@@ -847,27 +826,22 @@ paths:
             $ref: '#/definitions/response.ErrSwaggerJson'
       security:
       - BearerAuth: []
-      summary: Delete Reactions
+      summary: Unlike post
       tags:
       - React
     get:
       consumes:
       - application/json
-      description: Get list reactions with post_id, page and page size (Limit-Offset)
+      description: Get with post_id, to say have you liked this post
       parameters:
+      - description: AccountID
+        in: query
+        name: account_id
+        required: true
+        type: integer
       - description: PostID
         in: query
         name: post_id
-        required: true
-        type: integer
-      - description: Page
-        in: query
-        name: page
-        required: true
-        type: integer
-      - description: Page Size
-        in: query
-        name: page_size
         required: true
         type: integer
       produces:
@@ -876,14 +850,14 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.ListReactResponse'
+            $ref: '#/definitions/react.ReactResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrSwaggerJson'
       security:
       - BearerAuth: []
-      summary: Get list reactions
+      summary: Get reactions
       tags:
       - React
     post:
@@ -896,7 +870,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/db.CreateReactParams'
+          $ref: '#/definitions/react.ReactRequest'
       produces:
       - application/json
       responses:
@@ -916,7 +890,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: Just update reaction type 1 for like, 2 for hearth, 3 for sad,
+      description: Just change reaction type 1 for like, 2 for hearth, 3 for sad,
         4 for angry
       parameters:
       - description: request
@@ -938,7 +912,44 @@ paths:
             $ref: '#/definitions/response.ErrSwaggerJson'
       security:
       - BearerAuth: []
-      summary: Update react
+      summary: Change reaction state
+      tags:
+      - React
+  /react/post/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get list reactions with post_id, page and page size (Limit-Offset)
+      parameters:
+      - description: PostID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/react.ListReactResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Get list reactions
       tags:
       - React
   /users/login:
@@ -952,14 +963,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.LoginRequest'
+          $ref: '#/definitions/user.LoginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.LoginResponse'
+            $ref: '#/definitions/user.LoginResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -985,7 +996,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.RegisterResponse'
+            $ref: '#/definitions/user.RegisterResponse'
         "500":
           description: Internal Server Error
           schema:

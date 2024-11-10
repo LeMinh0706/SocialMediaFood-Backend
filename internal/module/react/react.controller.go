@@ -23,6 +23,17 @@ func NewReactController(service IReactService, token token.Maker) *ReactControll
 	}
 }
 
+// React godoc
+// @Summary      Create reacttion
+// @Description  Create reaction for post
+// @Tags         React
+// @Accept       json
+// @Produce      json
+// @Param        request body ReactRequest true "request"
+// @Security BearerAuth
+// @Success      200  {object}  db.ReactPost
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /react [post]
 func (rc *ReactController) CreateReact(g *gin.Context) {
 	var req ReactRequest
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
@@ -38,6 +49,18 @@ func (rc *ReactController) CreateReact(g *gin.Context) {
 	response.SuccessResponse(g, 201, react)
 }
 
+// React godoc
+// @Summary      Get reactions
+// @Description  Get with post_id, to say have you liked this post
+// @Tags         React
+// @Accept       json
+// @Produce      json
+// @Param        account_id query int true "AccountID"
+// @Param        post_id query int true "PostID"
+// @Security BearerAuth
+// @Success      200  {object}  ReactResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /react [get]
 func (rc *ReactController) GetReactPost(g *gin.Context) {
 	accStr := g.Query("account_id")
 	postStr := g.Query("post_id")
@@ -59,6 +82,19 @@ func (rc *ReactController) GetReactPost(g *gin.Context) {
 	response.SuccessResponse(g, 200, react)
 }
 
+// React godoc
+// @Summary      Get list reactions
+// @Description  Get list reactions with post_id, page and page size (Limit-Offset)
+// @Tags         React
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "PostID"
+// @Param        page query int true "Page"
+// @Param        page_size query int true "Page Size"
+// @Security BearerAuth
+// @Success      200  {object}  ListReactResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /react/post/{id} [get]
 func (rc *ReactController) GetListReact(g *gin.Context) {
 	idStr := g.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
@@ -81,6 +117,17 @@ func (rc *ReactController) GetListReact(g *gin.Context) {
 	response.SuccessResponse(g, 200, reacts)
 }
 
+// React godoc
+// @Summary      Change reaction state
+// @Description  Just change reaction type 1 for like, 2 for hearth, 3 for sad, 4 for angry
+// @Tags         React
+// @Accept       json
+// @Produce      json
+// @Param        request body db.UpdateStateParams true "request"
+// @Security BearerAuth
+// @Success      201  {object} 	db.ReactPost
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /react [put]
 func (rc *ReactController) ChangeReactState(g *gin.Context) {
 	var req db.UpdateStateParams
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
@@ -96,6 +143,17 @@ func (rc *ReactController) ChangeReactState(g *gin.Context) {
 	response.SuccessResponse(g, 201, update)
 }
 
+// React godoc
+// @Summary      Unlike post
+// @Description  Delete your reaction with on any post
+// @Tags         React
+// @Accept       json
+// @Produce      json
+// @Param        request body db.DeleteReactParams true "request"
+// @Security BearerAuth
+// @Success      204  "No content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /react [delete]
 func (rc *ReactController) UnReaction(g *gin.Context) {
 	var req db.DeleteReactParams
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)

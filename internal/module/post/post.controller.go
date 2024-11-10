@@ -23,6 +23,21 @@ func NewPostController(service IPostService, token token.Maker) *PostController 
 	}
 }
 
+// Post godoc
+// @Summary      Create post
+// @Description  Create post
+// @Tags         Posts
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        description formData string false "Description"
+// @Param        account_id formData string true "Account ID"
+// @Param        lng formData string false "Lng"
+// @Param        lat formData string false "Lat"
+// @Param        images formData []file false "Images post"
+// @Security BearerAuth
+// @Success      200  {object}  PostResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts [post]
 func (pc *PostController) CreatePost(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 	accStr := g.PostForm("account_id")
@@ -70,6 +85,17 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 	response.SuccessResponse(g, 201, post)
 }
 
+// Post godoc
+// @Summary      Get list post
+// @Description  Get list post with page and page size (Limit-Offset)
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Param        page query int true "Page"
+// @Param        page_size query int true "Page Size"
+// @Success      200  {object}  []PostResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts [get]
 func (pc *PostController) GetListPost(g *gin.Context) {
 	pageStr := g.Query("page")
 	pageSizeStr := g.Query("page_size")
@@ -85,6 +111,19 @@ func (pc *PostController) GetListPost(g *gin.Context) {
 	response.SuccessResponse(g, 200, list)
 }
 
+// Post godoc
+// @Summary      Get list post
+// @Description  Get list post with account_id, page and page size (Limit-Offset)
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Param        account_id query int true "Account ID"
+// @Param        page query int true "Page"
+// @Param        page_size query int true "Page Size"
+// @Security BearerAuth
+// @Success      200  {object}  []PostResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts/person [get]
 func (pc *PostController) GetPersonPost(g *gin.Context) {
 	accStr := g.Query("account_id")
 	account_id, err := strconv.ParseInt(accStr, 10, 64)
@@ -106,6 +145,18 @@ func (pc *PostController) GetPersonPost(g *gin.Context) {
 	response.SuccessResponse(g, 200, list)
 }
 
+// Post godoc
+// @Summary      Update post
+// @Description  Just update content post
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "ID"
+// @Param        description formData string false "Description"
+// @Security BearerAuth
+// @Success      201  {object} 	PostResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts/{id} [put]
 func (pc *PostController) UpdateContentPost(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 	idStr := g.Param("id")
@@ -123,6 +174,17 @@ func (pc *PostController) UpdateContentPost(g *gin.Context) {
 	response.SuccessResponse(g, 201, update)
 }
 
+// Post godoc
+// @Summary      Delete Image
+// @Description  Delete image when update post (maybe)
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "ID"
+// @Security BearerAuth
+// @Success      204  "No content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts/images/{id} [delete]
 func (pc *PostController) DeleteImage(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 	idStr := g.Param("id")
@@ -139,6 +201,17 @@ func (pc *PostController) DeleteImage(g *gin.Context) {
 	response.SuccessResponse(g, 204, nil)
 }
 
+// Post godoc
+// @Summary      Delete post
+// @Description  Just Delete post
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "ID"
+// @Security BearerAuth
+// @Success      204  "No content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts/soft-delete/{id} [post]
 func (pc *PostController) DeletePost(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 	idStr := g.Param("id")
@@ -173,5 +246,4 @@ func CheckPostStringError(g *gin.Context, err error) {
 		return
 	}
 	response.ErrorNonKnow(g, 500, err.Error())
-	return
 }

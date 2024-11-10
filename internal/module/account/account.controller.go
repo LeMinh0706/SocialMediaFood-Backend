@@ -21,6 +21,16 @@ func NewAccountController(service IAccountService, token token.Maker) *AccountCo
 	}
 }
 
+// Account godoc
+// @Summary      Profile api
+// @Description  To see the account, fetch profile
+// @Tags         Accounts
+// @Accept       json
+// @Produce      json
+// @Security BearerAuth
+// @Success      200  {object}  AccountResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /accounts/{id} [get]
 func (ac *AccountController) GetAccount(g *gin.Context) {
 	idStr := g.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
@@ -36,6 +46,16 @@ func (ac *AccountController) GetAccount(g *gin.Context) {
 	response.SuccessResponse(g, 200, acc)
 }
 
+// Account godoc
+// @Summary      It's you
+// @Description  All your account is in here ->
+// @Tags         Accounts
+// @Accept       json
+// @Produce      json
+// @Security BearerAuth
+// @Success      200  {object}  []AccountResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /accounts/me [get]
 func (ac *AccountController) GetMe(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 	me, err := ac.service.GetAccountByUserId(g, auth.UserId)

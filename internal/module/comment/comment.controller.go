@@ -23,6 +23,20 @@ func NewCommentController(service ICommentService, token token.Maker) *CommentCo
 	}
 }
 
+// Comment godoc
+// @Summary      Create comment
+// @Description  Create comment
+// @Tags         Comments
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        post_id formData string true "PostID"
+// @Param        description formData string true "Description"
+// @Param        account_id formData string true "AccountID"
+// @Param        image formData file false "Image comment"
+// @Security BearerAuth
+// @Success      200  {object}  CommentResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /comments [post]
 func (cc *CommentController) CreateComment(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 	description := g.PostForm("description")
@@ -61,6 +75,19 @@ func (cc *CommentController) CreateComment(g *gin.Context) {
 	response.SuccessResponse(g, 201, comment)
 }
 
+// Post godoc
+// @Summary      Get list post
+// @Description  Get list post with post_top_id, page and page size (Limit-Offset)
+// @Tags         Comments
+// @Accept       json
+// @Produce      json
+// @Param        post_id query int true "PostID"
+// @Param        page query int true "Page"
+// @Param        page_size query int true "Page Size"
+// @Security BearerAuth
+// @Success      200  {object}  []CommentResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /comments [get]
 func (cc *CommentController) GetListComment(g *gin.Context) {
 	postIdStr := g.Query("post_id")
 	pageStr := g.Query("page")
@@ -82,6 +109,19 @@ func (cc *CommentController) GetListComment(g *gin.Context) {
 	response.SuccessResponse(g, 200, comments)
 }
 
+// Comment godoc
+// @Summary      Create comment
+// @Description  Create comment
+// @Tags         Comments
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        id formData string true "CommentID"
+// @Param        description formData string true "Description"
+// @Param        image formData file false "Image comment"
+// @Security BearerAuth
+// @Success      200  {object}  CommentResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /comments [put]
 func (cc *CommentController) UpdateComment(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 	idStr := g.PostForm("id")
@@ -114,6 +154,17 @@ func (cc *CommentController) UpdateComment(g *gin.Context) {
 	response.SuccessResponse(g, 201, comment)
 }
 
+// Post godoc
+// @Summary      Delete Comment
+// @Description  Delete comment
+// @Tags         Comments
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "ID"
+// @Security BearerAuth
+// @Success      204  "No content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /comments/{id} [delete]
 func (cc *CommentController) DeleteComment(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 	idStr := g.Param("id")

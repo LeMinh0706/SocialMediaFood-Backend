@@ -23,6 +23,17 @@ func NewFollowerController(service IFollowerService, token token.Maker) *Followe
 	}
 }
 
+// Follower godoc
+// @Summary      Create follow
+// @Description  Create follow for to another user
+// @Tags         Follower
+// @Accept       json
+// @Produce      json
+// @Param        request body CreateFollowRequest true "request"
+// @Security BearerAuth
+// @Success      200  {object}  FollowResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /follower [post]
 func (fc *FollowerController) FollowRequest(g *gin.Context) {
 	var req CreateFollowRequest
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
@@ -38,6 +49,18 @@ func (fc *FollowerController) FollowRequest(g *gin.Context) {
 	response.SuccessResponse(g, 201, follower)
 }
 
+// Follower godoc
+// @Summary      Get status from your and the other
+// @Description  To see the relationship from your to another
+// @Tags         Follower
+// @Accept       json
+// @Produce      json
+// @Param        from_id query int true "From your"
+// @Param        to_id query int true "To person"
+// @Security BearerAuth
+// @Success      200  {object}  db.GetFollowStatusRow
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /follower/status [get]
 func (fc *FollowerController) GetFollowStatus(g *gin.Context) {
 	from := g.Query("from_id")
 	to := g.Query("to_id")
@@ -59,6 +82,20 @@ func (fc *FollowerController) GetFollowStatus(g *gin.Context) {
 	response.SuccessResponse(g, 200, status)
 }
 
+// Follower godoc
+// @Summary      Get list Follower
+// @Description  Get list follower from user with 3 types: "accept", "request", "friend"
+// @Tags         Follower
+// @Accept       json
+// @Produce      json
+// @Param        status query string true "Status"
+// @Param        from_id query int true "From Account"
+// @Param        page query int true "Page"
+// @Param        page_size query int true "Page Size"
+// @Security BearerAuth
+// @Success      200  {object}  ListFollow
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /follower [get]
 func (fc *FollowerController) GetFollowType(g *gin.Context) {
 	status := g.Query("status")
 	from := g.Query("from_id")
@@ -86,6 +123,17 @@ func (fc *FollowerController) GetFollowType(g *gin.Context) {
 	response.SuccessResponse(g, 200, list)
 }
 
+// Follower godoc
+// @Summary      Update Friend
+// @Description  Make you guy become a friend
+// @Tags         Follower
+// @Accept       json
+// @Produce      json
+// @Param        request body db.UpdateFriendParams true "request"
+// @Security BearerAuth
+// @Success      201  "no content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /follower [put]
 func (fc *FollowerController) UpdateFriend(g *gin.Context) {
 	var req db.UpdateFriendParams
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
@@ -101,6 +149,17 @@ func (fc *FollowerController) UpdateFriend(g *gin.Context) {
 	response.SuccessResponse(g, 20101, nil)
 }
 
+// Follower godoc
+// @Summary      Delete your follow
+// @Description  You will unfollow to another and we will delete two record in db
+// @Tags         Follower
+// @Accept       json
+// @Produce      json
+// @Param        request body db.DeleteFollowParams true "request"
+// @Security BearerAuth
+// @Success      204  "No content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /follower [delete]
 func (fc *FollowerController) UnFollow(g *gin.Context) {
 	var req db.DeleteFollowParams
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)

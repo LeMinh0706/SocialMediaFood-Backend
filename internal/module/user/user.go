@@ -1,6 +1,8 @@
 package user
 
 import (
+	"time"
+
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -12,12 +14,19 @@ type Login struct {
 }
 
 type LoginRequest struct {
-	Username string `json:"username" example:"HiroPhent"`
-	Password string `json:"password" example:"kocanpass"`
+	Username string `json:"username" binding:"required,min=6,max=16" example:"HiroPhent"`
+	Password string `json:"password" binding:"required,min=8" example:"kocanpass"`
 }
 
 type LoginResponse struct {
 	Token string `json:"access_token"`
+}
+
+type RegisterResponse struct {
+	ID        int64     `json:"id"`
+	Username  string    `json:"username" binding:"required"`
+	Email     string    `json:"email"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 func ValidateRegister(g *gin.Context, err error) {

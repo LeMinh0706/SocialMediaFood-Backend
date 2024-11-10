@@ -28,7 +28,6 @@ type Querier interface {
 	DeleteImagePost(ctx context.Context, id int64) error
 	DeletePost(ctx context.Context, id int64) error
 	DeleteReact(ctx context.Context, arg DeleteReactParams) error
-	ForgotPassword(ctx context.Context, arg ForgotPasswordParams) (ForgotPasswordRow, error)
 	GetAccountById(ctx context.Context, id int64) (GetAccountByIdRow, error)
 	GetAccountByUserId(ctx context.Context, userID int64) ([]int64, error)
 	GetComment(ctx context.Context, id int64) (GetCommentRow, error)
@@ -57,6 +56,7 @@ type Querier interface {
 	UpdateFriend(ctx context.Context, arg UpdateFriendParams) error
 	UpdateImagePost(ctx context.Context, arg UpdateImagePostParams) (PostImage, error)
 	UpdateName(ctx context.Context, arg UpdateNameParams) (UpdateNameRow, error)
+	UpdatePassword(ctx context.Context, arg UpdatePasswordParams) (UpdatePasswordRow, error)
 	UpdatePost(ctx context.Context, arg UpdatePostParams) (UpdatePostRow, error)
 	UpdateState(ctx context.Context, arg UpdateStateParams) (ReactPost, error)
 }

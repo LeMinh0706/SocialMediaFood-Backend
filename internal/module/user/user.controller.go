@@ -22,11 +22,20 @@ func NewUserController(service IUserService, config util.Config, token token.Mak
 	}
 }
 
+// User godoc
+// @Summary      Login user
+// @Description  Login to be more handsome
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        request body LoginRequest true "request"
+// @Success      200  {object}  LoginResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /users/login [post]
 func (uc *UserController) Login(g *gin.Context) {
 	var req LoginRequest
 	if err := g.ShouldBindJSON(&req); err != nil {
 		ValidateRegister(g, err)
-		// response.ErrorNonKnow(g, 400, err.Error())
 		return
 	}
 	user, err := uc.service.Login(g, req.Username, req.Password)
@@ -51,6 +60,16 @@ func (uc *UserController) Login(g *gin.Context) {
 	response.SuccessResponse(g, 200, res)
 }
 
+// User godoc
+// @Summary      Register user
+// @Description  Join with us
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        request body db.RegisterRequest true "request"
+// @Success      200  {object}  RegisterResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /users/register [post]
 func (uc *UserController) RegisterTx(g *gin.Context) {
 	var req db.RegisterRequest
 	if err := g.ShouldBindJSON(&req); err != nil {
