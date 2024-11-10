@@ -11,7 +11,7 @@ INSERT INTO users(
 SELECT id, username, hash_password FROM users
 WHERE username = $1;
 
--- name: ForgotPassword :one
+-- name: UpdatePassword :one
 UPDATE users SET hash_password = $2
 WHERE id = $1 
 RETURNING id, created_at;

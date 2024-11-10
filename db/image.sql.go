@@ -52,6 +52,20 @@ func (q *Queries) GetImage(ctx context.Context, id int64) (PostImage, error) {
 	return i, err
 }
 
+const getImageComment = `-- name: GetImageComment :one
+SELECT id, url_image, post_id FROM post_image
+WHERE post_id = $1
+ORDER BY id DESC
+LIMIT 1
+`
+
+func (q *Queries) GetImageComment(ctx context.Context, postID int64) (PostImage, error) {
+	row := q.db.QueryRow(ctx, getImageComment, postID)
+	var i PostImage
+	err := row.Scan(&i.ID, &i.UrlImage, &i.PostID)
+	return i, err
+}
+
 const getImagePost = `-- name: GetImagePost :many
 SELECT id, url_image, post_id FROM post_image 
 WHERE post_id = $1
@@ -75,4 +89,22 @@ func (q *Queries) GetImagePost(ctx context.Context, postID int64) ([]PostImage, 
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateImagePost = `-- name: UpdateImagePost :one
+UPDATE post_image SET url_image = $2
+WHERE post_id = $1
+RETURNING id, url_image, post_id
+`
+
+type UpdateImagePostParams struct {
+	PostID   int64  `json:"post_id"`
+	UrlImage string `json:"url_image"`
+}
+
+func (q *Queries) UpdateImagePost(ctx context.Context, arg UpdateImagePostParams) (PostImage, error) {
+	row := q.db.QueryRow(ctx, updateImagePost, arg.PostID, arg.UrlImage)
+	var i PostImage
+	err := row.Scan(&i.ID, &i.UrlImage, &i.PostID)
+	return i, err
 }

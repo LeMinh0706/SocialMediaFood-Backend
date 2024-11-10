@@ -22,7 +22,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Login to be more handsome",
+                "description": "All your account is in here -\u003e",
                 "consumes": [
                     "application/json"
                 ],
@@ -39,8 +39,42 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.AccountResponse"
+                                "$ref": "#/definitions/account.AccountResponse"
                             }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "To see the account, fetch profile",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Profile api",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/account.AccountResponse"
                         }
                     },
                     "500": {
@@ -54,6 +88,11 @@ const docTemplate = `{
         },
         "/comments": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get list post with post_top_id, page and page size (Limit-Offset)",
                 "consumes": [
                     "application/json"
@@ -68,7 +107,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Post ID",
+                        "description": "PostID",
                         "name": "post_id",
                         "in": "query",
                         "required": true
@@ -94,8 +133,62 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.CommentResponse"
+                                "$ref": "#/definitions/comment.CommentResponse"
                             }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create comment",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Create comment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "CommentID",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Description",
+                        "name": "description",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Image comment",
+                        "name": "image",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/comment.CommentResponse"
                         }
                     },
                     "500": {
@@ -114,7 +207,7 @@ const docTemplate = `{
                 ],
                 "description": "Create comment",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -125,20 +218,38 @@ const docTemplate = `{
                 "summary": "Create comment",
                 "parameters": [
                     {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CommentRequest"
-                        }
+                        "type": "string",
+                        "description": "PostID",
+                        "name": "post_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Description",
+                        "name": "description",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "AccountID",
+                        "name": "account_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Image comment",
+                        "name": "image",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.CommentResponse"
+                            "$ref": "#/definitions/comment.CommentResponse"
                         }
                     },
                     "500": {
@@ -151,56 +262,6 @@ const docTemplate = `{
             }
         },
         "/comments/{id}": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Just update content post",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Comments"
-                ],
-                "summary": "Update Comment",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.UpdateCommentRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.CommentResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            },
             "delete": {
                 "security": [
                     {
@@ -240,14 +301,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/follow": {
+        "/follower": {
             "get": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Get status in wall of other person",
+                "description": "Get list follower from user with 3 types: \"accept\", \"request\", \"friend\"",
                 "consumes": [
                     "application/json"
                 ],
@@ -257,19 +318,33 @@ const docTemplate = `{
                 "tags": [
                     "Follower"
                 ],
-                "summary": "Get follower status",
+                "summary": "Get list Follower",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "From Your Account",
-                        "name": "from_follow",
+                        "type": "string",
+                        "description": "Status",
+                        "name": "status",
                         "in": "query",
                         "required": true
                     },
                     {
                         "type": "integer",
-                        "description": "To Account",
-                        "name": "to_follow",
+                        "description": "From Account",
+                        "name": "from_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page Size",
+                        "name": "page_size",
                         "in": "query",
                         "required": true
                     }
@@ -278,7 +353,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/db.Follower"
+                            "$ref": "#/definitions/follower.ListFollow"
                         }
                     },
                     "500": {
@@ -313,16 +388,13 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.FollowRequest"
+                            "$ref": "#/definitions/db.UpdateFriendParams"
                         }
                     }
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.FollowRespone"
-                        }
+                        "description": "no content"
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -356,7 +428,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.FollowRequest"
+                            "$ref": "#/definitions/follower.CreateFollowRequest"
                         }
                     }
                 ],
@@ -364,7 +436,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.FollowRespone"
+                            "$ref": "#/definitions/follower.FollowResponse"
                         }
                     },
                     "500": {
@@ -399,7 +471,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/db.DeleteReactParams"
+                            "$ref": "#/definitions/db.DeleteFollowParams"
                         }
                     }
                 ],
@@ -416,14 +488,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/follow/friend": {
+        "/follower/status": {
             "get": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Get your friend list",
+                "description": "To see the relationship from your to another",
                 "consumes": [
                     "application/json"
                 ],
@@ -433,26 +505,19 @@ const docTemplate = `{
                 "tags": [
                     "Follower"
                 ],
-                "summary": "Get list friend",
+                "summary": "Get status from your and the other",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Your AccountID",
+                        "description": "From your",
                         "name": "from_id",
                         "in": "query",
                         "required": true
                     },
                     {
                         "type": "integer",
-                        "description": "Page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Page Size",
-                        "name": "page_size",
+                        "description": "To person",
+                        "name": "to_id",
                         "in": "query",
                         "required": true
                     }
@@ -461,121 +526,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ListFollow"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            }
-        },
-        "/follow/other": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Get list account follow you",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Follower"
-                ],
-                "summary": "Get list follower",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Your AccountID",
-                        "name": "from_id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Page Size",
-                        "name": "page_size",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.ListFollow"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            }
-        },
-        "/follow/self": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Get list account you follow",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Follower"
-                ],
-                "summary": "Get list follower",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Your AccountID",
-                        "name": "from_id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Page Size",
-                        "name": "page_size",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.ListFollow"
+                            "$ref": "#/definitions/db.GetFollowStatusRow"
                         }
                     },
                     "500": {
@@ -622,51 +573,8 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.PostResponse"
+                                "$ref": "#/definitions/post.PostResponse"
                             }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Just update content post",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Posts"
-                ],
-                "summary": "Update post",
-                "parameters": [
-                    {
-                        "description": "request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.UpdatePostRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.PostResponse"
                         }
                     },
                     "500": {
@@ -735,7 +643,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.PostResponse"
+                            "$ref": "#/definitions/post.PostResponse"
                         }
                     },
                     "500": {
@@ -834,7 +742,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.PostResponse"
+                                "$ref": "#/definitions/post.PostResponse"
                             }
                         }
                     },
@@ -887,6 +795,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/posts/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Just update content post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Update post",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Description",
+                        "name": "description",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/post.PostResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/react": {
             "get": {
                 "security": [
@@ -894,7 +851,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Get list reactions with post_id, page and page size (Limit-Offset)",
+                "description": "Get with post_id, to say have you liked this post",
                 "consumes": [
                     "application/json"
                 ],
@@ -904,26 +861,19 @@ const docTemplate = `{
                 "tags": [
                     "React"
                 ],
-                "summary": "Get list reactions",
+                "summary": "Get reactions",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "AccountID",
+                        "name": "account_id",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "PostID",
                         "name": "post_id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Page Size",
-                        "name": "page_size",
                         "in": "query",
                         "required": true
                     }
@@ -932,7 +882,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ListReactResponse"
+                            "$ref": "#/definitions/react.ReactResponse"
                         }
                     },
                     "500": {
@@ -949,7 +899,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Just update reaction type 1 for like, 2 for hearth, 3 for sad, 4 for angry",
+                "description": "Just change reaction type 1 for like, 2 for hearth, 3 for sad, 4 for angry",
                 "consumes": [
                     "application/json"
                 ],
@@ -959,7 +909,7 @@ const docTemplate = `{
                 "tags": [
                     "React"
                 ],
-                "summary": "Update react",
+                "summary": "Change reaction state",
                 "parameters": [
                     {
                         "description": "request",
@@ -1010,7 +960,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/db.CreateReactParams"
+                            "$ref": "#/definitions/react.ReactRequest"
                         }
                     }
                 ],
@@ -1035,7 +985,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Delete your reaction with post_id",
+                "description": "Delete your reaction with on any post",
                 "consumes": [
                     "application/json"
                 ],
@@ -1045,7 +995,7 @@ const docTemplate = `{
                 "tags": [
                     "React"
                 ],
-                "summary": "Delete Reactions",
+                "summary": "Unlike post",
                 "parameters": [
                     {
                         "description": "request",
@@ -1060,6 +1010,63 @@ const docTemplate = `{
                 "responses": {
                     "204": {
                         "description": "No content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/react/post/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get list reactions with post_id, page and page size (Limit-Offset)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "React"
+                ],
+                "summary": "Get list reactions",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "PostID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page Size",
+                        "name": "page_size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/react.ListReactResponse"
+                        }
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -1090,7 +1097,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.LoginRequest"
+                            "$ref": "#/definitions/user.LoginRequest"
                         }
                     }
                 ],
@@ -1098,7 +1105,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.LoginResponse"
+                            "$ref": "#/definitions/user.LoginResponse"
                         }
                     },
                     "500": {
@@ -1138,7 +1145,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.RegisterResponse"
+                            "$ref": "#/definitions/user.RegisterResponse"
                         }
                     },
                     "500": {
@@ -1152,16 +1159,74 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "db.CreateReactParams": {
+        "account.AccountResponse": {
             "type": "object",
             "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "fullname": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_upgrade": {
+                    "type": "boolean"
+                },
+                "language": {
+                    "type": "string"
+                },
+                "url_avatar": {
+                    "type": "string"
+                },
+                "url_background_profile": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "comment.CommentResponse": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "$ref": "#/definitions/db.GetAccountByIdRow"
+                },
                 "account_id": {
                     "type": "integer"
                 },
-                "post_id": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
                     "type": "integer"
                 },
-                "state": {
+                "image": {
+                    "$ref": "#/definitions/db.PostImage"
+                },
+                "post_top_id": {
+                    "type": "integer"
+                },
+                "post_type_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "db.DeleteFollowParams": {
+            "type": "object",
+            "properties": {
+                "from_follow": {
+                    "type": "integer"
+                },
+                "to_follow": {
                     "type": "integer"
                 }
             }
@@ -1177,13 +1242,33 @@ const docTemplate = `{
                 }
             }
         },
-        "db.Follower": {
+        "db.GetAccountByIdRow": {
+            "type": "object",
+            "properties": {
+                "fullname": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "role_id": {
+                    "type": "integer"
+                },
+                "url_avatar": {
+                    "type": "string"
+                },
+                "url_background_profile": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "db.GetFollowStatusRow": {
             "type": "object",
             "properties": {
                 "from_follow": {
-                    "type": "integer"
-                },
-                "id": {
                     "type": "integer"
                 },
                 "status": {
@@ -1257,6 +1342,17 @@ const docTemplate = `{
                 }
             }
         },
+        "db.UpdateFriendParams": {
+            "type": "object",
+            "properties": {
+                "from_follow": {
+                    "type": "integer"
+                },
+                "to_follow": {
+                    "type": "integer"
+                }
+            }
+        },
         "db.UpdateStateParams": {
             "type": "object",
             "properties": {
@@ -1271,146 +1367,46 @@ const docTemplate = `{
                 }
             }
         },
-        "models.AccountForPost": {
-            "type": "object",
-            "properties": {
-                "fullname": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "role_id": {
-                    "type": "integer"
-                },
-                "url_avatar": {
-                    "type": "string"
-                },
-                "url_background_profile": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "models.AccountResponse": {
-            "type": "object",
-            "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "country": {
-                    "type": "string"
-                },
-                "fullname": {
-                    "type": "string"
-                },
-                "gender": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "is_upgrade": {
-                    "type": "boolean"
-                },
-                "language": {
-                    "type": "string"
-                },
-                "url_avatar": {
-                    "type": "string"
-                },
-                "url_background_profile": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "models.CommentRequest": {
-            "type": "object",
-            "required": [
-                "account_id",
-                "description",
-                "post_top_id"
-            ],
-            "properties": {
-                "account_id": {
-                    "type": "integer"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "post_top_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "models.CommentResponse": {
+        "follower.AccountFollowResponse": {
             "type": "object",
             "properties": {
                 "account": {
-                    "$ref": "#/definitions/models.AccountForPost"
+                    "$ref": "#/definitions/db.GetAccountByIdRow"
                 },
-                "created_at": {
+                "status": {
                     "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
+                }
+            }
+        },
+        "follower.CreateFollowRequest": {
+            "type": "object",
+            "properties": {
+                "from_id": {
                     "type": "integer"
                 },
-                "post_top_id": {
+                "to_id": {
                     "type": "integer"
                 }
             }
         },
-        "models.FollowRequest": {
+        "follower.FollowResponse": {
             "type": "object",
             "properties": {
                 "from_follow": {
-                    "type": "integer"
+                    "$ref": "#/definitions/follower.AccountFollowResponse"
                 },
                 "to_follow": {
-                    "type": "integer"
+                    "$ref": "#/definitions/follower.AccountFollowResponse"
                 }
             }
         },
-        "models.FollowRespone": {
+        "follower.ListFollow": {
             "type": "object",
             "properties": {
-                "from_follow": {
-                    "$ref": "#/definitions/db.Follower"
-                },
-                "to_follow": {
-                    "$ref": "#/definitions/db.Follower"
-                }
-            }
-        },
-        "models.ListFollow": {
-            "type": "object",
-            "properties": {
-                "total": {
-                    "type": "integer"
-                },
-                "your_follows": {
+                "account": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.AccountForPost"
-                    }
-                }
-            }
-        },
-        "models.ListReactResponse": {
-            "type": "object",
-            "properties": {
-                "react": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.ReactResponse"
+                        "$ref": "#/definitions/db.GetAccountByIdRow"
                     }
                 },
                 "total": {
@@ -1418,32 +1414,11 @@ const docTemplate = `{
                 }
             }
         },
-        "models.LoginRequest": {
-            "type": "object",
-            "properties": {
-                "password": {
-                    "type": "string",
-                    "example": "kocanpass"
-                },
-                "username": {
-                    "type": "string",
-                    "example": "HiroPhent"
-                }
-            }
-        },
-        "models.LoginResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.PostResponse": {
+        "post.PostResponse": {
             "type": "object",
             "properties": {
                 "account": {
-                    "$ref": "#/definitions/models.AccountForPost"
+                    "$ref": "#/definitions/db.GetAccountByIdRow"
                 },
                 "account_id": {
                     "type": "integer"
@@ -1468,23 +1443,97 @@ const docTemplate = `{
                 "post_type_id": {
                     "type": "integer"
                 },
+                "total_comment": {
+                    "type": "integer"
+                },
                 "total_like": {
                     "type": "integer"
                 }
             }
         },
-        "models.ReactResponse": {
+        "react.ListReactResponse": {
             "type": "object",
             "properties": {
-                "account": {
-                    "$ref": "#/definitions/models.AccountForPost"
+                "react": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/react.ReactResponse"
+                    }
                 },
-                "id": {
+                "total": {
                     "type": "integer"
                 }
             }
         },
-        "models.RegisterResponse": {
+        "react.ReactRequest": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "integer"
+                },
+                "post_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "react.ReactResponse": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "$ref": "#/definitions/db.GetAccountByIdRow"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "post_id": {
+                    "type": "integer"
+                },
+                "state": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.ErrSwaggerJson": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.LoginRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "example": "kocanpass"
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 16,
+                    "minLength": 6,
+                    "example": "HiroPhent"
+                }
+            }
+        },
+        "user.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.RegisterResponse": {
             "type": "object",
             "required": [
                 "username"
@@ -1500,40 +1549,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.UpdateCommentRequest": {
-            "type": "object",
-            "required": [
-                "description"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.UpdatePostRequest": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "response.ErrSwaggerJson": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "data": {},
-                "message": {
                     "type": "string"
                 }
             }
