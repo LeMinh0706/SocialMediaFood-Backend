@@ -1,3 +1,3 @@
 package notification
 
-type INotificationService interface{}
+type NotificationService struct{}

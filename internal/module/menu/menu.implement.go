@@ -1,3 +1,3 @@
 package menu
 
-type IMenuService interface{}
+type MenuService struct{}

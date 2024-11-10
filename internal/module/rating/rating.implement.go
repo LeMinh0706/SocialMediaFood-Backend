@@ -1,3 +1,3 @@
 package rating
 
-type IRatingService interface{}
+type RatingService struct{}
