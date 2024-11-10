@@ -156,24 +156,22 @@ func (pc *PostController) DeletePost(g *gin.Context) {
 }
 
 func CheckPostStringError(g *gin.Context, err error) {
-	if err != nil {
-		if err == pgx.ErrNoRows {
-			response.ErrorResponse(g, response.ErrFindPost)
-			return
-		}
-		if err.Error() == "not you" {
-			response.ErrorResponse(g, response.ErrYourSelf)
-			return
-		}
-		if err.Error() == "ERROR: duplicate key value violates unique constraint \"react_post_post_id_account_id_idx\" (SQLSTATE 23505)" {
-			response.ErrorResponse(g, response.ErrLike)
-			return
-		}
-		if err.Error() == "err like" {
-			response.ErrorResponse(g, response.ErrUnlike)
-			return
-		}
-		response.ErrorNonKnow(g, 500, err.Error())
+	if err == pgx.ErrNoRows {
+		response.ErrorResponse(g, response.ErrFindPost)
 		return
 	}
+	if err.Error() == "not you" {
+		response.ErrorResponse(g, response.ErrYourSelf)
+		return
+	}
+	if err.Error() == "ERROR: duplicate key value violates unique constraint \"react_post_post_id_account_id_idx\" (SQLSTATE 23505)" {
+		response.ErrorResponse(g, response.ErrLike)
+		return
+	}
+	if err.Error() == "err like" {
+		response.ErrorResponse(g, response.ErrUnlike)
+		return
+	}
+	response.ErrorNonKnow(g, 500, err.Error())
+	return
 }

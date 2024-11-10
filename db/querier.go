@@ -34,7 +34,7 @@ type Querier interface {
 	GetComment(ctx context.Context, id int64) (GetCommentRow, error)
 	GetDetailAccount(ctx context.Context, id int64) (Account, error)
 	GetFavorite(ctx context.Context, arg GetFavoriteParams) ([]int64, error)
-	GetFollowStatus(ctx context.Context, arg GetFollowStatusParams) (Follower, error)
+	GetFollowStatus(ctx context.Context, arg GetFollowStatusParams) (GetFollowStatusRow, error)
 	GetImage(ctx context.Context, id int64) (PostImage, error)
 	GetImageComment(ctx context.Context, postID int64) (PostImage, error)
 	GetImagePost(ctx context.Context, postID int64) ([]PostImage, error)
@@ -50,6 +50,9 @@ type Querier interface {
 	GetYourFriend(ctx context.Context, arg GetYourFriendParams) ([]int64, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (RegisterRow, error)
+	SearchingAccounts(ctx context.Context, arg SearchingAccountsParams) ([]SearchingAccountsRow, error)
+	UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) (UpdateAvatarRow, error)
+	UpdateBackground(ctx context.Context, arg UpdateBackgroundParams) (UpdateBackgroundRow, error)
 	UpdateComment(ctx context.Context, arg UpdateCommentParams) (UpdateCommentRow, error)
 	UpdateFriend(ctx context.Context, arg UpdateFriendParams) error
 	UpdateImagePost(ctx context.Context, arg UpdateImagePostParams) (PostImage, error)

@@ -4,6 +4,7 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/account"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/comment"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/follower"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/react"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/user"
@@ -16,6 +17,7 @@ type Factory struct {
 	PostService    post.IPostService
 	CommentService comment.ICommentService
 	ReactService   react.IReactService
+	FollowService  follower.IFollowerService
 }
 
 // Đang sửa lại thành cấu trúc cũ thì thành như này
@@ -24,15 +26,16 @@ func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
 	store := db.NewStore(pq)
 
 	//Repo
-	queries := db.New(pq)
+	q := db.New(pq)
 
 	//Service
 
-	userService := user.NewUserService(queries, store)
-	accountService := account.NewAccountService(queries)
-	postService := post.NewPostService(queries, accountService)
-	commentService := comment.NewCommentService(queries, postService, accountService)
-	reactService := react.NewReactService(queries, accountService, postService)
+	userService := user.NewUserService(q, store)
+	accountService := account.NewAccountService(q)
+	postService := post.NewPostService(q, accountService)
+	commentService := comment.NewCommentService(q, postService, accountService)
+	reactService := react.NewReactService(q, accountService, postService)
+	followService := follower.NewFollowerService(q, accountService)
 	///return
 	return &Factory{
 		UserService:    userService,
@@ -40,5 +43,6 @@ func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
 		PostService:    postService,
 		CommentService: commentService,
 		ReactService:   reactService,
+		FollowService:  followService,
 	}, nil
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/factory"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/account"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/comment"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/follower"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/react"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/user"
@@ -29,6 +30,7 @@ func (s *Server) NewRouter() {
 		post.NewPostRouter(s.Router, a, fac.PostService, s.TokenMaker)
 		comment.NewCommentRouter(s.Router, a, fac.CommentService, s.TokenMaker)
 		react.NewReactRouter(s.Router, a, fac.ReactService, s.TokenMaker)
+		follower.NewFollowerRouter(s.Router, a, fac.FollowService, s.TokenMaker)
 	}
 
 	s.Router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

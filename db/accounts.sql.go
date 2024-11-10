@@ -152,6 +152,123 @@ func (q *Queries) GetDetailAccount(ctx context.Context, id int64) (Account, erro
 	return i, err
 }
 
+const searchingAccounts = `-- name: SearchingAccounts :many
+SELECT id, user_id, fullname, url_avatar, url_background_profile, role_id FROM accounts
+WHERE fullname LIKE '%' || $1 || '%'
+LIMIT $2
+OFFSET $3
+`
+
+type SearchingAccountsParams struct {
+	Column1 pgtype.Text `json:"column_1"`
+	Limit   int32       `json:"limit"`
+	Offset  int32       `json:"offset"`
+}
+
+type SearchingAccountsRow struct {
+	ID                   int64  `json:"id"`
+	UserID               int64  `json:"user_id"`
+	Fullname             string `json:"fullname"`
+	UrlAvatar            string `json:"url_avatar"`
+	UrlBackgroundProfile string `json:"url_background_profile"`
+	RoleID               int32  `json:"role_id"`
+}
+
+func (q *Queries) SearchingAccounts(ctx context.Context, arg SearchingAccountsParams) ([]SearchingAccountsRow, error) {
+	rows, err := q.db.Query(ctx, searchingAccounts, arg.Column1, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []SearchingAccountsRow{}
+	for rows.Next() {
+		var i SearchingAccountsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.Fullname,
+			&i.UrlAvatar,
+			&i.UrlBackgroundProfile,
+			&i.RoleID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updateAvatar = `-- name: UpdateAvatar :one
+UPDATE accounts SET url_avatar = $2
+WHERE id = $1
+RETURNING id, user_id, fullname, url_avatar, url_background_profile, role_id
+`
+
+type UpdateAvatarParams struct {
+	ID        int64  `json:"id"`
+	UrlAvatar string `json:"url_avatar"`
+}
+
+type UpdateAvatarRow struct {
+	ID                   int64  `json:"id"`
+	UserID               int64  `json:"user_id"`
+	Fullname             string `json:"fullname"`
+	UrlAvatar            string `json:"url_avatar"`
+	UrlBackgroundProfile string `json:"url_background_profile"`
+	RoleID               int32  `json:"role_id"`
+}
+
+func (q *Queries) UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) (UpdateAvatarRow, error) {
+	row := q.db.QueryRow(ctx, updateAvatar, arg.ID, arg.UrlAvatar)
+	var i UpdateAvatarRow
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Fullname,
+		&i.UrlAvatar,
+		&i.UrlBackgroundProfile,
+		&i.RoleID,
+	)
+	return i, err
+}
+
+const updateBackground = `-- name: UpdateBackground :one
+UPDATE accounts SET url_background_profile = $2
+WHERE id = $1
+RETURNING id, user_id, fullname, url_avatar, url_background_profile, role_id
+`
+
+type UpdateBackgroundParams struct {
+	ID                   int64  `json:"id"`
+	UrlBackgroundProfile string `json:"url_background_profile"`
+}
+
+type UpdateBackgroundRow struct {
+	ID                   int64  `json:"id"`
+	UserID               int64  `json:"user_id"`
+	Fullname             string `json:"fullname"`
+	UrlAvatar            string `json:"url_avatar"`
+	UrlBackgroundProfile string `json:"url_background_profile"`
+	RoleID               int32  `json:"role_id"`
+}
+
+func (q *Queries) UpdateBackground(ctx context.Context, arg UpdateBackgroundParams) (UpdateBackgroundRow, error) {
+	row := q.db.QueryRow(ctx, updateBackground, arg.ID, arg.UrlBackgroundProfile)
+	var i UpdateBackgroundRow
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Fullname,
+		&i.UrlAvatar,
+		&i.UrlBackgroundProfile,
+		&i.RoleID,
+	)
+	return i, err
+}
+
 const updateName = `-- name: UpdateName :one
 UPDATE accounts SET fullname = $2
 WHERE id = $1

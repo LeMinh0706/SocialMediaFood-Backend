@@ -88,7 +88,7 @@ func (q *Queries) DeleteFollow(ctx context.Context, arg DeleteFollowParams) erro
 }
 
 const getFollowStatus = `-- name: GetFollowStatus :one
-SELECT id, from_follow, to_follow, status FROM follower
+SELECT from_follow, to_follow, status FROM follower
 WHERE from_follow = $1 AND to_follow = $2
 `
 
@@ -97,15 +97,16 @@ type GetFollowStatusParams struct {
 	ToFollow   int64 `json:"to_follow"`
 }
 
-func (q *Queries) GetFollowStatus(ctx context.Context, arg GetFollowStatusParams) (Follower, error) {
+type GetFollowStatusRow struct {
+	FromFollow int64  `json:"from_follow"`
+	ToFollow   int64  `json:"to_follow"`
+	Status     string `json:"status"`
+}
+
+func (q *Queries) GetFollowStatus(ctx context.Context, arg GetFollowStatusParams) (GetFollowStatusRow, error) {
 	row := q.db.QueryRow(ctx, getFollowStatus, arg.FromFollow, arg.ToFollow)
-	var i Follower
-	err := row.Scan(
-		&i.ID,
-		&i.FromFollow,
-		&i.ToFollow,
-		&i.Status,
-	)
+	var i GetFollowStatusRow
+	err := row.Scan(&i.FromFollow, &i.ToFollow, &i.Status)
 	return i, err
 }
 

@@ -7,7 +7,7 @@ INSERT INTO follower (
 RETURNING *;
 
 -- name: GetFollowStatus :one
-SELECT * FROM follower
+SELECT from_follow, to_follow, status FROM follower
 WHERE from_follow = $1 AND to_follow = $2;
 
 -- name: CountFollow :one
