@@ -14,13 +14,17 @@ INSERT INTO accounts(
 ) RETURNING * ;
 
 -- name: GetAccountByUserId :many
-SELECT id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, role_id, address, is_upgrade
+SELECT id
 FROM accounts
 WHERE user_id = $1
 ORDER BY id;
 
--- name: GetAccountById :one
+-- name: GetDetailAccount :one
 SELECT * FROM accounts
+WHERE id = $1;
+
+-- name: GetAccountById :one
+SELECT id, user_id, fullname, url_avatar, url_background_profile, role_id FROM accounts
 WHERE id = $1
 LIMIT 1;
 
@@ -28,3 +32,19 @@ LIMIT 1;
 UPDATE accounts SET fullname = $2
 WHERE id = $1
 RETURNING id, user_id, fullname;
+
+-- name: UpdateAvatar :one
+UPDATE accounts SET url_avatar = $2
+WHERE id = $1
+RETURNING id, user_id, fullname, url_avatar, url_background_profile, role_id;
+
+-- name: SearchingAccounts :many
+SELECT id, user_id, fullname, url_avatar, url_background_profile, role_id FROM accounts
+WHERE fullname LIKE '%' || $1 || '%'
+LIMIT $2
+OFFSET $3;
+
+-- name: UpdateBackground :one
+UPDATE accounts SET url_background_profile = $2
+WHERE id = $1
+RETURNING id, user_id, fullname, url_avatar, url_background_profile, role_id;

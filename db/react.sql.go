@@ -98,50 +98,33 @@ func (q *Queries) GetFavorite(ctx context.Context, arg GetFavoriteParams) ([]int
 	return items, nil
 }
 
-const getReact = `-- name: GetReact :one
-SELECT id FROM react_post
-WHERE account_id = $1 AND post_id = $2
-`
-
-type GetReactParams struct {
-	AccountID int64 `json:"account_id"`
-	PostID    int64 `json:"post_id"`
-}
-
-func (q *Queries) GetReact(ctx context.Context, arg GetReactParams) (int64, error) {
-	row := q.db.QueryRow(ctx, getReact, arg.AccountID, arg.PostID)
-	var id int64
-	err := row.Scan(&id)
-	return id, err
-}
-
-const getReactPost = `-- name: GetReactPost :many
+const getListReact = `-- name: GetListReact :many
 SELECT id, account_id FROM react_post
 WHERE post_id = $1
 LIMIT $2
 OFFSET $3
 `
 
-type GetReactPostParams struct {
+type GetListReactParams struct {
 	PostID int64 `json:"post_id"`
 	Limit  int32 `json:"limit"`
 	Offset int32 `json:"offset"`
 }
 
-type GetReactPostRow struct {
+type GetListReactRow struct {
 	ID        int64 `json:"id"`
 	AccountID int64 `json:"account_id"`
 }
 
-func (q *Queries) GetReactPost(ctx context.Context, arg GetReactPostParams) ([]GetReactPostRow, error) {
-	rows, err := q.db.Query(ctx, getReactPost, arg.PostID, arg.Limit, arg.Offset)
+func (q *Queries) GetListReact(ctx context.Context, arg GetListReactParams) ([]GetListReactRow, error) {
+	rows, err := q.db.Query(ctx, getListReact, arg.PostID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetReactPostRow{}
+	items := []GetListReactRow{}
 	for rows.Next() {
-		var i GetReactPostRow
+		var i GetListReactRow
 		if err := rows.Scan(&i.ID, &i.AccountID); err != nil {
 			return nil, err
 		}
@@ -151,6 +134,28 @@ func (q *Queries) GetReactPost(ctx context.Context, arg GetReactPostParams) ([]G
 		return nil, err
 	}
 	return items, nil
+}
+
+const getReact = `-- name: GetReact :one
+SELECT id, account_id, post_id, state FROM react_post
+WHERE account_id = $1 AND post_id = $2
+`
+
+type GetReactParams struct {
+	AccountID int64 `json:"account_id"`
+	PostID    int64 `json:"post_id"`
+}
+
+func (q *Queries) GetReact(ctx context.Context, arg GetReactParams) (ReactPost, error) {
+	row := q.db.QueryRow(ctx, getReact, arg.AccountID, arg.PostID)
+	var i ReactPost
+	err := row.Scan(
+		&i.ID,
+		&i.AccountID,
+		&i.PostID,
+		&i.State,
+	)
+	return i, err
 }
 
 const updateState = `-- name: UpdateState :one

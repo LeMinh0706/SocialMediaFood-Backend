@@ -9,21 +9,9 @@ import (
 	"context"
 )
 
-const countFollow = `-- name: CountFollow :one
-SELECT count(id) FROM follower 
-WHERE from_follow = $1 AND status = 'pending'
-`
-
-func (q *Queries) CountFollow(ctx context.Context, fromFollow int64) (int64, error) {
-	row := q.db.QueryRow(ctx, countFollow, fromFollow)
-	var count int64
-	err := row.Scan(&count)
-	return count, err
-}
-
 const countFollower = `-- name: CountFollower :one
 SELECT count(id) FROM follower 
-WHERE from_follow = $1 AND status = 'accepted'
+WHERE from_follow = $1 AND status = 'accept'
 `
 
 func (q *Queries) CountFollower(ctx context.Context, fromFollow int64) (int64, error) {
@@ -40,6 +28,18 @@ WHERE from_follow = $1 AND status = 'friend'
 
 func (q *Queries) CountFriend(ctx context.Context, fromFollow int64) (int64, error) {
 	row := q.db.QueryRow(ctx, countFriend, fromFollow)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countRequest = `-- name: CountRequest :one
+SELECT count(id) FROM follower 
+WHERE from_follow = $1 AND status = 'request'
+`
+
+func (q *Queries) CountRequest(ctx context.Context, fromFollow int64) (int64, error) {
+	row := q.db.QueryRow(ctx, countRequest, fromFollow)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -88,7 +88,7 @@ func (q *Queries) DeleteFollow(ctx context.Context, arg DeleteFollowParams) erro
 }
 
 const getFollowStatus = `-- name: GetFollowStatus :one
-SELECT id, from_follow, to_follow, status FROM follower
+SELECT from_follow, to_follow, status FROM follower
 WHERE from_follow = $1 AND to_follow = $2
 `
 
@@ -97,55 +97,22 @@ type GetFollowStatusParams struct {
 	ToFollow   int64 `json:"to_follow"`
 }
 
-func (q *Queries) GetFollowStatus(ctx context.Context, arg GetFollowStatusParams) (Follower, error) {
+type GetFollowStatusRow struct {
+	FromFollow int64  `json:"from_follow"`
+	ToFollow   int64  `json:"to_follow"`
+	Status     string `json:"status"`
+}
+
+func (q *Queries) GetFollowStatus(ctx context.Context, arg GetFollowStatusParams) (GetFollowStatusRow, error) {
 	row := q.db.QueryRow(ctx, getFollowStatus, arg.FromFollow, arg.ToFollow)
-	var i Follower
-	err := row.Scan(
-		&i.ID,
-		&i.FromFollow,
-		&i.ToFollow,
-		&i.Status,
-	)
+	var i GetFollowStatusRow
+	err := row.Scan(&i.FromFollow, &i.ToFollow, &i.Status)
 	return i, err
-}
-
-const getYourFollow = `-- name: GetYourFollow :many
-SELECT to_follow FROM follower
-WHERE from_follow = $1 AND status = 'pending'
-ORDER BY id DESC
-LIMIT $2
-OFFSET $3
-`
-
-type GetYourFollowParams struct {
-	FromFollow int64 `json:"from_follow"`
-	Limit      int32 `json:"limit"`
-	Offset     int32 `json:"offset"`
-}
-
-func (q *Queries) GetYourFollow(ctx context.Context, arg GetYourFollowParams) ([]int64, error) {
-	rows, err := q.db.Query(ctx, getYourFollow, arg.FromFollow, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []int64{}
-	for rows.Next() {
-		var to_follow int64
-		if err := rows.Scan(&to_follow); err != nil {
-			return nil, err
-		}
-		items = append(items, to_follow)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
 }
 
 const getYourFollower = `-- name: GetYourFollower :many
 SELECT to_follow FROM follower
-WHERE from_follow = $1 AND status = 'accepted'
+WHERE from_follow = $1 AND status = 'accept'
 ORDER BY id DESC
 LIMIT $2
 OFFSET $3
@@ -193,6 +160,40 @@ type GetYourFriendParams struct {
 
 func (q *Queries) GetYourFriend(ctx context.Context, arg GetYourFriendParams) ([]int64, error) {
 	rows, err := q.db.Query(ctx, getYourFriend, arg.FromFollow, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []int64{}
+	for rows.Next() {
+		var to_follow int64
+		if err := rows.Scan(&to_follow); err != nil {
+			return nil, err
+		}
+		items = append(items, to_follow)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getYourRequest = `-- name: GetYourRequest :many
+SELECT to_follow FROM follower
+WHERE from_follow = $1 AND status = 'request'
+ORDER BY id DESC
+LIMIT $2
+OFFSET $3
+`
+
+type GetYourRequestParams struct {
+	FromFollow int64 `json:"from_follow"`
+	Limit      int32 `json:"limit"`
+	Offset     int32 `json:"offset"`
+}
+
+func (q *Queries) GetYourRequest(ctx context.Context, arg GetYourRequestParams) ([]int64, error) {
+	rows, err := q.db.Query(ctx, getYourRequest, arg.FromFollow, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

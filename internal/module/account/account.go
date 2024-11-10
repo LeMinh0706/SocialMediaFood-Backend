@@ -1,0 +1,40 @@
+package account
+
+import "github.com/LeMinh0706/SocialMediaFood-Backend/db"
+
+type AccountResponse struct {
+	ID                   int64  `json:"id"`
+	UserID               int64  `json:"user_id"`
+	Fullname             string `json:"fullname"`
+	UrlAvatar            string `json:"url_avatar"`
+	UrlBackgroundProfile string `json:"url_background_profile"`
+	Gender               int32  `json:"gender"`
+	Country              string `json:"country"`
+	Language             string `json:"language"`
+	Address              string `json:"address"`
+	IsUpgrade            bool   `json:"is_upgrade"`
+}
+
+func AccountRes(account db.Account) AccountResponse {
+	return AccountResponse{
+		ID:                   account.ID,
+		UserID:               account.UserID,
+		Fullname:             account.Fullname,
+		UrlAvatar:            account.UrlAvatar,
+		UrlBackgroundProfile: account.UrlBackgroundProfile,
+		Gender:               account.Gender.Int32,
+		Country:              account.Country.String,
+		Language:             account.Language.String,
+		Address:              account.Address.String,
+		IsUpgrade:            account.IsUpgrade.Bool,
+	}
+}
+
+func ListAccountResponse(all []db.Account) []AccountResponse {
+	var list []AccountResponse
+	for _, acc := range all {
+		res := AccountRes(acc)
+		list = append(list, res)
+	}
+	return list
+}

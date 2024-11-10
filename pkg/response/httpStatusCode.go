@@ -3,12 +3,13 @@ package response
 const (
 	StatusOk              = 200
 	CodeSuccess           = 201
+	UpdateFriend          = 20101
 	DeleteSuccess         = 204
 	ErrBadRequest         = 40000
 	ErrBadRequestPage     = 40001
 	ErrBadRequestPageSize = 40002
 	ErrBadRequestMime     = 40003
-	ErrBadRequestPostId   = 40004
+	ErrBadRequestId       = 40004
 	ErrImageLen           = 40005
 	ErrImageSize          = 40006
 	ErrGender             = 40007
@@ -35,17 +36,25 @@ const (
 	AcceptForbidden       = 40303
 	TheirFriend           = 40411
 	WaitngAccept          = 40412
+	ErrBadLngLat          = 40020
+	ErrSaveImage          = 40021
+	ErrEmptyContent       = 40022
+	ErrAccountExists      = 40414
+	ErrDeleteComment      = 40119
+	ErrInputFollow        = 40415
 )
 
 var msg = map[int]string{
 	StatusOk:              "Ok",
 	CodeSuccess:           "Success",
 	DeleteSuccess:         "Delete no error",
+	UpdateFriend:          "Success update to friend",
 	ErrBadRequest:         "Bad request",
-	ErrBadRequestPage:     "Page should be number",
-	ErrBadRequestPageSize: "Page size should be number",
+	ErrBadRequestPage:     "Page should be number and greater 1",
+	ErrBadRequestPageSize: "Page size should be number and greater 1",
+	ErrBadLngLat:          "Lat, Lng should be number",
 	ErrBadRequestMime:     "Can only use file .png, .jpg, .jpeg, .gif",
-	ErrBadRequestPostId:   "Id must be number, can't convert from this request",
+	ErrBadRequestId:       "Id must be number, can't convert from this request",
 	ErrImageLen:           "Images shoud less than 4",
 	ErrGender:             "Gender should be 0 (for female) or 1 (for male)",
 	ErrUnauthorize:        "Unauthorized",
@@ -57,7 +66,7 @@ var msg = map[int]string{
 	ErrFindPost:           "Can not found post or post was deleted",
 	ErrUnlike:             "You didn't like this post yet",
 	ErrLike:               "You have liked post yet",
-	ErrFileTooLarge:       "File too large, only allowed 6MB",
+	ErrFileTooLarge:       "File too large, only allowed 4MB",
 	ErrWrongPassword:      "Wrong password",
 	ErrEmailExists:        "Email exists",
 	ErrUsernameChar:       "Username need to be between 6 to 16 character",
@@ -67,10 +76,15 @@ var msg = map[int]string{
 	ErrAccountID:          "Account id must be number",
 	ErrPositionField:      "LNG or Lat must be both fill or both empty",
 	ErrImageWasDelete:     "Image not found or was deleted",
-	HaveFollow:            "You have followed this person",
-	AcceptForbidden:       "Waiting for accepted",
+	HaveFollow:            "You have followed this person or they waiting for your acceptance",
+	AcceptForbidden:       "Waiting for their reply",
 	TheirFriend:           "You're their friend",
-	WaitngAccept:          "They're waiting for your accept",
+	WaitngAccept:          "They're waiting for your acceptance",
+	ErrSaveImage:          "Failed to save image",
+	ErrEmptyContent:       "Description or images can't be empty",
+	ErrAccountExists:      "This account doesn't exist",
+	ErrDeleteComment:      "Comment not found",
+	ErrInputFollow:        "Error follow status input",
 }
 
 // ErrOutOfDate:   "Token is out of date",

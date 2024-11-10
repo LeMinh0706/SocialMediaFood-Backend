@@ -3,7 +3,6 @@ package server
 import (
 	"fmt"
 
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/router"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/gin-gonic/gin"
@@ -29,8 +28,9 @@ func NewServer(db *pgxpool.Pool, config util.Config) (*Server, error) {
 		TokenMaker: tokenMaker,
 		DBConn:     db,
 	}
-
-	router.NewRouter(server.Router, server.Config, server.TokenMaker, server.DBConn)
+	EnableCors(server.Router)
+	server.Router.MaxMultipartMemory = 4 << 20
+	server.NewRouter()
 	return server, nil
 }
 
