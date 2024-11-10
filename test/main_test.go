@@ -1,4 +1,4 @@
-package dump
+package test
 
 import (
 	"context"
@@ -19,7 +19,7 @@ var testDB *pgx.Conn
 
 // Fake data here
 func TestMain(m *testing.M) {
-	config, err := util.LoadConfig("../..")
+	config, err := util.LoadConfig("../")
 	if err != nil {
 		log.Fatal("Cannot connect config:", err)
 	}

@@ -3,6 +3,7 @@ package response
 const (
 	StatusOk              = 200
 	CodeSuccess           = 201
+	UpdateFriend          = 20101
 	DeleteSuccess         = 204
 	ErrBadRequest         = 40000
 	ErrBadRequestPage     = 40001
@@ -40,12 +41,14 @@ const (
 	ErrEmptyContent       = 40022
 	ErrAccountExists      = 40414
 	ErrDeleteComment      = 40119
+	ErrInputFollow        = 40415
 )
 
 var msg = map[int]string{
 	StatusOk:              "Ok",
 	CodeSuccess:           "Success",
 	DeleteSuccess:         "Delete no error",
+	UpdateFriend:          "Success update to friend",
 	ErrBadRequest:         "Bad request",
 	ErrBadRequestPage:     "Page should be number and greater 1",
 	ErrBadRequestPageSize: "Page size should be number and greater 1",
@@ -73,14 +76,15 @@ var msg = map[int]string{
 	ErrAccountID:          "Account id must be number",
 	ErrPositionField:      "LNG or Lat must be both fill or both empty",
 	ErrImageWasDelete:     "Image not found or was deleted",
-	HaveFollow:            "You have followed this person",
-	AcceptForbidden:       "Waiting for accepted",
+	HaveFollow:            "You have followed this person or they waiting for your acceptance",
+	AcceptForbidden:       "Waiting for their reply",
 	TheirFriend:           "You're their friend",
-	WaitngAccept:          "They're waiting for your accept",
+	WaitngAccept:          "They're waiting for your acceptance",
 	ErrSaveImage:          "Failed to save image",
 	ErrEmptyContent:       "Description or images can't be empty",
 	ErrAccountExists:      "This account doesn't exist",
 	ErrDeleteComment:      "Comment not found",
+	ErrInputFollow:        "Error follow status input",
 }
 
 // ErrOutOfDate:   "Token is out of date",

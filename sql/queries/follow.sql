@@ -10,24 +10,24 @@ RETURNING *;
 SELECT from_follow, to_follow, status FROM follower
 WHERE from_follow = $1 AND to_follow = $2;
 
--- name: CountFollow :one
+-- name: CountRequest :one
 SELECT count(id) FROM follower 
-WHERE from_follow = $1 AND status = 'pending';
+WHERE from_follow = $1 AND status = 'request';
 
--- name: GetYourFollow :many
+-- name: GetYourRequest :many
 SELECT to_follow FROM follower
-WHERE from_follow = $1 AND status = 'pending'
+WHERE from_follow = $1 AND status = 'request'
 ORDER BY id DESC
 LIMIT $2
 OFFSET $3;
 
 -- name: CountFollower :one
 SELECT count(id) FROM follower 
-WHERE from_follow = $1 AND status = 'accepted';
+WHERE from_follow = $1 AND status = 'accept';
 
 -- name: GetYourFollower :many
 SELECT to_follow FROM follower
-WHERE from_follow = $1 AND status = 'accepted'
+WHERE from_follow = $1 AND status = 'accept'
 ORDER BY id DESC
 LIMIT $2
 OFFSET $3;

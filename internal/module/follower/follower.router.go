@@ -12,6 +12,9 @@ func NewFollowerRouter(r *gin.Engine, group *gin.RouterGroup, service IFollowerS
 	auth := followGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
 	{
 		auth.POST("", fc.FollowRequest)
-		auth.GET("", fc.GetFollowStatus)
+		auth.GET("/status", fc.GetFollowStatus)
+		auth.GET("", fc.GetFollowType)
+		auth.PUT("", fc.UpdateFriend)
+		auth.DELETE("", fc.UnFollow)
 	}
 }
