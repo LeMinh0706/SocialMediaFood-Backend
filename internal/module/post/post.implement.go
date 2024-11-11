@@ -94,7 +94,7 @@ func (p *PostService) CreatePost(ctx context.Context, description string, lng st
 		imgs = append(imgs, images)
 	}
 
-	res = PostRes(post, acc, imgs, 0, 0)
+	res = PostRes(post, acc, imgs, []int64{}, 0, 0)
 
 	return res, nil
 }
@@ -142,7 +142,8 @@ func (p *PostService) GetPost(ctx context.Context, id int64) (PostResponse, erro
 	imgs, _ := p.queries.GetImagePost(ctx, post.ID)
 	likes, _ := p.queries.CountReactPost(ctx, post.ID)
 	comments, _ := p.queries.CountComment(ctx, pgtype.Int8{Int64: id, Valid: true})
-	res = GetPostRes(post, acc, imgs, likes, comments)
+	reacts, _ := p.queries.ListAccountReact(ctx, id)
+	res = GetPostRes(post, acc, imgs, reacts, likes, comments)
 	return res, nil
 }
 
@@ -165,7 +166,7 @@ func (p *PostService) UpdateContentPost(ctx context.Context, desciption string, 
 	if err != nil {
 		return res, err
 	}
-	res = PostRes(db.CreatePostRow(update), acc, post.Images, post.TotalLike, post.TotalComment)
+	res = PostRes(db.CreatePostRow(update), acc, post.Images, post.ListReact, post.TotalLike, post.TotalComment)
 	return res, nil
 }
 

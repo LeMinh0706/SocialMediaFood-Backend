@@ -24,7 +24,7 @@ func TestMain(m *testing.M) {
 		log.Fatal("Cannot connect config:", err)
 	}
 	fmt.Println("Run:", config.DBDriver)
-	testDB, err = pgx.Connect(context.Background(), config.DBSource)
+	testDB, err = pgx.Connect(context.Background(), config.DBProduct)
 	if err != nil {
 		log.Fatal("Cannot connect db:", err)
 	}

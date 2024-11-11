@@ -9,6 +9,7 @@ import (
 type Config struct {
 	DBDriver            string        `mapstructure:"DB_DRIVER"`
 	DBSource            string        `mapstructure:"DB_SOURCE"`
+	DBProduct           string        `mapstructure:"DB_FOODIO"`
 	ServerAddress       string        `mapstructure:"SERVER_ADDRESS"`
 	SecretKey           string        `mapstructure:"SECRET_KEY"`
 	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`

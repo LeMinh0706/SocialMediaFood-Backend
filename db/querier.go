@@ -47,6 +47,7 @@ type Querier interface {
 	GetYourFollower(ctx context.Context, arg GetYourFollowerParams) ([]int64, error)
 	GetYourFriend(ctx context.Context, arg GetYourFriendParams) ([]int64, error)
 	GetYourRequest(ctx context.Context, arg GetYourRequestParams) ([]int64, error)
+	ListAccountReact(ctx context.Context, postID int64) ([]int64, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (RegisterRow, error)
 	SearchingAccounts(ctx context.Context, arg SearchingAccountsParams) ([]SearchingAccountsRow, error)

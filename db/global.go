@@ -32,6 +32,25 @@ func GetDBConnection(config util.Config) (*pgxpool.Pool, error) {
 	return pgd, nil
 }
 
+func GetDBProductConnection(config util.Config) (*pgxpool.Pool, error) {
+
+	pgConfig, err := pgxpool.ParseConfig(config.DBProduct)
+	if err != nil {
+		return nil, err
+	}
+
+	pgConfig.MaxConns = config.MaxConns
+	pgConfig.MinConns = config.MinConns
+	pgConfig.MaxConnLifetime = config.MaxConnLifetime
+	pgConfig.MaxConnIdleTime = config.MaxConnIdleTime
+
+	pgd, err := pgxpool.NewWithConfig(context.Background(), pgConfig)
+	if err != nil {
+		return nil, err
+	}
+	return pgd, nil
+}
+
 func GetBackground() string {
 	return background
 }
