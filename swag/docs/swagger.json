@@ -6,7 +6,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8070",
+    "host": "foodioo.camenryder.xyz:80",
     "basePath": "/api",
     "paths": {
         "/accounts/me": {
@@ -1442,6 +1442,12 @@
                     }
                 },
                 "lat": {},
+                "list_account_id_react": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
                 "lng": {},
                 "post_type_id": {
                     "type": "integer"

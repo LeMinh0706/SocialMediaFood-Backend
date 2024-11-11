@@ -1448,6 +1448,12 @@ const docTemplate = `{
                     }
                 },
                 "lat": {},
+                "list_account_id_react": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
                 "lng": {},
                 "post_type_id": {
                     "type": "integer"
@@ -1575,7 +1581,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8070",
+	Host:             "foodioo.camenryder.xyz:80",
 	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "Foodioo Documentations",

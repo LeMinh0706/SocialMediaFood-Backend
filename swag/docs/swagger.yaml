@@ -185,6 +185,10 @@ definitions:
           $ref: '#/definitions/db.PostImage'
         type: array
       lat: {}
+      list_account_id_react:
+        items:
+          type: integer
+        type: array
       lng: {}
       post_type_id:
         type: integer
@@ -261,7 +265,7 @@ definitions:
     required:
     - username
     type: object
-host: localhost:8070
+host: foodioo.camenryder.xyz:80
 info:
   contact: {}
   description: This is SocialFood Swagger.
