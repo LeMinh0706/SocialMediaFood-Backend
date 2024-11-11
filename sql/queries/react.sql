@@ -37,3 +37,6 @@ RETURNING * ;
 DELETE FROM react_post
 WHERE post_id = $1 AND account_id = $2;
 
+-- name: ListAccountReact :many
+SELECT account_id FROM react_post
+WHERE post_id = $1;

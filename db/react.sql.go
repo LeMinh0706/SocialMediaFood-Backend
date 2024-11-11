@@ -158,6 +158,31 @@ func (q *Queries) GetReact(ctx context.Context, arg GetReactParams) (ReactPost, 
 	return i, err
 }
 
+const listAccountReact = `-- name: ListAccountReact :many
+SELECT account_id FROM react_post
+WHERE post_id = $1
+`
+
+func (q *Queries) ListAccountReact(ctx context.Context, postID int64) ([]int64, error) {
+	rows, err := q.db.Query(ctx, listAccountReact, postID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []int64{}
+	for rows.Next() {
+		var account_id int64
+		if err := rows.Scan(&account_id); err != nil {
+			return nil, err
+		}
+		items = append(items, account_id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateState = `-- name: UpdateState :one
 UPDATE react_post SET state = $3
 WHERE post_id = $1 AND account_id = $2

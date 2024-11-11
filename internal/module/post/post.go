@@ -25,11 +25,12 @@ type PostResponse struct {
 	CreatedAt    time.Time            `json:"created_at"`
 	Images       []db.PostImage       `json:"images"`
 	Account      db.GetAccountByIdRow `json:"account"`
+	ListReact    []int64              `json:"list_account_id_react"`
 	TotalLike    int64                `json:"total_like"`
 	TotalComment int64                `json:"total_comment"`
 }
 
-func PostRes(post db.CreatePostRow, account db.GetAccountByIdRow, imgs []db.PostImage, totalLike, totalComment int64) PostResponse {
+func PostRes(post db.CreatePostRow, account db.GetAccountByIdRow, imgs []db.PostImage, listReact []int64, totalLike, totalComment int64) PostResponse {
 	return PostResponse{
 		ID:           post.ID,
 		PostTypeID:   post.PostTypeID,
@@ -40,12 +41,13 @@ func PostRes(post db.CreatePostRow, account db.GetAccountByIdRow, imgs []db.Post
 		CreatedAt:    post.CreatedAt.Time,
 		Images:       imgs,
 		Account:      account,
+		ListReact:    listReact,
 		TotalLike:    totalLike,
 		TotalComment: totalComment,
 	}
 }
 
-func GetPostRes(post db.GetPostRow, account db.GetAccountByIdRow, imgs []db.PostImage, totalLike, total_comment int64) PostResponse {
+func GetPostRes(post db.GetPostRow, account db.GetAccountByIdRow, imgs []db.PostImage, listReact []int64, totalLike, total_comment int64) PostResponse {
 	return PostResponse{
 		ID:           post.ID,
 		PostTypeID:   post.PostTypeID,
@@ -56,6 +58,7 @@ func GetPostRes(post db.GetPostRow, account db.GetAccountByIdRow, imgs []db.Post
 		CreatedAt:    post.CreatedAt.Time,
 		Images:       imgs,
 		Account:      account,
+		ListReact:    listReact,
 		TotalLike:    totalLike,
 		TotalComment: total_comment,
 	}
