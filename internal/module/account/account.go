@@ -1,6 +1,15 @@
 package account
 
-import "github.com/LeMinh0706/SocialMediaFood-Backend/db"
+import (
+	"fmt"
+	"mime/multipart"
+	"path/filepath"
+	"time"
+
+	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
+	"github.com/gin-gonic/gin"
+)
 
 type AccountResponse struct {
 	ID                   int64  `json:"id"`
@@ -37,4 +46,19 @@ func ListAccountResponse(all []db.Account) []AccountResponse {
 		list = append(list, res)
 	}
 	return list
+}
+
+func SaveAccountImage(g *gin.Context, image *multipart.FileHeader) (string, int) {
+	if !util.FileExtCheck(image.Filename) {
+		return "", 40003
+	}
+	const maxSize = 4 << 20
+	if image.Size > maxSize {
+		return "", 41300
+	}
+	fileName := fmt.Sprintf("upload/avatar/%d%s", time.Now().Unix(), filepath.Ext(image.Filename))
+	if err := g.SaveUploadedFile(image, fileName); err != nil {
+		return "", 40000
+	}
+	return fileName, 201
 }

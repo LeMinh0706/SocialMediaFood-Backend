@@ -185,6 +185,10 @@ definitions:
           $ref: '#/definitions/db.PostImage'
         type: array
       lat: {}
+      list_account_id_react:
+        items:
+          type: integer
+        type: array
       lng: {}
       post_type_id:
         type: integer
@@ -293,6 +297,38 @@ paths:
       security:
       - BearerAuth: []
       summary: Profile api
+      tags:
+      - Accounts
+  /accounts/avatar:
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update Avatar
+      parameters:
+      - description: AccountID
+        in: formData
+        name: account_id
+        required: true
+        type: string
+      - description: Image comment
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/account.AccountResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Update Avatar
       tags:
       - Accounts
   /accounts/me:
