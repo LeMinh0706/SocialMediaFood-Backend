@@ -43,10 +43,112 @@ const docTemplate = `{
                     },
                     {
                         "type": "file",
-                        "description": "Image comment",
+                        "description": "Avatar Account",
                         "name": "image",
                         "in": "formData",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/account.AccountResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/background": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update Background",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Update Background",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "AccountID",
+                        "name": "account_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Background account",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/account.AccountResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/fullname/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update Background",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Update Background",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/account.UpdateNameReq"
+                        }
                     }
                 ],
                 "responses": {
@@ -1250,6 +1352,14 @@ const docTemplate = `{
                 },
                 "user_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "account.UpdateNameReq": {
+            "type": "object",
+            "properties": {
+                "fullname": {
+                    "type": "string"
                 }
             }
         },

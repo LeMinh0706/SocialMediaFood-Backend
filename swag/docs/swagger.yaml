@@ -23,6 +23,11 @@ definitions:
       user_id:
         type: integer
     type: object
+  account.UpdateNameReq:
+    properties:
+      fullname:
+        type: string
+    type: object
   comment.CommentResponse:
     properties:
       account:
@@ -310,7 +315,7 @@ paths:
         name: account_id
         required: true
         type: string
-      - description: Image comment
+      - description: Avatar Account
         in: formData
         name: image
         required: true
@@ -329,6 +334,71 @@ paths:
       security:
       - BearerAuth: []
       summary: Update Avatar
+      tags:
+      - Accounts
+  /accounts/background:
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update Background
+      parameters:
+      - description: AccountID
+        in: formData
+        name: account_id
+        required: true
+        type: string
+      - description: Background account
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/account.AccountResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Update Background
+      tags:
+      - Accounts
+  /accounts/fullname/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update Background
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/account.UpdateNameReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/account.AccountResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Update Background
       tags:
       - Accounts
   /accounts/me:

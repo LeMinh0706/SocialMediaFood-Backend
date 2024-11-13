@@ -42,6 +42,7 @@ const (
 	ErrAccountExists      = 40414
 	ErrDeleteComment      = 40119
 	ErrInputFollow        = 40415
+	ErrFullNameNull       = 40014
 )
 
 var msg = map[int]string{
@@ -85,6 +86,7 @@ var msg = map[int]string{
 	ErrAccountExists:      "This account doesn't exist",
 	ErrDeleteComment:      "Comment not found",
 	ErrInputFollow:        "Error follow status input",
+	ErrFullNameNull:       "Fullname can't be empty",
 }
 
 // ErrOutOfDate:   "Token is out of date",
