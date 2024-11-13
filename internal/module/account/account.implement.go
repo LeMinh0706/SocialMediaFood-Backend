@@ -13,7 +13,34 @@ type AccountService struct {
 
 // UpdateAvatar implements IAccountService.
 func (a *AccountService) UpdateAvatar(ctx context.Context, id int64, user_id int64, url_avatar string) (AccountResponse, error) {
-	panic("unimplemented")
+	var res AccountResponse
+	_, err := a.GetAccountAction(ctx, id, user_id)
+	if err != nil {
+		return res, err
+	}
+	post, err := a.queries.CreatePost(ctx, db.CreatePostParams{
+		PostTypeID: 3,
+		AccountID:  id,
+	})
+	if err != nil {
+		return res, err
+	}
+	image, err := a.queries.AddImagePost(ctx, db.AddImagePostParams{
+		UrlImage: url_avatar,
+		PostID:   post.ID,
+	})
+	if err != nil {
+		return res, err
+	}
+	_, err = a.queries.UpdateAvatar(ctx, db.UpdateAvatarParams{
+		ID:        id,
+		UrlAvatar: image.UrlImage,
+	})
+	if err != nil {
+		return res, err
+	}
+	account, _ := a.GetAccount(ctx, id)
+	return account, nil
 }
 
 // UpdateBackground implements IAccountService.

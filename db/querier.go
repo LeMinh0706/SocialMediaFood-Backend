@@ -18,14 +18,17 @@ type Querier interface {
 	CountReactPost(ctx context.Context, postID int64) (int64, error)
 	CountRequest(ctx context.Context, fromFollow int64) (int64, error)
 	CreateAccounts(ctx context.Context, arg CreateAccountsParams) (Account, error)
+	CreateActionNoti(ctx context.Context, arg CreateActionNotiParams) (Notification, error)
 	CreateComment(ctx context.Context, arg CreateCommentParams) (CreateCommentRow, error)
 	CreateFollow(ctx context.Context, arg CreateFollowParams) (Follower, error)
 	CreateOwnerBranch(ctx context.Context, arg CreateOwnerBranchParams) (CreateOwnerBranchRow, error)
 	CreatePost(ctx context.Context, arg CreatePostParams) (CreatePostRow, error)
+	CreatePostNoti(ctx context.Context, arg CreatePostNotiParams) (Notification, error)
 	CreateReact(ctx context.Context, arg CreateReactParams) (ReactPost, error)
 	DeleteComment(ctx context.Context, id int64) error
 	DeleteFollow(ctx context.Context, arg DeleteFollowParams) error
 	DeleteImagePost(ctx context.Context, id int64) error
+	DeleteNoti(ctx context.Context, id int64) error
 	DeletePost(ctx context.Context, id int64) error
 	DeleteReact(ctx context.Context, arg DeleteReactParams) error
 	GetAccountById(ctx context.Context, id int64) (GetAccountByIdRow, error)
@@ -39,8 +42,10 @@ type Querier interface {
 	GetImagePost(ctx context.Context, postID int64) ([]PostImage, error)
 	//comment
 	GetListComment(ctx context.Context, arg GetListCommentParams) ([]int64, error)
+	GetListNoti(ctx context.Context, arg GetListNotiParams) ([]int64, error)
 	GetListPost(ctx context.Context, arg GetListPostParams) ([]int64, error)
 	GetListReact(ctx context.Context, arg GetListReactParams) ([]GetListReactRow, error)
+	GetNotification(ctx context.Context, accountID int64) (Notification, error)
 	GetPersonPost(ctx context.Context, arg GetPersonPostParams) ([]int64, error)
 	GetPost(ctx context.Context, id int64) (GetPostRow, error)
 	GetReact(ctx context.Context, arg GetReactParams) (ReactPost, error)
@@ -59,6 +64,8 @@ type Querier interface {
 	UpdateName(ctx context.Context, arg UpdateNameParams) (UpdateNameRow, error)
 	UpdatePassword(ctx context.Context, arg UpdatePasswordParams) (UpdatePasswordRow, error)
 	UpdatePost(ctx context.Context, arg UpdatePostParams) (UpdatePostRow, error)
+	UpdateSeen(ctx context.Context, id int64) error
+	UpdateSeenAll(ctx context.Context, accountID int64) error
 	UpdateState(ctx context.Context, arg UpdateStateParams) (ReactPost, error)
 }
 

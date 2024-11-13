@@ -66,3 +66,41 @@ func (ac *AccountController) GetMe(g *gin.Context) {
 	}
 	response.SuccessResponse(g, 200, me)
 }
+
+// Account godoc
+// @Summary      Update Avatar
+// @Description  Update Avatar
+// @Tags         Accounts
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        account_id formData string true "AccountID"
+// @Param        image formData file true "Image comment"
+// @Security BearerAuth
+// @Success      200  {object}  AccountResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /accounts/avatar [put]
+func (ac *AccountController) UpdateAvatar(g *gin.Context) {
+	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+	accountStr := g.PostForm("account_id")
+	account_id, err := strconv.ParseInt(accountStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, response.ErrAccountID)
+		return
+	}
+	var file string
+	image, err := g.FormFile("image")
+	if err == nil {
+		var code int
+		file, code = SaveAccountImage(g, image)
+		if code >= 40000 {
+			response.ErrorResponse(g, code)
+			return
+		}
+	}
+	update, err := ac.service.UpdateAvatar(g, account_id, auth.UserId, file)
+	if err != nil {
+		response.ErrorNonKnow(g, 401, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 201, update)
+}

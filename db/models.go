@@ -45,6 +45,23 @@ type Locate struct {
 	Location  interface{} `json:"location"`
 }
 
+type Notification struct {
+	ID           int64              `json:"id"`
+	Message      string             `json:"message"`
+	AccountID    int64              `json:"account_id"`
+	TypeID       int32              `json:"type_id"`
+	PostID       pgtype.Int8        `json:"post_id"`
+	UserActionID int64              `json:"user_action_id"`
+	InvoiceID    pgtype.Int8        `json:"invoice_id"`
+	IsSeen       bool               `json:"is_seen"`
+	CreatedAt    pgtype.Timestamptz `json:"created_at"`
+}
+
+type NotificationType struct {
+	ID   int32  `json:"id"`
+	Name string `json:"name"`
+}
+
 type Permission struct {
 	ID   int32  `json:"id"`
 	Name string `json:"name"`
