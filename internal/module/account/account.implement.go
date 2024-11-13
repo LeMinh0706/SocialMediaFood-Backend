@@ -45,12 +45,52 @@ func (a *AccountService) UpdateAvatar(ctx context.Context, id int64, user_id int
 
 // UpdateBackground implements IAccountService.
 func (a *AccountService) UpdateBackground(ctx context.Context, id int64, user_id int64, url_background string) (AccountResponse, error) {
-	panic("unimplemented")
+	var res AccountResponse
+	_, err := a.GetAccountAction(ctx, id, user_id)
+	if err != nil {
+		return res, err
+	}
+	post, err := a.queries.CreatePost(ctx, db.CreatePostParams{
+		PostTypeID: 4,
+		AccountID:  id,
+	})
+	if err != nil {
+		return res, err
+	}
+	image, err := a.queries.AddImagePost(ctx, db.AddImagePostParams{
+		UrlImage: url_background,
+		PostID:   post.ID,
+	})
+	if err != nil {
+		return res, err
+	}
+	_, err = a.queries.UpdateBackground(ctx, db.UpdateBackgroundParams{
+		ID:                   id,
+		UrlBackgroundProfile: image.UrlImage,
+	})
+	if err != nil {
+		return res, err
+	}
+	account, _ := a.GetAccount(ctx, id)
+	return account, nil
 }
 
 // UpdateName implements IAccountService.
 func (a *AccountService) UpdateName(ctx context.Context, id int64, user_id int64, name string) (AccountResponse, error) {
-	panic("unimplemented")
+	var res AccountResponse
+	_, err := a.GetAccountAction(ctx, id, user_id)
+	if err != nil {
+		return res, err
+	}
+	_, err = a.queries.UpdateName(ctx, db.UpdateNameParams{
+		ID:       id,
+		Fullname: name,
+	})
+	if err != nil {
+		return res, err
+	}
+	account, _ := a.GetAccount(ctx, id)
+	return account, nil
 }
 
 // Backup implements IAccountService.

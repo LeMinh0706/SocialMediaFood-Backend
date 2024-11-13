@@ -15,5 +15,7 @@ func NewAccountRouter(r *gin.Engine, group *gin.RouterGroup, service IAccountSer
 		auth.GET("/me", ac.GetMe)
 		auth.GET("/:id", ac.GetAccount)
 		auth.PUT("/avatar", ac.UpdateAvatar)
+		auth.PUT("/background", ac.UpdateBackGround)
+		auth.PUT("/fullname/:id", ac.UpdateName)
 	}
 }

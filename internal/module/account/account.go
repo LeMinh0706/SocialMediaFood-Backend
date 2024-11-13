@@ -24,6 +24,10 @@ type AccountResponse struct {
 	IsUpgrade            bool   `json:"is_upgrade"`
 }
 
+type UpdateNameReq struct {
+	Fullname string `json:"fullname"`
+}
+
 func AccountRes(account db.Account) AccountResponse {
 	return AccountResponse{
 		ID:                   account.ID,
@@ -48,7 +52,7 @@ func ListAccountResponse(all []db.Account) []AccountResponse {
 	return list
 }
 
-func SaveAccountImage(g *gin.Context, image *multipart.FileHeader) (string, int) {
+func SaveAccountImage(g *gin.Context, type_image string, image *multipart.FileHeader) (string, int) {
 	if !util.FileExtCheck(image.Filename) {
 		return "", 40003
 	}
@@ -56,7 +60,7 @@ func SaveAccountImage(g *gin.Context, image *multipart.FileHeader) (string, int)
 	if image.Size > maxSize {
 		return "", 41300
 	}
-	fileName := fmt.Sprintf("upload/avatar/%d%s", time.Now().Unix(), filepath.Ext(image.Filename))
+	fileName := fmt.Sprintf("upload/%s/%d%s", type_image, time.Now().Unix(), filepath.Ext(image.Filename))
 	if err := g.SaveUploadedFile(image, fileName); err != nil {
 		return "", 40000
 	}
