@@ -15,6 +15,28 @@ type PostService struct {
 	accountService account.IAccountService
 }
 
+// GetHomePagePost implements IPostService.
+func (p *PostService) GetHomePagePost(ctx context.Context, acoount_id int64, page int32, pageSize int32) ([]PostResponse, error) {
+	var res []PostResponse
+	ps := pageSize * 4
+	list, err := p.queries.GetHomePagePost(ctx, db.GetHomePagePostParams{
+		FromFollow: acoount_id,
+		Limit:      ps,
+		Offset:     (page - 1) * ps,
+	})
+	if err != nil {
+		return res, err
+	}
+	for _, element := range list {
+		post, err := p.GetPost(ctx, element)
+		if err != nil {
+			return res, err
+		}
+		res = append(res, post)
+	}
+	return res, nil
+}
+
 // GetListPost implements IPostService.
 func (p *PostService) GetListPost(ctx context.Context, page int32, pageSize int32) ([]PostResponse, error) {
 	var res []PostResponse

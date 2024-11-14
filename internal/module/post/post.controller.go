@@ -247,3 +247,24 @@ func CheckPostStringError(g *gin.Context, err error) {
 	}
 	response.ErrorNonKnow(g, 500, err.Error())
 }
+
+func (pc *PostController) GetHomePagePost(g *gin.Context) {
+	accStr := g.Query("account_id")
+	account_id, err := strconv.ParseInt(accStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 40004)
+		return
+	}
+	pageStr := g.Query("page")
+	pageSizeStr := g.Query("page_size")
+	page, pageSize := CheckQuery(g, pageStr, pageSizeStr)
+	if page == 0 || pageSize == 0 {
+		return
+	}
+	list, err := pc.service.GetHomePagePost(g, account_id, page, pageSize)
+	if err != nil {
+		response.ErrorNonKnow(g, 500, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 200, list)
+}
