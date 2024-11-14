@@ -21,6 +21,21 @@ ORDER BY created_at DESC
 LIMIT $1 
 OFFSET $2;
 
+-- name: GetHomePagePost :many
+SELECT p.id
+FROM posts p
+LEFT JOIN follower as f ON p.account_id = f.to_follow AND f.from_follow = $1
+WHERE (f.from_follow = $1 OR f.from_follow IS NULL) AND is_deleted != TRUE AND is_banned != TRUE AND post_type_id != 9
+ORDER BY 
+    CASE
+        WHEN f.status = 'friend' THEN 1
+        WHEN f.status = 'request' THEN 2
+        ELSE 3 
+    END,
+p.created_at DESC
+LIMIT $2
+OFFSET $3;
+
 -- name: GetPost :one
 SELECT id, post_type_id, account_id, description, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat, created_at
 FROM posts 

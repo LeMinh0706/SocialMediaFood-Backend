@@ -37,6 +37,7 @@ type Querier interface {
 	GetDetailAccount(ctx context.Context, id int64) (Account, error)
 	GetFavorite(ctx context.Context, arg GetFavoriteParams) ([]int64, error)
 	GetFollowStatus(ctx context.Context, arg GetFollowStatusParams) (GetFollowStatusRow, error)
+	GetHomePagePost(ctx context.Context, arg GetHomePagePostParams) ([]int64, error)
 	GetImage(ctx context.Context, id int64) (PostImage, error)
 	GetImageComment(ctx context.Context, postID int64) (PostImage, error)
 	GetImagePost(ctx context.Context, postID int64) ([]PostImage, error)

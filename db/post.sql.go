@@ -160,6 +160,48 @@ func (q *Queries) GetComment(ctx context.Context, id int64) (GetCommentRow, erro
 	return i, err
 }
 
+const getHomePagePost = `-- name: GetHomePagePost :many
+SELECT p.id
+FROM posts p
+LEFT JOIN follower as f ON p.account_id = f.to_follow AND f.from_follow = $1
+WHERE (f.from_follow = $1 OR f.from_follow IS NULL) AND is_deleted != TRUE AND is_banned != TRUE AND post_type_id != 9
+ORDER BY 
+    CASE
+        WHEN f.status = 'friend' THEN 1
+        WHEN f.status = 'request' THEN 2
+        ELSE 3 
+    END,
+p.created_at DESC
+LIMIT $2
+OFFSET $3
+`
+
+type GetHomePagePostParams struct {
+	FromFollow int64 `json:"from_follow"`
+	Limit      int32 `json:"limit"`
+	Offset     int32 `json:"offset"`
+}
+
+func (q *Queries) GetHomePagePost(ctx context.Context, arg GetHomePagePostParams) ([]int64, error) {
+	rows, err := q.db.Query(ctx, getHomePagePost, arg.FromFollow, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []int64{}
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getListComment = `-- name: GetListComment :many
 
 SELECT id
