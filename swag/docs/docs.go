@@ -1063,54 +1063,6 @@ const docTemplate = `{
             }
         },
         "/react": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Get with post_id, to say have you liked this post",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "React"
-                ],
-                "summary": "Get reactions",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "AccountID",
-                        "name": "account_id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "PostID",
-                        "name": "post_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/react.ReactResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrSwaggerJson"
-                        }
-                    }
-                }
-            },
             "put": {
                 "security": [
                     {
@@ -1468,6 +1420,9 @@ const docTemplate = `{
                 },
                 "account_id": {
                     "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
                 },
                 "description": {
                     "type": "string"

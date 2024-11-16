@@ -34,6 +34,8 @@ definitions:
         $ref: '#/definitions/db.GetAccountByIdRow'
       account_id:
         type: integer
+      created_at:
+        type: string
       description:
         type: string
       id:
@@ -974,37 +976,6 @@ paths:
       security:
       - BearerAuth: []
       summary: Unlike post
-      tags:
-      - React
-    get:
-      consumes:
-      - application/json
-      description: Get with post_id, to say have you liked this post
-      parameters:
-      - description: AccountID
-        in: query
-        name: account_id
-        required: true
-        type: integer
-      - description: PostID
-        in: query
-        name: post_id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/react.ReactResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrSwaggerJson'
-      security:
-      - BearerAuth: []
-      summary: Get reactions
       tags:
       - React
     post:
