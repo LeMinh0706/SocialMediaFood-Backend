@@ -96,8 +96,6 @@ definitions:
     properties:
       account_id:
         type: integer
-      id:
-        type: integer
       post_id:
         type: integer
       state:
@@ -190,13 +188,11 @@ definitions:
           $ref: '#/definitions/db.PostImage'
         type: array
       lat: {}
-      list_account_id_react:
-        items:
-          type: integer
-        type: array
       lng: {}
       post_type_id:
         type: integer
+      react_state:
+        $ref: '#/definitions/db.ReactPost'
       total_comment:
         type: integer
       total_like:
@@ -222,8 +218,6 @@ definitions:
     properties:
       account:
         $ref: '#/definitions/db.GetAccountByIdRow'
-      id:
-        type: integer
       post_id:
         type: integer
       state:
@@ -721,6 +715,10 @@ paths:
       - application/json
       description: Get list post with page and page size (Limit-Offset)
       parameters:
+      - description: AccountID
+        in: query
+        name: account_id
+        type: integer
       - description: Page
         in: query
         name: page
@@ -793,6 +791,39 @@ paths:
       tags:
       - Posts
   /posts/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get list post with page and page size (Limit-Offset)
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: AccountID
+        in: query
+        name: account_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/post.PostResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Get list post
+      tags:
+      - Posts
     put:
       consumes:
       - application/json

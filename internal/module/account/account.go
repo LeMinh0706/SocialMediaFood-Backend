@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"mime/multipart"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/gin-gonic/gin"
 )
@@ -65,4 +67,22 @@ func SaveAccountImage(g *gin.Context, type_image string, image *multipart.FileHe
 		return "", 40000
 	}
 	return fileName, 201
+}
+
+func CheckValidPosition(g *gin.Context, lng, lat string) bool {
+	_, err := strconv.ParseInt(lng, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 40020)
+		return false
+	}
+	_, err = strconv.ParseInt(lat, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 40020)
+		return false
+	}
+	if (lng == "" && lat != "") || (lng != "" && lat == "") {
+		response.ErrorResponse(g, 40013)
+		return false
+	}
+	return true
 }

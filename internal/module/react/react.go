@@ -8,7 +8,6 @@ type ReactRequest struct {
 }
 
 type ReactResponse struct {
-	ID      int64                `json:"id"`
 	PostID  int64                `json:"post_id"`
 	State   int32                `json:"state"`
 	Account db.GetAccountByIdRow `json:"account"`

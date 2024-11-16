@@ -41,3 +41,35 @@ func (q *Queries) CreateOwnerBranch(ctx context.Context, arg CreateOwnerBranchPa
 	)
 	return i, err
 }
+
+const getLocation = `-- name: GetLocation :many
+SELECT id, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat
+FROM locate
+WHERE account_id = $1
+`
+
+type GetLocationRow struct {
+	ID  int64       `json:"id"`
+	Lng interface{} `json:"lng"`
+	Lat interface{} `json:"lat"`
+}
+
+func (q *Queries) GetLocation(ctx context.Context, accountID int64) ([]GetLocationRow, error) {
+	rows, err := q.db.Query(ctx, getLocation, accountID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetLocationRow{}
+	for rows.Next() {
+		var i GetLocationRow
+		if err := rows.Scan(&i.ID, &i.Lng, &i.Lat); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

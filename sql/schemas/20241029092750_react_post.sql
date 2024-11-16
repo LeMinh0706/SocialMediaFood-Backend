@@ -1,7 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE "react_post" (
-  "id" bigserial PRIMARY KEY,
   "account_id" bigint NOT NULL,
   "post_id" bigint NOT NULL,
   "state" int NOT NULL DEFAULT 1

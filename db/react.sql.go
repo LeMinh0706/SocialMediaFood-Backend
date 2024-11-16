@@ -28,7 +28,7 @@ INSERT INTO react_post (
     state
 ) VALUES (
     $1, $2, $3
-) RETURNING id, account_id, post_id, state
+) RETURNING account_id, post_id, state
 `
 
 type CreateReactParams struct {
@@ -40,12 +40,7 @@ type CreateReactParams struct {
 func (q *Queries) CreateReact(ctx context.Context, arg CreateReactParams) (ReactPost, error) {
 	row := q.db.QueryRow(ctx, createReact, arg.AccountID, arg.PostID, arg.State)
 	var i ReactPost
-	err := row.Scan(
-		&i.ID,
-		&i.AccountID,
-		&i.PostID,
-		&i.State,
-	)
+	err := row.Scan(&i.AccountID, &i.PostID, &i.State)
 	return i, err
 }
 
@@ -67,7 +62,6 @@ func (q *Queries) DeleteReact(ctx context.Context, arg DeleteReactParams) error 
 const getFavorite = `-- name: GetFavorite :many
 SELECT post_id FROM react_post
 WHERE account_id = $1
-ORDER BY id DESC
 LIMIT $2
 OFFSET $3
 `
@@ -99,7 +93,7 @@ func (q *Queries) GetFavorite(ctx context.Context, arg GetFavoriteParams) ([]int
 }
 
 const getListReact = `-- name: GetListReact :many
-SELECT id, account_id FROM react_post
+SELECT account_id FROM react_post
 WHERE post_id = $1
 LIMIT $2
 OFFSET $3
@@ -111,24 +105,19 @@ type GetListReactParams struct {
 	Offset int32 `json:"offset"`
 }
 
-type GetListReactRow struct {
-	ID        int64 `json:"id"`
-	AccountID int64 `json:"account_id"`
-}
-
-func (q *Queries) GetListReact(ctx context.Context, arg GetListReactParams) ([]GetListReactRow, error) {
+func (q *Queries) GetListReact(ctx context.Context, arg GetListReactParams) ([]int64, error) {
 	rows, err := q.db.Query(ctx, getListReact, arg.PostID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetListReactRow{}
+	items := []int64{}
 	for rows.Next() {
-		var i GetListReactRow
-		if err := rows.Scan(&i.ID, &i.AccountID); err != nil {
+		var account_id int64
+		if err := rows.Scan(&account_id); err != nil {
 			return nil, err
 		}
-		items = append(items, i)
+		items = append(items, account_id)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -137,7 +126,7 @@ func (q *Queries) GetListReact(ctx context.Context, arg GetListReactParams) ([]G
 }
 
 const getReact = `-- name: GetReact :one
-SELECT id, account_id, post_id, state FROM react_post
+SELECT account_id, post_id, state FROM react_post
 WHERE account_id = $1 AND post_id = $2
 `
 
@@ -149,12 +138,7 @@ type GetReactParams struct {
 func (q *Queries) GetReact(ctx context.Context, arg GetReactParams) (ReactPost, error) {
 	row := q.db.QueryRow(ctx, getReact, arg.AccountID, arg.PostID)
 	var i ReactPost
-	err := row.Scan(
-		&i.ID,
-		&i.AccountID,
-		&i.PostID,
-		&i.State,
-	)
+	err := row.Scan(&i.AccountID, &i.PostID, &i.State)
 	return i, err
 }
 
@@ -186,7 +170,7 @@ func (q *Queries) ListAccountReact(ctx context.Context, postID int64) ([]int64, 
 const updateState = `-- name: UpdateState :one
 UPDATE react_post SET state = $3
 WHERE post_id = $1 AND account_id = $2
-RETURNING id, account_id, post_id, state
+RETURNING account_id, post_id, state
 `
 
 type UpdateStateParams struct {
@@ -198,11 +182,6 @@ type UpdateStateParams struct {
 func (q *Queries) UpdateState(ctx context.Context, arg UpdateStateParams) (ReactPost, error) {
 	row := q.db.QueryRow(ctx, updateState, arg.PostID, arg.AccountID, arg.State)
 	var i ReactPost
-	err := row.Scan(
-		&i.ID,
-		&i.AccountID,
-		&i.PostID,
-		&i.State,
-	)
+	err := row.Scan(&i.AccountID, &i.PostID, &i.State)
 	return i, err
 }

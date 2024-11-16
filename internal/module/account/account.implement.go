@@ -11,6 +11,23 @@ type AccountService struct {
 	queries *db.Queries
 }
 
+// AddLocation implements IAccountService.
+func (a *AccountService) AddLocation(ctx context.Context, user_id, account_id int64, lng string, lat string) (db.CreateOwnerBranchRow, error) {
+	_, err := a.GetAccountAction(ctx, user_id, account_id)
+	if err != nil {
+		return db.CreateOwnerBranchRow{}, err
+	}
+	location := fmt.Sprintf("POINT(%s %s)", lat, lng)
+	point, err := a.queries.CreateOwnerBranch(ctx, db.CreateOwnerBranchParams{
+		AccountID:      account_id,
+		StGeomfromtext: location,
+	})
+	if err != nil {
+		return db.CreateOwnerBranchRow{}, err
+	}
+	return point, nil
+}
+
 // UpdateAvatar implements IAccountService.
 func (a *AccountService) UpdateAvatar(ctx context.Context, id int64, user_id int64, url_avatar string) (AccountResponse, error) {
 	var res AccountResponse

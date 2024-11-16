@@ -23,7 +23,7 @@ func (c *CommentService) Backup(ctx context.Context) {
 // CreateComment implements ICommentService.
 func (c *CommentService) CreateComment(ctx context.Context, account_id int64, user_id int64, post_top_id int64, description string, image string) (CommentResponse, error) {
 	var res CommentResponse
-	_, err := c.post.GetPost(ctx, post_top_id)
+	_, err := c.post.GetPost(ctx, account_id, post_top_id)
 	if err != nil {
 		return res, err
 	}
@@ -81,7 +81,7 @@ func (c *CommentService) GetComment(ctx context.Context, id int64) (CommentRespo
 	if err != nil {
 		return res, err
 	}
-	_, err = c.post.GetPost(ctx, comment.PostTopID.Int64)
+	_, err = c.post.GetPost(ctx, 0, comment.PostTopID.Int64)
 	if err != nil {
 		return res, err
 	}

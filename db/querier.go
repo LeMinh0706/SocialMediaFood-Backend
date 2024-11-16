@@ -12,6 +12,7 @@ import (
 
 type Querier interface {
 	AddImagePost(ctx context.Context, arg AddImagePostParams) (PostImage, error)
+	AddToMenu(ctx context.Context, arg AddToMenuParams) (Menu, error)
 	CountComment(ctx context.Context, postTopID pgtype.Int8) (int64, error)
 	CountFollower(ctx context.Context, fromFollow int64) (int64, error)
 	CountFriend(ctx context.Context, fromFollow int64) (int64, error)
@@ -35,6 +36,7 @@ type Querier interface {
 	GetAccountByUserId(ctx context.Context, userID int64) ([]int64, error)
 	GetComment(ctx context.Context, id int64) (GetCommentRow, error)
 	GetDetailAccount(ctx context.Context, id int64) (Account, error)
+	GetDish(ctx context.Context, accountID pgtype.Int8) (GetDishRow, error)
 	GetFavorite(ctx context.Context, arg GetFavoriteParams) ([]int64, error)
 	GetFollowStatus(ctx context.Context, arg GetFollowStatusParams) (GetFollowStatusRow, error)
 	GetHomePagePost(ctx context.Context, arg GetHomePagePostParams) ([]int64, error)
@@ -45,7 +47,9 @@ type Querier interface {
 	GetListComment(ctx context.Context, arg GetListCommentParams) ([]int64, error)
 	GetListNoti(ctx context.Context, arg GetListNotiParams) ([]int64, error)
 	GetListPost(ctx context.Context, arg GetListPostParams) ([]int64, error)
-	GetListReact(ctx context.Context, arg GetListReactParams) ([]GetListReactRow, error)
+	GetListReact(ctx context.Context, arg GetListReactParams) ([]int64, error)
+	GetLocation(ctx context.Context, accountID int64) ([]GetLocationRow, error)
+	GetMenu(ctx context.Context, arg GetMenuParams) ([]GetMenuRow, error)
 	GetNotification(ctx context.Context, accountID int64) (Notification, error)
 	GetPersonPost(ctx context.Context, arg GetPersonPostParams) ([]int64, error)
 	GetPost(ctx context.Context, id int64) (GetPostRow, error)
@@ -55,6 +59,7 @@ type Querier interface {
 	GetYourRequest(ctx context.Context, arg GetYourRequestParams) ([]int64, error)
 	ListAccountReact(ctx context.Context, postID int64) ([]int64, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
+	OwnerUpdateQuanity(ctx context.Context, arg OwnerUpdateQuanityParams) (Menu, error)
 	Register(ctx context.Context, arg RegisterParams) (RegisterRow, error)
 	SearchingAccounts(ctx context.Context, arg SearchingAccountsParams) ([]SearchingAccountsRow, error)
 	UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) (UpdateAvatarRow, error)
@@ -65,9 +70,11 @@ type Querier interface {
 	UpdateName(ctx context.Context, arg UpdateNameParams) (UpdateNameRow, error)
 	UpdatePassword(ctx context.Context, arg UpdatePasswordParams) (UpdatePasswordRow, error)
 	UpdatePost(ctx context.Context, arg UpdatePostParams) (UpdatePostRow, error)
+	UpdateQuanity(ctx context.Context, arg UpdateQuanityParams) (Menu, error)
 	UpdateSeen(ctx context.Context, id int64) error
 	UpdateSeenAll(ctx context.Context, accountID int64) error
 	UpdateState(ctx context.Context, arg UpdateStateParams) (ReactPost, error)
+	UpgradeSuccess(ctx context.Context, id int64) (int64, error)
 }
 
 var _ Querier = (*Queries)(nil)

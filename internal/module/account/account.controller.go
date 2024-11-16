@@ -179,3 +179,24 @@ func (ac *AccountController) UpdateName(g *gin.Context) {
 	}
 	response.SuccessResponse(g, 201, update)
 }
+
+func (as *AccountController) AddYourLocation(g *gin.Context) {
+	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+	lng := g.PostForm("lng")
+	lat := g.PostForm("lat")
+	idStr := g.PostForm("account_id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, response.ErrAccountID)
+		return
+	}
+	if !CheckValidPosition(g, lng, lat) {
+		return
+	}
+	location, err := as.service.AddLocation(g, auth.UserId, id, lng, lat)
+	if err != nil {
+		response.ErrorNonKnow(g, 401, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 201, location)
+}

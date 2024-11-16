@@ -85,31 +85,20 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 	response.SuccessResponse(g, 201, post)
 }
 
-// Post godoc
-// @Summary      Get list post
-// @Description  Get list post with page and page size (Limit-Offset)
-// @Tags         Posts
-// @Accept       json
-// @Produce      json
-// @Param        page query int true "Page"
-// @Param        page_size query int true "Page Size"
-// @Success      200  {object}  []PostResponse
-// @Failure      500  {object}  response.ErrSwaggerJson
-// @Router       /posts [get]
-func (pc *PostController) GetListPost(g *gin.Context) {
-	pageStr := g.Query("page")
-	pageSizeStr := g.Query("page_size")
-	page, pageSize := CheckQuery(g, pageStr, pageSizeStr)
-	if page == 0 || pageSize == 0 {
-		return
-	}
-	list, err := pc.service.GetListPost(g, page, pageSize)
-	if err != nil {
-		response.ErrorNonKnow(g, 500, err.Error())
-		return
-	}
-	response.SuccessResponse(g, 200, list)
-}
+// func (pc *PostController) GetListPost(g *gin.Context) {
+// 	pageStr := g.Query("page")
+// 	pageSizeStr := g.Query("page_size")
+// 	page, pageSize := CheckQuery(g, pageStr, pageSizeStr)
+// 	if page == 0 || pageSize == 0 {
+// 		return
+// 	}
+// 	list, err := pc.service.GetListPost(g, page, pageSize)
+// 	if err != nil {
+// 		response.ErrorNonKnow(g, 500, err.Error())
+// 		return
+// 	}
+// 	response.SuccessResponse(g, 200, list)
+// }
 
 // Post godoc
 // @Summary      Get list post
@@ -248,12 +237,28 @@ func CheckPostStringError(g *gin.Context, err error) {
 	response.ErrorNonKnow(g, 500, err.Error())
 }
 
+// Post godoc
+// @Summary      Get list post
+// @Description  Get list post with page and page size (Limit-Offset)
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Param        account_id query int false "AccountID"
+// @Param        page query int true "Page"
+// @Param        page_size query int true "Page Size"
+// @Success      200  {object}  []PostResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts [get]
 func (pc *PostController) GetHomePagePost(g *gin.Context) {
 	accStr := g.Query("account_id")
-	account_id, err := strconv.ParseInt(accStr, 10, 64)
-	if err != nil {
-		response.ErrorResponse(g, 40004)
-		return
+	account_id := int64(0)
+	if accStr != "" {
+		var err error
+		account_id, err = strconv.ParseInt(accStr, 10, 64)
+		if err != nil {
+			response.ErrorResponse(g, 40004)
+			return
+		}
 	}
 	pageStr := g.Query("page")
 	pageSizeStr := g.Query("page_size")
@@ -267,4 +272,37 @@ func (pc *PostController) GetHomePagePost(g *gin.Context) {
 		return
 	}
 	response.SuccessResponse(g, 200, list)
+}
+
+// Post godoc
+// @Summary      Get list post
+// @Description  Get list post with page and page size (Limit-Offset)
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "ID"
+// @Param        account_id query int true "AccountID"
+// @Security BearerAuth
+// @Success      200  {object}  []PostResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts/{id} [get]
+func (pc *PostController) GetPostById(g *gin.Context) {
+	accStr := g.Query("account_id")
+	account_id, err := strconv.ParseInt(accStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 40004)
+		return
+	}
+	idStr := g.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, response.ErrBadRequestId)
+		return
+	}
+	post, err := pc.service.GetPost(g, account_id, id)
+	if err != nil {
+		response.ErrorNonKnow(g, 404, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 200, post)
 }
