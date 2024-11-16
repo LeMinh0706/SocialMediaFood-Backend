@@ -45,6 +45,7 @@ const (
 	ErrFullNameNull       = 40014
 	ErrTokenInvalid       = 40304
 	ErrInputSearch        = 40015
+	ErrEmailInvalid       = 40016
 )
 
 var msg = map[int]string{
@@ -91,6 +92,7 @@ var msg = map[int]string{
 	ErrFullNameNull:       "Fullname can't be empty",
 	ErrTokenInvalid:       "Invalid token",
 	ErrInputSearch:        "Seaching bar can't be empty",
+	ErrEmailInvalid:       "This email is invalid",
 }
 
 // ErrOutOfDate:   "Token is out of date",
