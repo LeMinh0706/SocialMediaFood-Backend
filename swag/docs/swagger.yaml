@@ -375,7 +375,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: Update Background
+      description: Update fullname
       parameters:
       - description: ID
         in: path
@@ -401,7 +401,7 @@ paths:
             $ref: '#/definitions/response.ErrSwaggerJson'
       security:
       - BearerAuth: []
-      summary: Update Background
+      summary: Update fullname
       tags:
       - Accounts
   /accounts/me:

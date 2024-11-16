@@ -175,7 +175,8 @@ func (cc *CommentController) DeleteComment(g *gin.Context) {
 	}
 	err = cc.service.DeleteComment(g, id, auth.UserId)
 	if err != nil {
-		response.ErrorResponse(g, 40119)
+		post.CheckPostStringError(g, err)
+		// response.ErrorResponse(g, 40119)
 		return
 	}
 	response.SuccessResponse(g, 204, nil)

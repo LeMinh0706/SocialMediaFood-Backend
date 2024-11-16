@@ -145,8 +145,8 @@ func (ac *AccountController) UpdateBackGround(g *gin.Context) {
 }
 
 // Account godoc
-// @Summary      Update Background
-// @Description  Update Background
+// @Summary      Update fullname
+// @Description  Update fullname
 // @Tags         Accounts
 // @Accept       json
 // @Produce      json
@@ -199,4 +199,24 @@ func (as *AccountController) AddYourLocation(g *gin.Context) {
 		return
 	}
 	response.SuccessResponse(g, 201, location)
+}
+
+func (as *AccountController) Searching(g *gin.Context) {
+	param := g.Query("name")
+	if strings.TrimSpace(param) == "" {
+		response.ErrorResponse(g, response.ErrInputSearch)
+		return
+	}
+	pageStr := g.Query("page")
+	pageSizeStr := g.Query("page_size")
+	page, pageSize := CheckQuery(g, pageStr, pageSizeStr)
+	if page == 0 || pageSize == 0 {
+		return
+	}
+	result, err := as.service.SearchingAccount(g, param, page, pageSize)
+	if err != nil {
+		response.ErrorNonKnow(g, 500, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 200, result)
 }

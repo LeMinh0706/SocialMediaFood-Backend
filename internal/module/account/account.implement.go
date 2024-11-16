@@ -5,10 +5,24 @@ import (
 	"fmt"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type AccountService struct {
 	queries *db.Queries
+}
+
+// SearchingAccount implements IAccountService.
+func (a *AccountService) SearchingAccount(ctx context.Context, searching string, page int32, pageSize int32) ([]db.SearchingAccountsRow, error) {
+	result, err := a.queries.SearchingAccounts(ctx, db.SearchingAccountsParams{
+		Column1: pgtype.Text{String: searching, Valid: true},
+		Limit:   pageSize,
+		Offset:  (page - 1) * pageSize,
+	})
+	if err != nil {
+		return []db.SearchingAccountsRow{}, err
+	}
+	return result, nil
 }
 
 // AddLocation implements IAccountService.

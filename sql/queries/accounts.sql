@@ -40,7 +40,7 @@ RETURNING id, user_id, fullname, url_avatar, url_background_profile, role_id;
 
 -- name: SearchingAccounts :many
 SELECT id, user_id, fullname, url_avatar, url_background_profile, role_id FROM accounts
-WHERE fullname LIKE '%' || $1 || '%'
+WHERE fullname ILIKE '%' || $1 || '%'
 LIMIT $2
 OFFSET $3;
 
