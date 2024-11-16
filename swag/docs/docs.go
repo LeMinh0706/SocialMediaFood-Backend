@@ -122,7 +122,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Update Background",
+                "description": "Update fullname",
                 "consumes": [
                     "application/json"
                 ],
@@ -132,7 +132,7 @@ const docTemplate = `{
                 "tags": [
                     "Accounts"
                 ],
-                "summary": "Update Background",
+                "summary": "Update fullname",
                 "parameters": [
                     {
                         "type": "integer",

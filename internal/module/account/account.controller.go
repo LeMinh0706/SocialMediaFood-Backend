@@ -145,8 +145,8 @@ func (ac *AccountController) UpdateBackGround(g *gin.Context) {
 }
 
 // Account godoc
-// @Summary      Update Background
-// @Description  Update Background
+// @Summary      Update fullname
+// @Description  Update fullname
 // @Tags         Accounts
 // @Accept       json
 // @Produce      json
