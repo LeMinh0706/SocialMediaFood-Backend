@@ -92,6 +92,10 @@ func (uc *UserController) RegisterTx(g *gin.Context) {
 			response.ErrorResponse(g, 40901)
 			return
 		}
+		if err.Error() == "this mail is invalid" {
+			response.ErrorResponse(g, response.ErrEmailInvalid)
+			return
+		}
 		response.ErrorNonKnow(g, 401, err.Error())
 		return
 	}
