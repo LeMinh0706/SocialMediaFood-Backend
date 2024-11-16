@@ -106,7 +106,8 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 // @Tags         Posts
 // @Accept       json
 // @Produce      json
-// @Param        account_id query int true "Account ID"
+// @Param        from_id query int true "Your account id"
+// @Param        to_id query int true "Their account id"
 // @Param        page query int true "Page"
 // @Param        page_size query int true "Page Size"
 // @Security BearerAuth
@@ -114,8 +115,14 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /posts/person [get]
 func (pc *PostController) GetPersonPost(g *gin.Context) {
-	accStr := g.Query("account_id")
-	account_id, err := strconv.ParseInt(accStr, 10, 64)
+	fromStr := g.Query("from_id")
+	from, err := strconv.ParseInt(fromStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 40004)
+		return
+	}
+	toStr := g.Query("to_id")
+	to, err := strconv.ParseInt(toStr, 10, 64)
 	if err != nil {
 		response.ErrorResponse(g, 40004)
 		return
@@ -126,7 +133,7 @@ func (pc *PostController) GetPersonPost(g *gin.Context) {
 	if page == 0 || pageSize == 0 {
 		return
 	}
-	list, err := pc.service.GetPersonPost(g, account_id, page, pageSize)
+	list, err := pc.service.GetPersonPost(g, from, to, page, pageSize)
 	if err != nil {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return

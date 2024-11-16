@@ -3,7 +3,7 @@
 CREATE TABLE "issue_post" (
   "id" int PRIMARY KEY,
   "name" varchar NOT NULL,
-  "is_deleted" bool
+  "is_deleted" bool NOT NULL DEFAULT false
 );
 CREATE TABLE "report_post" (
   "id" bigserial PRIMARY KEY,

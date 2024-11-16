@@ -894,9 +894,14 @@ paths:
       - application/json
       description: Get list post with account_id, page and page size (Limit-Offset)
       parameters:
-      - description: Account ID
+      - description: Your account id
         in: query
-        name: account_id
+        name: from_id
+        required: true
+        type: integer
+      - description: Their account id
+        in: query
+        name: to_id
         required: true
         type: integer
       - description: Page
