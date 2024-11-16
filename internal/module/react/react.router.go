@@ -12,7 +12,6 @@ func NewReactRouter(r *gin.Engine, group *gin.RouterGroup, service IReactService
 	auth := reactGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
 	{
 		auth.POST("", rc.CreateReact)
-		auth.GET("", rc.GetReactPost)
 		auth.GET("/post/:id", rc.GetListReact)
 		auth.PUT("", rc.ChangeReactState)
 		auth.DELETE("", rc.UnReaction)

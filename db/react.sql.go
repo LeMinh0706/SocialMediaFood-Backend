@@ -10,7 +10,7 @@ import (
 )
 
 const countReactPost = `-- name: CountReactPost :one
-SELECT count(id) FROM react_post
+SELECT count(post_id) FROM react_post
 WHERE post_id = $1
 `
 

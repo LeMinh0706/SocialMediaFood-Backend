@@ -18,7 +18,7 @@ LIMIT $2
 OFFSET $3;
 
 -- name: CountReactPost :one
-SELECT count(id) FROM react_post
+SELECT count(post_id) FROM react_post
 WHERE post_id = $1;
 
 -- name: GetFavorite :many
