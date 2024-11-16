@@ -231,6 +231,11 @@ definitions:
       message:
         type: string
     type: object
+  user.AccessRequest:
+    properties:
+      refesh_token:
+        type: string
+    type: object
   user.LoginRequest:
     properties:
       password:
@@ -249,6 +254,8 @@ definitions:
   user.LoginResponse:
     properties:
       access_token:
+        type: string
+      refesh_token:
         type: string
     type: object
   user.RegisterResponse:
@@ -1116,6 +1123,32 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrSwaggerJson'
       summary: Login user
+      tags:
+      - Users
+  /users/refesh:
+    post:
+      consumes:
+      - application/json
+      description: Join with us
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user.AccessRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.RegisterResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Register user
       tags:
       - Users
   /users/register:

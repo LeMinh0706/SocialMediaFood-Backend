@@ -10,10 +10,11 @@ import (
 )
 
 type Server struct {
-	Config     util.Config
-	DBConn     *pgxpool.Pool
-	TokenMaker token.Maker
-	Router     *gin.Engine
+	Config      util.Config
+	DBConn      *pgxpool.Pool
+	TokenMaker  token.Maker
+	RefeshMaker token.Maker
+	Router      *gin.Engine
 }
 
 func NewServer(db *pgxpool.Pool, config util.Config) (*Server, error) {
@@ -21,12 +22,16 @@ func NewServer(db *pgxpool.Pool, config util.Config) (*Server, error) {
 	if err != nil {
 		return nil, fmt.Errorf("can not create token: %w", err)
 	}
-
+	refeshMaker, err := token.NewPasetoMaker(config.SecretKey)
+	if err != nil {
+		return nil, fmt.Errorf("can not create token: %w", err)
+	}
 	server := &Server{
-		Config:     config,
-		Router:     gin.Default(),
-		TokenMaker: tokenMaker,
-		DBConn:     db,
+		Config:      config,
+		Router:      gin.Default(),
+		TokenMaker:  tokenMaker,
+		RefeshMaker: refeshMaker,
+		DBConn:      db,
 	}
 	EnableCors(server.Router)
 	server.Router.MaxMultipartMemory = 4 << 20

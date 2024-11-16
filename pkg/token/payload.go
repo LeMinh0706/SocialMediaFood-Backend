@@ -30,3 +30,10 @@ func NewPayload(user_id int64, username string, duration time.Duration) (*Payloa
 	}
 	return payload, nil
 }
+
+func (payload *Payload) Valid() error {
+	if time.Now().After(payload.ExpiresAt.Time) {
+		return ErrOutDate
+	}
+	return nil
+}

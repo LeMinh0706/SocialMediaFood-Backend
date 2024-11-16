@@ -6,12 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewUserRouter(r *gin.Engine, router *gin.RouterGroup, service IUserService, token token.Maker, config util.Config) {
-	uc := NewUserController(service, config, token)
+func NewUserRouter(r *gin.Engine, router *gin.RouterGroup, service IUserService, token token.Maker, refesh token.Maker, config util.Config) {
+	uc := NewUserController(service, config, token, refesh)
 
 	userGroup := r.Group(router.BasePath() + "/users")
 	{
 		userGroup.POST("/login", uc.Login)
 		userGroup.POST("/register", uc.RegisterTx)
+		userGroup.POST("/refesh", uc.RefeshToken)
 	}
 }

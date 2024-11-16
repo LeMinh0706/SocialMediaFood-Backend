@@ -1335,6 +1335,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/refesh": {
+            "post": {
+                "description": "Join with us",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Register user",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.AccessRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.RegisterResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/users/register": {
             "post": {
                 "description": "Join with us",
@@ -1728,6 +1768,14 @@ const docTemplate = `{
                 }
             }
         },
+        "user.AccessRequest": {
+            "type": "object",
+            "properties": {
+                "refesh_token": {
+                    "type": "string"
+                }
+            }
+        },
         "user.LoginRequest": {
             "type": "object",
             "required": [
@@ -1752,6 +1800,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "access_token": {
+                    "type": "string"
+                },
+                "refesh_token": {
                     "type": "string"
                 }
             }
