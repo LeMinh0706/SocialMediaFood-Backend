@@ -25,7 +25,7 @@ func (s *Server) NewRouter() {
 	a := s.Router.Group("/api")
 	{
 		Static(s.Router)
-		user.NewUserRouter(s.Router, a, fac.UserService, s.TokenMaker, s.Config)
+		user.NewUserRouter(s.Router, a, fac.UserService, s.TokenMaker, s.RefeshMaker, s.Config)
 		account.NewAccountRouter(s.Router, a, fac.AccountService, s.TokenMaker)
 		post.NewPostRouter(s.Router, a, fac.PostService, s.TokenMaker)
 		comment.NewCommentRouter(s.Router, a, fac.CommentService, s.TokenMaker)

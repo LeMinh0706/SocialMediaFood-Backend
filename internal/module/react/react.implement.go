@@ -28,12 +28,12 @@ func (r *ReactService) ChangeReactState(ctx context.Context, user_id int64, acco
 	if err != nil {
 		return res, err
 	}
-	react, err := r.GetReactPost(ctx, account_id, post_id)
+	_, err = r.GetReactPost(ctx, account_id, post_id)
 	if err != nil {
+		if err == pgx.ErrNoRows {
+			return res, fmt.Errorf("err like")
+		}
 		return res, err
-	}
-	if react.ID == 0 {
-		return res, fmt.Errorf("err like")
 	}
 	update, err := r.queries.UpdateState(ctx, db.UpdateStateParams{
 		PostID:    post_id,
@@ -53,7 +53,7 @@ func (r *ReactService) CreateReact(ctx context.Context, user_id int64, account_i
 	if err != nil {
 		return res, err
 	}
-	_, err = r.post.GetPost(ctx, post_id)
+	_, err = r.post.GetPost(ctx, account_id, post_id)
 	if err != nil {
 		return res, err
 	}
@@ -81,7 +81,7 @@ func (r *ReactService) GetListReactPost(ctx context.Context, page int32, pageSiz
 		return res, err
 	}
 	for _, element := range list {
-		react, err := r.GetReactPost(ctx, element.AccountID, post_id)
+		react, err := r.GetReactPost(ctx, element, post_id)
 		if err != nil {
 			return ListReactResponse{}, err
 		}
@@ -103,16 +103,14 @@ func (r *ReactService) GetReactPost(ctx context.Context, account_id int64, post_
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return ReactResponse{
-				ID:      0,
 				PostID:  post_id,
-				State:   0,
 				Account: account,
+				State:   0,
 			}, nil
 		}
 		return res, err
 	}
 	res = ReactResponse{
-		ID:      react.ID,
 		PostID:  post_id,
 		Account: account,
 		State:   react.State,

@@ -292,3 +292,15 @@ func (q *Queries) UpdateName(ctx context.Context, arg UpdateNameParams) (UpdateN
 	err := row.Scan(&i.ID, &i.UserID, &i.Fullname)
 	return i, err
 }
+
+const upgradeSuccess = `-- name: UpgradeSuccess :one
+UPDATE accounts SET is_upgrade = TRUE
+WHERE id = $1
+RETURNING id
+`
+
+func (q *Queries) UpgradeSuccess(ctx context.Context, id int64) (int64, error) {
+	row := q.db.QueryRow(ctx, upgradeSuccess, id)
+	err := row.Scan(&id)
+	return id, err
+}

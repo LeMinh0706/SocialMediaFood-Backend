@@ -12,7 +12,7 @@ SELECT * FROM react_post
 WHERE account_id = $1 AND post_id = $2;
 
 -- name: GetListReact :many
-SELECT id, account_id FROM react_post
+SELECT account_id FROM react_post
 WHERE post_id = $1
 LIMIT $2
 OFFSET $3;
@@ -24,7 +24,6 @@ WHERE post_id = $1;
 -- name: GetFavorite :many
 SELECT post_id FROM react_post
 WHERE account_id = $1
-ORDER BY id DESC
 LIMIT $2
 OFFSET $3;
 

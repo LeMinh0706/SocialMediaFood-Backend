@@ -32,6 +32,12 @@ type AccountStatus struct {
 	CreatedAt int64 `json:"created_at"`
 }
 
+type ApplyVoucher struct {
+	ID        int64 `json:"id"`
+	VoucherID int64 `json:"voucher_id"`
+	OwnerID   int64 `json:"owner_id"`
+}
+
 type Follower struct {
 	ID         int64  `json:"id"`
 	FromFollow int64  `json:"from_follow"`
@@ -39,10 +45,30 @@ type Follower struct {
 	Status     string `json:"status"`
 }
 
+type Invoice struct {
+	ID            int64              `json:"id"`
+	FromAccountID int64              `json:"from_account_id"`
+	ToAccountID   int64              `json:"to_account_id"`
+	CreateAt      pgtype.Timestamptz `json:"create_at"`
+	Status        pgtype.Text        `json:"status"`
+	VoucherID     pgtype.Int8        `json:"voucher_id"`
+	Total         pgtype.Numeric     `json:"total"`
+}
+
 type Locate struct {
 	ID        int64       `json:"id"`
 	AccountID int64       `json:"account_id"`
 	Location  interface{} `json:"location"`
+}
+
+type Menu struct {
+	ID        int64          `json:"id"`
+	AccountID pgtype.Int8    `json:"account_id"`
+	DishName  pgtype.Text    `json:"dish_name"`
+	Quantity  pgtype.Int4    `json:"quantity"`
+	Price     pgtype.Numeric `json:"price"`
+	Img       pgtype.Text    `json:"img"`
+	IsDelete  bool           `json:"is_delete"`
 }
 
 type Notification struct {
@@ -91,7 +117,6 @@ type PostType struct {
 }
 
 type ReactPost struct {
-	ID        int64 `json:"id"`
 	AccountID int64 `json:"account_id"`
 	PostID    int64 `json:"post_id"`
 	State     int32 `json:"state"`
@@ -126,4 +151,14 @@ type User struct {
 	HashPassword string             `json:"hash_password"`
 	CreatedAt    pgtype.Timestamptz `json:"created_at"`
 	IsDeleted    bool               `json:"is_deleted"`
+}
+
+type Voucher struct {
+	ID        int64          `json:"id"`
+	Name      string         `json:"name"`
+	ExpiredAt int64          `json:"expired_at"`
+	IsDelete  bool           `json:"is_delete"`
+	MinToUse  pgtype.Numeric `json:"min_to_use"`
+	Discount  pgtype.Numeric `json:"discount"`
+	MaxAmount pgtype.Numeric `json:"max_amount"`
 }

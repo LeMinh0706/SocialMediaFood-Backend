@@ -48,3 +48,8 @@ OFFSET $3;
 UPDATE accounts SET url_background_profile = $2
 WHERE id = $1
 RETURNING id, user_id, fullname, url_avatar, url_background_profile, role_id;
+
+-- name: UpgradeSuccess :one
+UPDATE accounts SET is_upgrade = TRUE
+WHERE id = $1
+RETURNING id;

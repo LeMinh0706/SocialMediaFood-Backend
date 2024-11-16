@@ -7,6 +7,7 @@ import (
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/account"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -28,7 +29,7 @@ func (p *PostService) GetHomePagePost(ctx context.Context, acoount_id int64, pag
 		return res, err
 	}
 	for _, element := range list {
-		post, err := p.GetPost(ctx, element)
+		post, err := p.GetPost(ctx, acoount_id, element)
 		if err != nil {
 			return res, err
 		}
@@ -45,7 +46,7 @@ func (p *PostService) GetListPost(ctx context.Context, page int32, pageSize int3
 		return res, err
 	}
 	for _, element := range list {
-		post, err := p.GetPost(ctx, element)
+		post, err := p.GetPost(ctx, 0, element)
 		if err != nil {
 			return []PostResponse{}, err
 		}
@@ -62,7 +63,7 @@ func (p *PostService) GetPersonPost(ctx context.Context, acoount_id int64, page 
 		return res, err
 	}
 	for _, element := range list {
-		post, err := p.GetPost(ctx, element)
+		post, err := p.GetPost(ctx, acoount_id, element)
 		if err != nil {
 			return []PostResponse{}, err
 		}
@@ -116,7 +117,7 @@ func (p *PostService) CreatePost(ctx context.Context, description string, lng st
 		imgs = append(imgs, images)
 	}
 
-	res = PostRes(post, acc, imgs, []int64{}, 0, 0)
+	res = PostRes(post, acc, imgs, db.ReactPost{AccountID: account_id, PostID: post.ID, State: 0}, 0, 0)
 
 	return res, nil
 }
@@ -124,7 +125,7 @@ func (p *PostService) CreatePost(ctx context.Context, description string, lng st
 // DeleteImage implements IPostService.
 func (p *PostService) DeleteImage(ctx context.Context, id int64, user_id int64) error {
 	image, _ := p.queries.GetImage(ctx, id)
-	post, _ := p.GetPost(ctx, image.PostID)
+	post, _ := p.GetPost(ctx, 0, image.PostID)
 	_, err := p.accountService.GetAccountAction(ctx, post.AccountID, user_id)
 	if err != nil {
 		return err
@@ -138,7 +139,7 @@ func (p *PostService) DeleteImage(ctx context.Context, id int64, user_id int64) 
 
 // DeletePost implements IPostService.
 func (p *PostService) DeletePost(ctx context.Context, id int64, user_id int64) error {
-	post, err := p.GetPost(ctx, id)
+	post, err := p.GetPost(ctx, 0, id)
 	if err != nil {
 		return err
 	}
@@ -154,25 +155,76 @@ func (p *PostService) DeletePost(ctx context.Context, id int64, user_id int64) e
 }
 
 // GetPost implements IPostService.
-func (p *PostService) GetPost(ctx context.Context, id int64) (PostResponse, error) {
+func (p *PostService) GetPost(ctx context.Context, account_id int64, id int64) (PostResponse, error) {
 	var res PostResponse
+	var wg sync.WaitGroup
+	var acc db.GetAccountByIdRow
+	var imgs []db.PostImage
+	var countComment int64
+	var react db.ReactPost
+	var countReact int64
+	errChan := make(chan error, 5)
 	post, err := p.queries.GetPost(ctx, id)
 	if err != nil {
 		return res, err
 	}
-	acc, _ := p.queries.GetAccountById(ctx, post.AccountID)
-	imgs, _ := p.queries.GetImagePost(ctx, post.ID)
-	likes, _ := p.queries.CountReactPost(ctx, post.ID)
-	comments, _ := p.queries.CountComment(ctx, pgtype.Int8{Int64: id, Valid: true})
-	reacts, _ := p.queries.ListAccountReact(ctx, id)
-	res = GetPostRes(post, acc, imgs, reacts, likes, comments)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		acc, _ = p.queries.GetAccountById(ctx, post.AccountID)
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		countReact, _ = p.queries.CountReactPost(ctx, post.ID)
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		countComment, _ = p.queries.CountComment(ctx, pgtype.Int8{Int64: id, Valid: true})
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		imgs, _ = p.queries.GetImagePost(ctx, post.ID)
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		react, err = p.queries.GetReact(ctx, db.GetReactParams{
+			AccountID: account_id,
+			PostID:    id,
+		})
+		if err != nil {
+			if err == pgx.ErrNoRows {
+				react = db.ReactPost{AccountID: account_id, PostID: id, State: 0}
+			} else {
+				errChan <- err
+			}
+		}
+
+	}()
+	go func() {
+		wg.Wait()
+		close(errChan)
+	}()
+	for err := range errChan {
+		if err != nil {
+			return res, err
+		}
+	}
+	res = GetPostRes(post, acc, imgs, react, countReact, countComment)
 	return res, nil
 }
 
 // UpdateContentPost implements IPostService.
 func (p *PostService) UpdateContentPost(ctx context.Context, desciption string, id int64, user_id int64) (PostResponse, error) {
 	var res PostResponse
-	post, err := p.GetPost(ctx, id)
+	post, err := p.GetPost(ctx, 0, id)
 	if err != nil {
 		return res, err
 	}
@@ -188,7 +240,7 @@ func (p *PostService) UpdateContentPost(ctx context.Context, desciption string, 
 	if err != nil {
 		return res, err
 	}
-	res = PostRes(db.CreatePostRow(update), acc, post.Images, post.ListReact, post.TotalLike, post.TotalComment)
+	res = PostRes(db.CreatePostRow(update), acc, post.Images, post.ReactState, post.TotalLike, post.TotalComment)
 	return res, nil
 }
 

@@ -13,6 +13,7 @@ type Config struct {
 	ServerAddress       string        `mapstructure:"SERVER_ADDRESS"`
 	SecretKey           string        `mapstructure:"SECRET_KEY"`
 	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
+	RefeshTokenDuration time.Duration `mapstructure:"REFESH_TOKEN_DURATION"`
 	MaxConns            int32         `mapstructure:"MAX_CONNS"`
 	MinConns            int32         `mapstructure:"MIN_CONNS"`
 	MaxConnIdleTime     time.Duration `mapstructure:"MAX_CONN_IDLE_TIME"`

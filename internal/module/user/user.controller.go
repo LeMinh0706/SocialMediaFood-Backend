@@ -12,13 +12,15 @@ type UserController struct {
 	service IUserService
 	config  util.Config
 	token   token.Maker
+	refesh  token.Maker
 }
 
-func NewUserController(service IUserService, config util.Config, token token.Maker) *UserController {
+func NewUserController(service IUserService, config util.Config, token token.Maker, refesh token.Maker) *UserController {
 	return &UserController{
 		service: service,
 		config:  config,
 		token:   token,
+		refesh:  refesh,
 	}
 }
 
@@ -56,7 +58,11 @@ func (uc *UserController) Login(g *gin.Context) {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return
 	}
-	res := LoginResponse{Token: token}
+	refesh, err := uc.refesh.CreateToken(user.ID, user.Username, uc.config.RefeshTokenDuration)
+	if err != nil {
+		response.ErrorNonKnow(g, 500, err.Error())
+	}
+	res := LoginResponse{AccessToken: token, RefeshToken: refesh}
 	response.SuccessResponse(g, 200, res)
 }
 
@@ -90,5 +96,33 @@ func (uc *UserController) RegisterTx(g *gin.Context) {
 		return
 	}
 	response.SuccessResponse(g, 201, res)
+}
 
+// User godoc
+// @Summary      Register user
+// @Description  Join with us
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        request body AccessRequest true "request"
+// @Success      200  {object}  RegisterResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /users/refesh [post]
+func (uc *UserController) RefeshToken(g *gin.Context) {
+	var req AccessRequest
+	if err := g.ShouldBindJSON(&req); err != nil {
+		response.ErrorResponse(g, 40000)
+		return
+	}
+	payload, err := uc.refesh.VerifyToken(req.RefeshToken)
+	if err != nil {
+		response.ErrorResponse(g, response.ErrTokenInvalid)
+		return
+	}
+	token, err := uc.token.CreateToken(payload.UserId, payload.Username, uc.config.AccessTokenDuration)
+	if err != nil {
+		response.ErrorNonKnow(g, 500, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 201, AccessResponse{AccessToken: token})
 }

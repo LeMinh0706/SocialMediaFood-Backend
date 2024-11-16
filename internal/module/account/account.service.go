@@ -14,5 +14,6 @@ type IAccountService interface {
 	UpdateName(ctx context.Context, id, user_id int64, name string) (AccountResponse, error)
 	UpdateAvatar(ctx context.Context, id, user_id int64, url_avatar string) (AccountResponse, error)
 	UpdateBackground(ctx context.Context, id, user_id int64, url_background string) (AccountResponse, error)
+	AddLocation(ctx context.Context, user_id, account_id int64, lng, lat string) (db.CreateOwnerBranchRow, error)
 	Backup(ctx context.Context)
 }

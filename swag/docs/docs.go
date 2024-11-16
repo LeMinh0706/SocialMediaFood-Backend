@@ -715,6 +715,12 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "AccountID",
+                        "name": "account_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "Page",
                         "name": "page",
                         "in": "query",
@@ -957,6 +963,57 @@ const docTemplate = `{
             }
         },
         "/posts/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get list post with page and page size (Limit-Offset)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get list post",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "AccountID",
+                        "name": "account_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/post.PostResponse"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            },
             "put": {
                 "security": [
                     {
@@ -1278,6 +1335,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/refesh": {
+            "post": {
+                "description": "Join with us",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Register user",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.AccessRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.RegisterResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/users/register": {
             "post": {
                 "description": "Join with us",
@@ -1468,9 +1565,6 @@ const docTemplate = `{
                 "account_id": {
                     "type": "integer"
                 },
-                "id": {
-                    "type": "integer"
-                },
                 "post_id": {
                     "type": "integer"
                 },
@@ -1608,15 +1702,12 @@ const docTemplate = `{
                     }
                 },
                 "lat": {},
-                "list_account_id_react": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
                 "lng": {},
                 "post_type_id": {
                     "type": "integer"
+                },
+                "react_state": {
+                    "$ref": "#/definitions/db.ReactPost"
                 },
                 "total_comment": {
                     "type": "integer"
@@ -1657,9 +1748,6 @@ const docTemplate = `{
                 "account": {
                     "$ref": "#/definitions/db.GetAccountByIdRow"
                 },
-                "id": {
-                    "type": "integer"
-                },
                 "post_id": {
                     "type": "integer"
                 },
@@ -1676,6 +1764,14 @@ const docTemplate = `{
                 },
                 "data": {},
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.AccessRequest": {
+            "type": "object",
+            "properties": {
+                "refesh_token": {
                     "type": "string"
                 }
             }
@@ -1704,6 +1800,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "access_token": {
+                    "type": "string"
+                },
+                "refesh_token": {
                     "type": "string"
                 }
             }

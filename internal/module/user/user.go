@@ -13,13 +13,22 @@ type Login struct {
 	Username string `json:"username"`
 }
 
+type AccessRequest struct {
+	RefeshToken string `json:"refesh_token"`
+}
+
+type AccessResponse struct {
+	AccessToken string `json:"access_token"`
+}
+
 type LoginRequest struct {
 	Username string `json:"username" binding:"required,min=6,max=16" example:"HiroPhent"`
 	Password string `json:"password" binding:"required,min=8" example:"kocanpass"`
 }
 
 type LoginResponse struct {
-	Token string `json:"access_token"`
+	AccessToken string `json:"access_token"`
+	RefeshToken string `json:"refesh_token"`
 }
 
 type RegisterResponse struct {
