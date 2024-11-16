@@ -50,39 +50,6 @@ func (rc *ReactController) CreateReact(g *gin.Context) {
 }
 
 // React godoc
-// @Summary      Get reactions
-// @Description  Get with post_id, to say have you liked this post
-// @Tags         React
-// @Accept       json
-// @Produce      json
-// @Param        account_id query int true "AccountID"
-// @Param        post_id query int true "PostID"
-// @Security BearerAuth
-// @Success      200  {object}  ReactResponse
-// @Failure      500  {object}  response.ErrSwaggerJson
-// @Router       /react [get]
-func (rc *ReactController) GetReactPost(g *gin.Context) {
-	accStr := g.Query("account_id")
-	postStr := g.Query("post_id")
-	account_id, err := strconv.ParseInt(accStr, 10, 64)
-	if err != nil {
-		response.ErrorResponse(g, response.ErrAccountID)
-		return
-	}
-	post_id, err := strconv.ParseInt(postStr, 10, 64)
-	if err != nil {
-		response.ErrorResponse(g, response.ErrBadRequestId)
-		return
-	}
-	react, err := rc.service.GetReactPost(g, account_id, post_id)
-	if err != nil {
-		response.ErrorNonKnow(g, 500, err.Error())
-		return
-	}
-	response.SuccessResponse(g, 200, react)
-}
-
-// React godoc
 // @Summary      Get list reactions
 // @Description  Get list reactions with post_id, page and page size (Limit-Offset)
 // @Tags         React
