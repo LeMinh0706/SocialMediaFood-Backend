@@ -86,3 +86,17 @@ func CheckValidPosition(g *gin.Context, lng, lat string) bool {
 	}
 	return true
 }
+
+func CheckQuery(g *gin.Context, pageStr, pageSizeStr string) (int32, int32) {
+	page, err := strconv.ParseInt(pageStr, 10, 32)
+	if err != nil {
+		response.ErrorResponse(g, 40001)
+		return 0, 0
+	}
+	pageSize, err := strconv.ParseInt(pageSizeStr, 10, 32)
+	if err != nil {
+		response.ErrorResponse(g, 40002)
+		return 0, 0
+	}
+	return int32(page), int32(pageSize)
+}

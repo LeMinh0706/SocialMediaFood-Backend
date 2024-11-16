@@ -44,6 +44,7 @@ const (
 	ErrInputFollow        = 40415
 	ErrFullNameNull       = 40014
 	ErrTokenInvalid       = 40304
+	ErrInputSearch        = 40015
 )
 
 var msg = map[int]string{
@@ -89,6 +90,7 @@ var msg = map[int]string{
 	ErrInputFollow:        "Error follow status input",
 	ErrFullNameNull:       "Fullname can't be empty",
 	ErrTokenInvalid:       "Invalid token",
+	ErrInputSearch:        "Seaching bar can't be empty",
 }
 
 // ErrOutOfDate:   "Token is out of date",
