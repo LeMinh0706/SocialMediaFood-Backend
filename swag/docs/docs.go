@@ -883,8 +883,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Account ID",
-                        "name": "account_id",
+                        "description": "Your account id",
+                        "name": "from_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Their account id",
+                        "name": "to_id",
                         "in": "query",
                         "required": true
                     },

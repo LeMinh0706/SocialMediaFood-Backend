@@ -56,14 +56,14 @@ func (p *PostService) GetListPost(ctx context.Context, page int32, pageSize int3
 }
 
 // GetPersonPost implements IPostService.
-func (p *PostService) GetPersonPost(ctx context.Context, acoount_id int64, page int32, pageSize int32) ([]PostResponse, error) {
+func (p *PostService) GetPersonPost(ctx context.Context, from int64, to int64, page int32, pageSize int32) ([]PostResponse, error) {
 	var res []PostResponse
-	list, err := p.queries.GetPersonPost(ctx, db.GetPersonPostParams{AccountID: acoount_id, Limit: pageSize, Offset: (page - 1) * pageSize})
+	list, err := p.queries.GetPersonPost(ctx, db.GetPersonPostParams{AccountID: to, Limit: pageSize, Offset: (page - 1) * pageSize})
 	if err != nil {
 		return res, err
 	}
 	for _, element := range list {
-		post, err := p.GetPost(ctx, acoount_id, element)
+		post, err := p.GetPost(ctx, from, element)
 		if err != nil {
 			return []PostResponse{}, err
 		}
