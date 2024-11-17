@@ -7,6 +7,7 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"go.uber.org/zap"
 )
 
 type Server struct {
@@ -15,9 +16,10 @@ type Server struct {
 	TokenMaker  token.Maker
 	RefeshMaker token.Maker
 	Router      *gin.Engine
+	Logger      *zap.Logger
 }
 
-func NewServer(db *pgxpool.Pool, config util.Config) (*Server, error) {
+func NewServer(db *pgxpool.Pool, config util.Config, logger *zap.Logger) (*Server, error) {
 	tokenMaker, err := token.NewJWTMaker(config.SecretKey)
 	if err != nil {
 		return nil, fmt.Errorf("can not create token: %w", err)
@@ -32,6 +34,7 @@ func NewServer(db *pgxpool.Pool, config util.Config) (*Server, error) {
 		TokenMaker:  tokenMaker,
 		RefeshMaker: refeshMaker,
 		DBConn:      db,
+		Logger:      logger,
 	}
 	EnableCors(server.Router)
 	server.Router.MaxMultipartMemory = 4 << 20

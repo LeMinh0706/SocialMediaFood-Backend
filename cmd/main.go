@@ -5,6 +5,7 @@ import (
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/cmd/server"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/logger"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	_ "github.com/lib/pq"
 )
@@ -32,8 +33,9 @@ func main() {
 		log.Fatal(err)
 	}
 	defer pg.Close()
+	logger.InitLogger("./logs/app.log")
 
-	server, err := server.NewServer(pg, config)
+	server, err := server.NewServer(pg, config, logger.GetLogger())
 	if err != nil {
 		log.Fatal("Cannot create server:", err)
 	}
