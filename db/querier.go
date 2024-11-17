@@ -26,8 +26,10 @@ type Querier interface {
 	CreatePost(ctx context.Context, arg CreatePostParams) (CreatePostRow, error)
 	CreatePostNoti(ctx context.Context, arg CreatePostNotiParams) (Notification, error)
 	CreateReact(ctx context.Context, arg CreateReactParams) (ReactPost, error)
+	CreateReport(ctx context.Context, arg CreateReportParams) (ReportPost, error)
 	DeleteComment(ctx context.Context, id int64) error
 	DeleteFollow(ctx context.Context, arg DeleteFollowParams) error
+	DeleteImageComment(ctx context.Context, postID int64) error
 	DeleteImagePost(ctx context.Context, id int64) error
 	DeleteNoti(ctx context.Context, id int64) error
 	DeletePost(ctx context.Context, id int64) error
@@ -43,8 +45,10 @@ type Querier interface {
 	GetImage(ctx context.Context, id int64) (PostImage, error)
 	GetImageComment(ctx context.Context, postID int64) (PostImage, error)
 	GetImagePost(ctx context.Context, postID int64) ([]PostImage, error)
+	GetIssue(ctx context.Context, id int32) (IssuePost, error)
 	//comment
 	GetListComment(ctx context.Context, arg GetListCommentParams) ([]int64, error)
+	GetListIssue(ctx context.Context) ([]IssuePost, error)
 	GetListNoti(ctx context.Context, arg GetListNotiParams) ([]int64, error)
 	GetListPost(ctx context.Context, arg GetListPostParams) ([]int64, error)
 	GetListReact(ctx context.Context, arg GetListReactParams) ([]int64, error)
@@ -56,6 +60,7 @@ type Querier interface {
 	GetReact(ctx context.Context, arg GetReactParams) (ReactPost, error)
 	GetYourFollower(ctx context.Context, arg GetYourFollowerParams) ([]int64, error)
 	GetYourFriend(ctx context.Context, arg GetYourFriendParams) ([]int64, error)
+	GetYourReport(ctx context.Context, arg GetYourReportParams) ([]GetYourReportRow, error)
 	GetYourRequest(ctx context.Context, arg GetYourRequestParams) ([]int64, error)
 	ListAccountReact(ctx context.Context, postID int64) ([]int64, error)
 	Login(ctx context.Context, username string) (LoginRow, error)

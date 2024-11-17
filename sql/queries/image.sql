@@ -24,6 +24,10 @@ WHERE post_id = $1;
 DELETE FROM post_image
 WHERE id = $1;
 
+-- name: DeleteImageComment :exec 
+DELETE FROM post_image
+WHERE post_id = $1;
+
 -- name: UpdateImagePost :one
 UPDATE post_image SET url_image = $2
 WHERE post_id = $1
