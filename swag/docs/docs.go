@@ -1254,6 +1254,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/report-post/issue": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get list Issue to report",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Get list Issue",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.IssuePost"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/users/login": {
             "post": {
                 "description": "Login to be more handsome",
@@ -1504,6 +1541,20 @@ const docTemplate = `{
                 },
                 "to_follow": {
                     "type": "integer"
+                }
+            }
+        },
+        "db.IssuePost": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "is_deleted": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
