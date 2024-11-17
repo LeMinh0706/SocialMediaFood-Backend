@@ -13,6 +13,6 @@ func NewUserRouter(r *gin.Engine, router *gin.RouterGroup, service IUserService,
 	{
 		userGroup.POST("/login", uc.Login)
 		userGroup.POST("/register", uc.RegisterTx)
-		userGroup.POST("/refesh", uc.RefeshToken)
+		userGroup.POST("/refresh", uc.RefeshToken)
 	}
 }
