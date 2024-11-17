@@ -12,6 +12,8 @@ func NewReportRouter(r *gin.Engine, group *gin.RouterGroup, service IReportServi
 	auth := reportGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
 	{
 		auth.GET("/issue", rc.GetListIssue)
+		auth.GET("/your-report", rc.GetYourReport)
+		auth.POST("", rc.CreateReport)
 	}
 
 }

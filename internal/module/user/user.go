@@ -14,7 +14,7 @@ type Login struct {
 }
 
 type AccessRequest struct {
-	RefeshToken string `json:"refesh_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 type AccessResponse struct {
@@ -28,7 +28,7 @@ type LoginRequest struct {
 
 type LoginResponse struct {
 	AccessToken string `json:"access_token"`
-	RefeshToken string `json:"refesh_token"`
+	RefeshToken string `json:"refresh_token"`
 }
 
 type RegisterResponse struct {
