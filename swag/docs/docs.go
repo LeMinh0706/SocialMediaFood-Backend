@@ -1357,6 +1357,22 @@ const docTemplate = `{
                     "Reports"
                 ],
                 "summary": "Get your reports",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "PostID",
+                        "name": "post_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "AccountID",
+                        "name": "account_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

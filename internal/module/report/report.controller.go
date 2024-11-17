@@ -69,6 +69,8 @@ func (r *ReportController) CreateReport(g *gin.Context) {
 // @Tags         Reports
 // @Accept       json
 // @Produce      json
+// @Param        post_id query int true "PostID"
+// @Param        account_id query int true "AccountID"
 // @Security BearerAuth
 // @Success      200  {object}  []db.IssuePost
 // @Failure      500  {object}  response.ErrSwaggerJson

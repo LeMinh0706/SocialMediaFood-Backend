@@ -1169,6 +1169,17 @@ paths:
       consumes:
       - application/json
       description: Get your reports on this post
+      parameters:
+      - description: PostID
+        in: query
+        name: post_id
+        required: true
+        type: integer
+      - description: AccountID
+        in: query
+        name: account_id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
