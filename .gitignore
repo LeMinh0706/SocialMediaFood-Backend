@@ -5,3 +5,4 @@ upload
 result.txt
 docker-compose.yaml
 backend
+logs
