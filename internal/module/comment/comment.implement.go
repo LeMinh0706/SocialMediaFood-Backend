@@ -63,7 +63,7 @@ func (c *CommentService) DeleteComment(ctx context.Context, id int64, user_id in
 	if err != nil {
 		return err
 	}
-	err = c.queries.DeleteImagePost(ctx, id)
+	err = c.queries.DeleteImageComment(ctx, id)
 	if err != nil {
 		return err
 	}

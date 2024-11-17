@@ -55,6 +55,12 @@ type Invoice struct {
 	Total         pgtype.Numeric     `json:"total"`
 }
 
+type IssuePost struct {
+	ID        int32  `json:"id"`
+	Name      string `json:"name"`
+	IsDeleted bool   `json:"is_deleted"`
+}
+
 type Locate struct {
 	ID        int64       `json:"id"`
 	AccountID int64       `json:"account_id"`
@@ -120,6 +126,14 @@ type ReactPost struct {
 	AccountID int64 `json:"account_id"`
 	PostID    int64 `json:"post_id"`
 	State     int32 `json:"state"`
+}
+
+type ReportPost struct {
+	ID        int64              `json:"id"`
+	AccountID int64              `json:"account_id"`
+	IssueID   int32              `json:"issue_id"`
+	PostID    int64              `json:"post_id"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
 }
 
 type Role struct {

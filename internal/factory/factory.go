@@ -7,6 +7,7 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/follower"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/react"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/report"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/user"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -18,6 +19,7 @@ type Factory struct {
 	CommentService comment.ICommentService
 	ReactService   react.IReactService
 	FollowService  follower.IFollowerService
+	ReportService  report.IReportService
 }
 
 // Đang sửa lại thành cấu trúc cũ thì thành như này
@@ -36,6 +38,8 @@ func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
 	commentService := comment.NewCommentService(q, postService, accountService)
 	reactService := react.NewReactService(q, accountService, postService)
 	followService := follower.NewFollowerService(q, accountService)
+	reportService := report.NewReportService(q, accountService)
+
 	///return
 	return &Factory{
 		UserService:    userService,
@@ -44,5 +48,6 @@ func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
 		CommentService: commentService,
 		ReactService:   reactService,
 		FollowService:  followService,
+		ReportService:  reportService,
 	}, nil
 }
