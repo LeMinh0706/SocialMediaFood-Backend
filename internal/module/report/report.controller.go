@@ -45,9 +45,9 @@ func (r *ReportController) GetListIssue(g *gin.Context) {
 // @Produce      json
 // @Param        request body ReportRequest true "request"
 // @Security BearerAuth
-// @Success      200  {object}  []db.ReportPost
+// @Success      200  {object}  []ReportPostResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
-// @Router       /report-post/issue [get]
+// @Router       /report-post/ [post]
 func (r *ReportController) CreateReport(g *gin.Context) {
 	var req ReportRequest
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
@@ -72,7 +72,7 @@ func (r *ReportController) CreateReport(g *gin.Context) {
 // @Security BearerAuth
 // @Success      200  {object}  []db.IssuePost
 // @Failure      500  {object}  response.ErrSwaggerJson
-// @Router       /report-post/issue [get]
+// @Router       /report-post/your-report [get]
 func (r *ReportController) GetYourReport(g *gin.Context) {
 	postStr := g.Query("post_id")
 	accountStr := g.Query("account_id")

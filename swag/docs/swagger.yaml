@@ -234,6 +234,33 @@ definitions:
       state:
         type: integer
     type: object
+  report.ReportPostResponse:
+    properties:
+      account_id:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      issue_id:
+        type: integer
+      post_id:
+        type: integer
+    type: object
+  report.ReportRequest:
+    properties:
+      account_id:
+        type: integer
+      list_issue_id:
+        items:
+          type: integer
+        type: array
+      post_id:
+        type: integer
+    required:
+    - account_id
+    - post_id
+    type: object
   response.ErrSwaggerJson:
     properties:
       code:
@@ -244,7 +271,7 @@ definitions:
     type: object
   user.AccessRequest:
     properties:
-      refesh_token:
+      refresh_token:
         type: string
     type: object
   user.LoginRequest:
@@ -266,7 +293,7 @@ definitions:
     properties:
       access_token:
         type: string
-      refesh_token:
+      refresh_token:
         type: string
     type: object
   user.RegisterResponse:
@@ -1084,6 +1111,36 @@ paths:
       summary: Get list reactions
       tags:
       - React
+  /report-post/:
+    post:
+      consumes:
+      - application/json
+      description: Create list Issue to report
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/report.ReportRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/report.ReportPostResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Create list Issue
+      tags:
+      - Reports
   /report-post/issue:
     get:
       consumes:
@@ -1105,6 +1162,29 @@ paths:
       security:
       - BearerAuth: []
       summary: Get list Issue
+      tags:
+      - Reports
+  /report-post/your-report:
+    get:
+      consumes:
+      - application/json
+      description: Get your reports on this post
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/db.IssuePost'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Get your reports
       tags:
       - Reports
   /users/login:
