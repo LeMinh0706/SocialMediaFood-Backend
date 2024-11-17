@@ -12,7 +12,7 @@ type ReportService struct {
 	acc     account.IAccountService
 }
 
-// CreateReportPost implements IReportService.
+// ReportPost implements IReportService.
 func (r *ReportService) CreateReportPost(ctx context.Context, user_id int64, account_id int64, post_id int64, issue_id []int32) ([]db.ReportPost, error) {
 	var reports []db.ReportPost
 	if _, err := r.acc.GetAccountAction(ctx, account_id, user_id); err != nil {
@@ -39,8 +39,24 @@ func (r *ReportService) GetListIssue(ctx context.Context) []db.IssuePost {
 }
 
 // GetYourReport implements IReportService.
-func (r *ReportService) GetYourReport(ctx context.Context, user_id int64, account_id int64, post_id int64) ([]db.GetYourReportRow, error) {
-	panic("unimplemented")
+func (r *ReportService) GetYourReport(ctx context.Context, user_id int64, account_id int64, post_id int64) ([]ReportResponse, error) {
+	var res []ReportResponse
+	_, err := r.acc.GetAccountAction(ctx, account_id, user_id)
+	if err != nil {
+		return res, err
+	}
+	list, _ := r.queries.GetYourReport(ctx, db.GetYourReportParams{
+		AccountID: account_id,
+		PostID:    post_id,
+	})
+	for _, element := range list {
+		issue, _ := r.queries.GetIssue(ctx, element.IssueID)
+		res = append(res, ReportResponse{
+			Id:    element.ID,
+			Issue: issue,
+		})
+	}
+	return res, nil
 }
 
 func NewReportService(queries *db.Queries, a account.IAccountService) IReportService {

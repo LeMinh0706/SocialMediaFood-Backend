@@ -118,7 +118,7 @@ func (uc *UserController) RefeshToken(g *gin.Context) {
 		response.ErrorResponse(g, 40000)
 		return
 	}
-	payload, err := uc.refesh.VerifyToken(req.RefeshToken)
+	payload, err := uc.refesh.VerifyToken(req.RefreshToken)
 	if err != nil {
 		response.ErrorResponse(g, response.ErrTokenInvalid)
 		return
