@@ -13,8 +13,8 @@ type ReportService struct {
 }
 
 // ReportPost implements IReportService.
-func (r *ReportService) CreateReportPost(ctx context.Context, user_id int64, account_id int64, post_id int64, issue_id []int32) ([]db.ReportPost, error) {
-	var reports []db.ReportPost
+func (r *ReportService) CreateReportPost(ctx context.Context, user_id int64, account_id int64, post_id int64, issue_id []int32) ([]ReportPostResponse, error) {
+	var reports []ReportPostResponse
 	if _, err := r.acc.GetAccountAction(ctx, account_id, user_id); err != nil {
 		return reports, err
 	}
@@ -27,7 +27,8 @@ func (r *ReportService) CreateReportPost(ctx context.Context, user_id int64, acc
 		if err != nil {
 			return reports, err
 		}
-		reports = append(reports, report)
+		response := ReportPostRes(report)
+		reports = append(reports, response)
 	}
 	return reports, nil
 }

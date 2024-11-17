@@ -1254,6 +1254,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/report-post/": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create list Issue to report",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Create list Issue",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/report.ReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/report.ReportPostResponse"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/report-post/issue": {
             "get": {
                 "security": [
@@ -1272,6 +1320,43 @@ const docTemplate = `{
                     "Reports"
                 ],
                 "summary": "Get list Issue",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.IssuePost"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/report-post/your-report": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get your reports on this post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Get your reports",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1769,6 +1854,47 @@ const docTemplate = `{
                 }
             }
         },
+        "report.ReportPostResponse": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "issue_id": {
+                    "type": "integer"
+                },
+                "post_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "report.ReportRequest": {
+            "type": "object",
+            "required": [
+                "account_id",
+                "post_id"
+            ],
+            "properties": {
+                "account_id": {
+                    "type": "integer"
+                },
+                "list_issue_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "post_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "response.ErrSwaggerJson": {
             "type": "object",
             "properties": {
@@ -1784,7 +1910,7 @@ const docTemplate = `{
         "user.AccessRequest": {
             "type": "object",
             "properties": {
-                "refesh_token": {
+                "refresh_token": {
                     "type": "string"
                 }
             }
@@ -1815,7 +1941,7 @@ const docTemplate = `{
                 "access_token": {
                     "type": "string"
                 },
-                "refesh_token": {
+                "refresh_token": {
                     "type": "string"
                 }
             }
