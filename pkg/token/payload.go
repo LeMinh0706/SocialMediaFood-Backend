@@ -14,11 +14,7 @@ type Payload struct {
 	jwt.RegisteredClaims
 }
 
-func NewPayload(user_id int64, username string, duration time.Duration) (*Payload, error) {
-	tokenId, err := uuid.NewRandom()
-	if err != nil {
-		return nil, err
-	}
+func NewPayload(tokenId uuid.UUID, user_id int64, username string, duration time.Duration) (*Payload, error) {
 	payload := &Payload{
 		Id:       tokenId,
 		UserId:   user_id,

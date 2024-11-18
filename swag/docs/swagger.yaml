@@ -261,6 +261,11 @@ definitions:
     - account_id
     - post_id
     type: object
+  reset_password.ResponseLink:
+    properties:
+      link:
+        type: string
+    type: object
   response.ErrSwaggerJson:
     properties:
       code:
@@ -1198,6 +1203,31 @@ paths:
       summary: Get your reports
       tags:
       - Reports
+  /reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Mong chờ gì hơn ở chỗ này, chỉ cần nhập email thôi
+      parameters:
+      - description: Your email
+        in: query
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/reset_password.ResponseLink'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Request link
+      tags:
+      - ResetPassword
   /users/login:
     post:
       consumes:

@@ -3,7 +3,7 @@
 CREATE TABLE "reset_password" (
   "id" uuid PRIMARY KEY,
   "user_id" bigint NOT NULL,
-  "expires_at" timestamptz NOT NULL DEFAULT (now()),
+  "expires_at" timestamptz NOT NULL,
   "is_active" bool NOT NULL DEFAULT false
 );
 

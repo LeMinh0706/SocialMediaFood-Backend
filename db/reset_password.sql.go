@@ -11,6 +11,34 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const createRequestPassword = `-- name: CreateRequestPassword :one
+INSERT INTO reset_password (
+    id, 
+    user_id,
+    expires_at
+) VALUES (
+    $1, $2, $3
+) RETURNING id, user_id, expires_at, is_active
+`
+
+type CreateRequestPasswordParams struct {
+	ID        pgtype.UUID        `json:"id"`
+	UserID    int64              `json:"user_id"`
+	ExpiresAt pgtype.Timestamptz `json:"expires_at"`
+}
+
+func (q *Queries) CreateRequestPassword(ctx context.Context, arg CreateRequestPasswordParams) (ResetPassword, error) {
+	row := q.db.QueryRow(ctx, createRequestPassword, arg.ID, arg.UserID, arg.ExpiresAt)
+	var i ResetPassword
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.ExpiresAt,
+		&i.IsActive,
+	)
+	return i, err
+}
+
 const getCheckAction = `-- name: GetCheckAction :one
 SELECT id, user_id, expires_at, is_active FROM reset_password
 WHERE user_id = $1

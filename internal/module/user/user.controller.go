@@ -6,6 +6,7 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type UserController struct {
@@ -53,12 +54,15 @@ func (uc *UserController) Login(g *gin.Context) {
 		response.ErrorNonKnow(g, 404, err.Error())
 		return
 	}
-	token, err := uc.token.CreateToken(user.ID, user.Username, uc.config.AccessTokenDuration)
+	tokenId, _ := uuid.NewRandom()
+
+	token, err := uc.token.CreateToken(tokenId, user.ID, user.Username, uc.config.AccessTokenDuration)
 	if err != nil {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return
 	}
-	refesh, err := uc.refesh.CreateToken(user.ID, user.Username, uc.config.RefeshTokenDuration)
+	refreshId, _ := uuid.NewRandom()
+	refesh, err := uc.refesh.CreateToken(refreshId, user.ID, user.Username, uc.config.RefeshTokenDuration)
 	if err != nil {
 		response.ErrorNonKnow(g, 500, err.Error())
 	}
@@ -123,7 +127,9 @@ func (uc *UserController) RefeshToken(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrTokenInvalid)
 		return
 	}
-	token, err := uc.token.CreateToken(payload.UserId, payload.Username, uc.config.AccessTokenDuration)
+	tokenId, _ := uuid.NewRandom()
+
+	token, err := uc.token.CreateToken(tokenId, payload.UserId, payload.Username, uc.config.AccessTokenDuration)
 	if err != nil {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return

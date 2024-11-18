@@ -6,6 +6,15 @@ WHERE email = $1;
 SELECT * FROM reset_password 
 WHERE id = $1;
 
+-- name: CreateRequestPassword :one
+INSERT INTO reset_password (
+    id, 
+    user_id,
+    expires_at
+) VALUES (
+    $1, $2, $3
+) RETURNING *;
+
 -- name: UpdatePassword :one
 UPDATE users SET hash_password = $2
 WHERE id = $1 

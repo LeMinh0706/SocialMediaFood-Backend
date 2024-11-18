@@ -27,6 +27,7 @@ type Querier interface {
 	CreatePostNoti(ctx context.Context, arg CreatePostNotiParams) (Notification, error)
 	CreateReact(ctx context.Context, arg CreateReactParams) (ReactPost, error)
 	CreateReport(ctx context.Context, arg CreateReportParams) (ReportPost, error)
+	CreateRequestPassword(ctx context.Context, arg CreateRequestPasswordParams) (ResetPassword, error)
 	DeleteComment(ctx context.Context, id int64) error
 	DeleteFollow(ctx context.Context, arg DeleteFollowParams) error
 	DeleteImageComment(ctx context.Context, postID int64) error

@@ -1386,6 +1386,44 @@
                 }
             }
         },
+        "/reset-password": {
+            "post": {
+                "description": "Mong chờ gì hơn ở chỗ này, chỉ cần nhập email thôi",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ResetPassword"
+                ],
+                "summary": "Request link",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Your email",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/reset_password.ResponseLink"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/users/login": {
             "post": {
                 "description": "Login to be more handsome",
@@ -1902,6 +1940,14 @@
                 },
                 "post_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "reset_password.ResponseLink": {
+            "type": "object",
+            "properties": {
+                "link": {
+                    "type": "string"
                 }
             }
         },
