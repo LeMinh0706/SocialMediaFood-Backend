@@ -201,6 +201,19 @@ func (as *AccountController) AddYourLocation(g *gin.Context) {
 	response.SuccessResponse(g, 201, location)
 }
 
+// Account godoc
+// @Summary      Profile api
+// @Description  To see the account, searching account
+// @Tags         Accounts
+// @Accept       json
+// @Produce      json
+// @Param        name query string true "Who you want to search"
+// @Param        page query int true "Page"
+// @Param        page_size query int true "Page Size"
+// @Security BearerAuth
+// @Success      200  {object}  []db.SearchingAccountsRow
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /accounts/searching [get]
 func (as *AccountController) Searching(g *gin.Context) {
 	param := g.Query("name")
 	if strings.TrimSpace(param) == "" {
