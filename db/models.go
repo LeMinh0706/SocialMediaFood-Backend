@@ -136,6 +136,13 @@ type ReportPost struct {
 	CreatedAt pgtype.Timestamptz `json:"created_at"`
 }
 
+type ResetPassword struct {
+	ID        pgtype.UUID        `json:"id"`
+	UserID    int64              `json:"user_id"`
+	ExpiresAt pgtype.Timestamptz `json:"expires_at"`
+	IsActive  bool               `json:"is_active"`
+}
+
 type Role struct {
 	ID   int32       `json:"id"`
 	Name pgtype.Text `json:"name"`

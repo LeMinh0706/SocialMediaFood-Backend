@@ -36,6 +36,7 @@ type Querier interface {
 	DeleteReact(ctx context.Context, arg DeleteReactParams) error
 	GetAccountById(ctx context.Context, id int64) (GetAccountByIdRow, error)
 	GetAccountByUserId(ctx context.Context, userID int64) ([]int64, error)
+	GetCheckAction(ctx context.Context, userID int64) (ResetPassword, error)
 	GetComment(ctx context.Context, id int64) (GetCommentRow, error)
 	GetDetailAccount(ctx context.Context, id int64) (Account, error)
 	GetDish(ctx context.Context, accountID pgtype.Int8) (GetDishRow, error)
@@ -58,6 +59,8 @@ type Querier interface {
 	GetPersonPost(ctx context.Context, arg GetPersonPostParams) ([]int64, error)
 	GetPost(ctx context.Context, id int64) (GetPostRow, error)
 	GetReact(ctx context.Context, arg GetReactParams) (ReactPost, error)
+	GetRequestByUUID(ctx context.Context, id pgtype.UUID) (ResetPassword, error)
+	GetUserByEmail(ctx context.Context, email pgtype.Text) (GetUserByEmailRow, error)
 	GetYourFollower(ctx context.Context, arg GetYourFollowerParams) ([]int64, error)
 	GetYourFriend(ctx context.Context, arg GetYourFriendParams) ([]int64, error)
 	GetYourReport(ctx context.Context, arg GetYourReportParams) ([]GetYourReportRow, error)
