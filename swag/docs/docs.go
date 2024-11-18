@@ -1254,7 +1254,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/report-post/": {
+        "/report-post": {
             "post": {
                 "security": [
                     {
