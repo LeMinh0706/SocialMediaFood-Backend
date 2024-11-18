@@ -78,6 +78,7 @@ func (q *Queries) GetRequestByUUID(ctx context.Context, id pgtype.UUID) (ResetPa
 const getUserByEmail = `-- name: GetUserByEmail :one
 SELECT id, username FROM users
 WHERE email = $1
+LIMIT 1
 `
 
 type GetUserByEmailRow struct {
@@ -90,6 +91,34 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email pgtype.Text) (GetUse
 	var i GetUserByEmailRow
 	err := row.Scan(&i.ID, &i.Username)
 	return i, err
+}
+
+const getUserById = `-- name: GetUserById :one
+SELECT id, username FROM users
+WHERE id = $1
+LIMIT 1
+`
+
+type GetUserByIdRow struct {
+	ID       int64  `json:"id"`
+	Username string `json:"username"`
+}
+
+func (q *Queries) GetUserById(ctx context.Context, id int64) (GetUserByIdRow, error) {
+	row := q.db.QueryRow(ctx, getUserById, id)
+	var i GetUserByIdRow
+	err := row.Scan(&i.ID, &i.Username)
+	return i, err
+}
+
+const updateActive = `-- name: UpdateActive :exec
+UPDATE reset_password SET is_active = TRUE
+WHERE id = $1
+`
+
+func (q *Queries) UpdateActive(ctx context.Context, id pgtype.UUID) error {
+	_, err := q.db.Exec(ctx, updateActive, id)
+	return err
 }
 
 const updatePassword = `-- name: UpdatePassword :one

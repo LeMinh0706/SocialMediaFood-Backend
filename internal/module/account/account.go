@@ -13,6 +13,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type EmailRequest struct {
+	Email string `json:"email" binding:"required,email"`
+}
+
 type AccountResponse struct {
 	ID                   int64  `json:"id"`
 	UserID               int64  `json:"user_id"`

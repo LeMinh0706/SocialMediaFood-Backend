@@ -34,7 +34,7 @@ func NewCommentController(service ICommentService, token token.Maker) *CommentCo
 // @Param        account_id formData string true "AccountID"
 // @Param        image formData file false "Image comment"
 // @Security BearerAuth
-// @Success      200  {object}  CommentResponse
+// @Success      201  {object}  CommentResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /comments [post]
 func (cc *CommentController) CreateComment(g *gin.Context) {
@@ -119,7 +119,7 @@ func (cc *CommentController) GetListComment(g *gin.Context) {
 // @Param        description formData string true "Description"
 // @Param        image formData file false "Image comment"
 // @Security BearerAuth
-// @Success      200  {object}  CommentResponse
+// @Success      201  {object}  CommentResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /comments [put]
 func (cc *CommentController) UpdateComment(g *gin.Context) {

@@ -1,6 +1,7 @@
 -- name: GetUserByEmail :one
 SELECT id, username FROM users
-WHERE email = $1;
+WHERE email = $1
+LIMIT 1;
 
 -- name: GetRequestByUUID :one
 SELECT * FROM reset_password 
@@ -26,6 +27,11 @@ WHERE user_id = $1
 ORDER BY expires_at DESC
 LIMIT 1;
 
--- nane: UpdateActive :one
+-- name: GetUserById :one
+SELECT id, username FROM users
+WHERE id = $1
+LIMIT 1;
+
+-- name: UpdateActive :exec
 UPDATE reset_password SET is_active = TRUE
 WHERE id = $1;

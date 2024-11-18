@@ -4,6 +4,8 @@ const (
 	StatusOk              = 200
 	CodeSuccess           = 201
 	UpdateFriend          = 20101
+	ChangePassword        = 20102
+	AddEmail              = 20103
 	DeleteSuccess         = 204
 	ErrBadRequest         = 40000
 	ErrBadRequestPage     = 40001
@@ -47,6 +49,10 @@ const (
 	ErrInputSearch        = 40015
 	ErrEmailInvalid       = 40016
 	ErrReport             = 40116
+	ErrEmailNotExists     = 40420
+	YouHaveRequest        = 40307
+	PasswordHaveChange    = 40308
+	ResetPasswordTimeOut  = 40309
 )
 
 var msg = map[int]string{
@@ -54,6 +60,8 @@ var msg = map[int]string{
 	CodeSuccess:           "Success",
 	DeleteSuccess:         "Delete no error",
 	UpdateFriend:          "Success update to friend",
+	ChangePassword:        "Success to reset password",
+	AddEmail:              "Add email complete",
 	ErrBadRequest:         "Bad request",
 	ErrBadRequestPage:     "Page should be number and greater 1",
 	ErrBadRequestPageSize: "Page size should be number and greater 1",
@@ -74,6 +82,7 @@ var msg = map[int]string{
 	ErrFileTooLarge:       "File too large, only allowed 4MB",
 	ErrWrongPassword:      "Wrong password",
 	ErrEmailExists:        "Email exists",
+	ErrEmailNotExists:     "Email doesn't exist",
 	ErrUsernameChar:       "Username need to be between 6 to 16 character",
 	ErrMinPassword:        "Password need at least 8 character",
 	ErrMinFullname:        "Fullname need at least 6 character",
@@ -95,6 +104,9 @@ var msg = map[int]string{
 	ErrInputSearch:        "Seaching bar can't be empty",
 	ErrEmailInvalid:       "This email is invalid",
 	ErrReport:             "You have report this post with this issue",
+	YouHaveRequest:        "You requested a few minutes ago, please wait",
+	PasswordHaveChange:    "You have changed password before",
+	ResetPasswordTimeOut:  "You're to late, try request forgot-password again",
 }
 
 // ErrOutOfDate:   "Token is out of date",

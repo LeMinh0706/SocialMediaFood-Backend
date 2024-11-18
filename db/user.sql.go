@@ -11,6 +11,21 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const addEmail = `-- name: AddEmail :exec
+UPDATE users SET email = $2
+WHERE id = $1
+`
+
+type AddEmailParams struct {
+	ID    int64       `json:"id"`
+	Email pgtype.Text `json:"email"`
+}
+
+func (q *Queries) AddEmail(ctx context.Context, arg AddEmailParams) error {
+	_, err := q.db.Exec(ctx, addEmail, arg.ID, arg.Email)
+	return err
+}
+
 const login = `-- name: Login :one
 SELECT id, username, hash_password FROM users
 WHERE username = $1

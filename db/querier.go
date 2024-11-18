@@ -11,6 +11,7 @@ import (
 )
 
 type Querier interface {
+	AddEmail(ctx context.Context, arg AddEmailParams) error
 	AddImagePost(ctx context.Context, arg AddImagePostParams) (PostImage, error)
 	AddToMenu(ctx context.Context, arg AddToMenuParams) (Menu, error)
 	CountComment(ctx context.Context, postTopID pgtype.Int8) (int64, error)
@@ -62,6 +63,7 @@ type Querier interface {
 	GetReact(ctx context.Context, arg GetReactParams) (ReactPost, error)
 	GetRequestByUUID(ctx context.Context, id pgtype.UUID) (ResetPassword, error)
 	GetUserByEmail(ctx context.Context, email pgtype.Text) (GetUserByEmailRow, error)
+	GetUserById(ctx context.Context, id int64) (GetUserByIdRow, error)
 	GetYourFollower(ctx context.Context, arg GetYourFollowerParams) ([]int64, error)
 	GetYourFriend(ctx context.Context, arg GetYourFriendParams) ([]int64, error)
 	GetYourReport(ctx context.Context, arg GetYourReportParams) ([]GetYourReportRow, error)
@@ -71,6 +73,7 @@ type Querier interface {
 	OwnerUpdateQuanity(ctx context.Context, arg OwnerUpdateQuanityParams) (Menu, error)
 	Register(ctx context.Context, arg RegisterParams) (RegisterRow, error)
 	SearchingAccounts(ctx context.Context, arg SearchingAccountsParams) ([]SearchingAccountsRow, error)
+	UpdateActive(ctx context.Context, id pgtype.UUID) error
 	UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) (UpdateAvatarRow, error)
 	UpdateBackground(ctx context.Context, arg UpdateBackgroundParams) (UpdateBackgroundRow, error)
 	UpdateComment(ctx context.Context, arg UpdateCommentParams) (UpdateCommentRow, error)
