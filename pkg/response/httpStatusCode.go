@@ -46,6 +46,7 @@ const (
 	ErrTokenInvalid       = 40304
 	ErrInputSearch        = 40015
 	ErrEmailInvalid       = 40016
+	ErrReport             = 40116
 )
 
 var msg = map[int]string{
@@ -93,6 +94,7 @@ var msg = map[int]string{
 	ErrTokenInvalid:       "Invalid token",
 	ErrInputSearch:        "Seaching bar can't be empty",
 	ErrEmailInvalid:       "This email is invalid",
+	ErrReport:             "You have report this post with this issue",
 }
 
 // ErrOutOfDate:   "Token is out of date",

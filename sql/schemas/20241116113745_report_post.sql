@@ -26,6 +26,8 @@ CREATE INDEX ON "report_post" ("account_id");
 
 CREATE INDEX ON "report_post" ("issue_id");
 
+CREATE UNIQUE INDEX ON "report_post" ("post_id", "account_id", "issue_id");
+
 ALTER TABLE "report_post" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id");
 
 ALTER TABLE "report_post" ADD FOREIGN KEY ("issue_id") REFERENCES "issue_post" ("id");

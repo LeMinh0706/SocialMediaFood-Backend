@@ -1111,7 +1111,7 @@ paths:
       summary: Get list reactions
       tags:
       - React
-  /report-post/:
+  /report-post:
     post:
       consumes:
       - application/json

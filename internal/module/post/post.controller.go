@@ -241,6 +241,10 @@ func CheckPostStringError(g *gin.Context, err error) {
 		response.ErrorResponse(g, response.ErrUnlike)
 		return
 	}
+	if err.Error() == "ERROR: duplicate key value violates unique constraint \"report_post_post_id_account_id_issue_id_idx\" (SQLSTATE 23505)" {
+		response.ErrorResponse(g, response.ErrReport)
+		return
+	}
 	response.ErrorNonKnow(g, 500, err.Error())
 }
 
@@ -275,7 +279,7 @@ func (pc *PostController) GetHomePagePost(g *gin.Context) {
 	}
 	list, err := pc.service.GetHomePagePost(g, account_id, page, pageSize)
 	if err != nil {
-		response.ErrorNonKnow(g, 500, err.Error())
+		CheckPostStringError(g, err)
 		return
 	}
 	response.SuccessResponse(g, 200, list)
@@ -308,7 +312,7 @@ func (pc *PostController) GetPostById(g *gin.Context) {
 	}
 	post, err := pc.service.GetPost(g, account_id, id)
 	if err != nil {
-		response.ErrorNonKnow(g, 404, err.Error())
+		CheckPostStringError(g, err)
 		return
 	}
 	response.SuccessResponse(g, 200, post)
