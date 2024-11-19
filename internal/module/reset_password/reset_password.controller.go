@@ -44,7 +44,7 @@ func (rc *ResetPasswordController) ForgotPassword(g *gin.Context) {
 	}
 	user, err := rc.service.ForgotPassword(g, email)
 	if err != nil {
-		response.ErrorNonKnow(g, 401, err.Error())
+		ResetPasswordErr(g, err)
 		return
 	}
 	tokenId, _ := uuid.NewRandom()
