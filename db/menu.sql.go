@@ -52,6 +52,17 @@ func (q *Queries) AddToMenu(ctx context.Context, arg AddToMenuParams) (Menu, err
 	return i, err
 }
 
+const deleteFood = `-- name: DeleteFood :exec
+Update menu 
+SET is_delete = TRUE
+WHERE id = $1
+`
+
+func (q *Queries) DeleteFood(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, deleteFood, id)
+	return err
+}
+
 const getDish = `-- name: GetDish :one
 SELECT id, dish_name, quantity, price, img 
 FROM menu
@@ -83,7 +94,7 @@ func (q *Queries) GetDish(ctx context.Context, accountID pgtype.Int8) (GetDishRo
 const getMenu = `-- name: GetMenu :many
 SELECT id, dish_name, quantity, price, img 
 FROM menu
-WHERE account_id = $1
+WHERE account_id = $1 AND is_delete != TRUE
 LIMIT $2
 OFFSET $3
 `

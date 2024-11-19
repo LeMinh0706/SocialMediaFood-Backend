@@ -29,6 +29,7 @@ type Querier interface {
 	CreateReport(ctx context.Context, arg CreateReportParams) (ReportPost, error)
 	DeleteComment(ctx context.Context, id int64) error
 	DeleteFollow(ctx context.Context, arg DeleteFollowParams) error
+	DeleteFood(ctx context.Context, id int64) error
 	DeleteImageComment(ctx context.Context, postID int64) error
 	DeleteImagePost(ctx context.Context, id int64) error
 	DeleteNoti(ctx context.Context, id int64) error
