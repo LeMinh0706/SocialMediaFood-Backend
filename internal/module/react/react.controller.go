@@ -31,7 +31,7 @@ func NewReactController(service IReactService, token token.Maker) *ReactControll
 // @Produce      json
 // @Param        request body ReactRequest true "request"
 // @Security BearerAuth
-// @Success      200  {object}  db.ReactPost
+// @Success      201  {object}  db.ReactPost
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /react [post]
 func (rc *ReactController) CreateReact(g *gin.Context) {

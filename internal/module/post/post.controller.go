@@ -35,7 +35,7 @@ func NewPostController(service IPostService, token token.Maker) *PostController 
 // @Param        lat formData string false "Lat"
 // @Param        images formData []file false "Images post"
 // @Security BearerAuth
-// @Success      200  {object}  PostResponse
+// @Success      201  {object}  PostResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /posts [post]
 func (pc *PostController) CreatePost(g *gin.Context) {

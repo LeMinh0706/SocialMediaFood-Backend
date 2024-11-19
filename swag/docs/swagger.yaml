@@ -23,6 +23,13 @@ definitions:
       user_id:
         type: integer
     type: object
+  account.EmailRequest:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
   account.UpdateNameReq:
     properties:
       fullname:
@@ -276,6 +283,22 @@ definitions:
     - account_id
     - post_id
     type: object
+  reset_password.ChangePasswordRequest:
+    properties:
+      kamehameha:
+        type: string
+      new_password:
+        minLength: 8
+        type: string
+    required:
+    - kamehameha
+    - new_password
+    type: object
+  reset_password.ResponseLink:
+    properties:
+      link:
+        type: string
+    type: object
   response.ErrSwaggerJson:
     properties:
       code:
@@ -331,6 +354,32 @@ info:
   title: Foodioo Documentations
   version: "1.0"
 paths:
+  /accounts:
+    put:
+      consumes:
+      - application/json
+      description: Add your email
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/account.EmailRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Add your email
+      tags:
+      - Accounts
   /accounts/{id}:
     get:
       consumes:
@@ -377,8 +426,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/account.AccountResponse'
         "500":
@@ -409,8 +458,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/account.AccountResponse'
         "500":
@@ -442,8 +491,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/account.AccountResponse'
         "500":
@@ -583,8 +632,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/comment.CommentResponse'
         "500":
@@ -618,8 +667,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/comment.CommentResponse'
         "500":
@@ -738,8 +787,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/follower.FollowResponse'
         "500":
@@ -808,6 +857,57 @@ paths:
       summary: Get status from your and the other
       tags:
       - Follower
+  /forgot-password/change:
+    post:
+      consumes:
+      - application/json
+      description: Notthing to say
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/reset_password.ChangePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/reset_password.ResponseLink'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Request link
+      tags:
+      - ResetPassword
+  /forgot-password/request:
+    post:
+      consumes:
+      - application/json
+      description: Mong chờ gì hơn ở chỗ này, chỉ cần nhập email thôi
+      parameters:
+      - description: Your email
+        in: query
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/reset_password.ResponseLink'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Request link
+      tags:
+      - ResetPassword
   /posts:
     get:
       consumes:
@@ -876,8 +976,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/post.PostResponse'
         "500":
@@ -1087,8 +1187,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/db.ReactPost'
         "500":
@@ -1278,7 +1378,7 @@ paths:
       summary: Login user
       tags:
       - Users
-  /users/refesh:
+  /users/refresh:
     post:
       consumes:
       - application/json

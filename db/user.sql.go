@@ -11,6 +11,21 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const addEmail = `-- name: AddEmail :exec
+UPDATE users SET email = $2
+WHERE id = $1
+`
+
+type AddEmailParams struct {
+	ID    int64       `json:"id"`
+	Email pgtype.Text `json:"email"`
+}
+
+func (q *Queries) AddEmail(ctx context.Context, arg AddEmailParams) error {
+	_, err := q.db.Exec(ctx, addEmail, arg.ID, arg.Email)
+	return err
+}
+
 const login = `-- name: Login :one
 SELECT id, username, hash_password FROM users
 WHERE username = $1
@@ -61,28 +76,5 @@ func (q *Queries) Register(ctx context.Context, arg RegisterParams) (RegisterRow
 		&i.Email,
 		&i.CreatedAt,
 	)
-	return i, err
-}
-
-const updatePassword = `-- name: UpdatePassword :one
-UPDATE users SET hash_password = $2
-WHERE id = $1 
-RETURNING id, created_at
-`
-
-type UpdatePasswordParams struct {
-	ID           int64  `json:"id"`
-	HashPassword string `json:"hash_password"`
-}
-
-type UpdatePasswordRow struct {
-	ID        int64              `json:"id"`
-	CreatedAt pgtype.Timestamptz `json:"created_at"`
-}
-
-func (q *Queries) UpdatePassword(ctx context.Context, arg UpdatePasswordParams) (UpdatePasswordRow, error) {
-	row := q.db.QueryRow(ctx, updatePassword, arg.ID, arg.HashPassword)
-	var i UpdatePasswordRow
-	err := row.Scan(&i.ID, &i.CreatedAt)
 	return i, err
 }

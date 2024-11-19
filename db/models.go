@@ -69,11 +69,11 @@ type Locate struct {
 
 type Menu struct {
 	ID        int64          `json:"id"`
-	AccountID pgtype.Int8    `json:"account_id"`
-	DishName  pgtype.Text    `json:"dish_name"`
-	Quantity  pgtype.Int4    `json:"quantity"`
+	AccountID int64          `json:"account_id"`
+	DishName  string         `json:"dish_name"`
+	Quantity  int32          `json:"quantity"`
 	Price     pgtype.Numeric `json:"price"`
-	Img       pgtype.Text    `json:"img"`
+	Img       string         `json:"img"`
 	IsDelete  bool           `json:"is_delete"`
 }
 
@@ -134,6 +134,13 @@ type ReportPost struct {
 	IssueID   int32              `json:"issue_id"`
 	PostID    int64              `json:"post_id"`
 	CreatedAt pgtype.Timestamptz `json:"created_at"`
+}
+
+type ResetPassword struct {
+	ID        pgtype.UUID        `json:"id"`
+	UserID    int64              `json:"user_id"`
+	ExpiresAt pgtype.Timestamptz `json:"expires_at"`
+	IsActive  bool               `json:"is_active"`
 }
 
 type Role struct {

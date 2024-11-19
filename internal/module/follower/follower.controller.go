@@ -31,7 +31,7 @@ func NewFollowerController(service IFollowerService, token token.Maker) *Followe
 // @Produce      json
 // @Param        request body CreateFollowRequest true "request"
 // @Security BearerAuth
-// @Success      200  {object}  FollowResponse
+// @Success      201  {object}  FollowResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /follower [post]
 func (fc *FollowerController) FollowRequest(g *gin.Context) {

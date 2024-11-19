@@ -18,6 +18,7 @@ type Config struct {
 	MinConns            int32         `mapstructure:"MIN_CONNS"`
 	MaxConnIdleTime     time.Duration `mapstructure:"MAX_CONN_IDLE_TIME"`
 	MaxConnLifetime     time.Duration `mapstructure:"MAX_CONN_LIFE_TIME"`
+	FrontEndUrl         string        `mapstructure:"FRONTEND_URL"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

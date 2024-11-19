@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 type JWTMaker struct {
@@ -12,8 +13,9 @@ type JWTMaker struct {
 }
 
 // CreateToken implements Maker.
-func (j JWTMaker) CreateToken(user_id int64, username string, duration time.Duration) (string, error) {
-	payload, err := NewPayload(user_id, username, duration)
+func (j JWTMaker) CreateToken(tokenId uuid.UUID, user_id int64, username string, duration time.Duration) (string, error) {
+
+	payload, err := NewPayload(tokenId, user_id, username, duration)
 	if err != nil {
 		return "", err
 	}
