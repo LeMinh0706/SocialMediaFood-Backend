@@ -16,7 +16,7 @@ WHERE account_id = $1
 LIMIT 1;
 
 -- name: GetMenu :many
-SELECT id, dish_name, quantity, price, img 
+SELECT *
 FROM menu
 WHERE account_id = $1 AND is_delete != TRUE
 LIMIT $2

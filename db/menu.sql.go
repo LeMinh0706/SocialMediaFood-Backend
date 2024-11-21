@@ -92,7 +92,7 @@ func (q *Queries) GetDish(ctx context.Context, accountID int64) (GetDishRow, err
 }
 
 const getMenu = `-- name: GetMenu :many
-SELECT id, dish_name, quantity, price, img 
+SELECT id, account_id, dish_name, quantity, price, img, is_delete
 FROM menu
 WHERE account_id = $1 AND is_delete != TRUE
 LIMIT $2
@@ -105,29 +105,23 @@ type GetMenuParams struct {
 	Offset    int32 `json:"offset"`
 }
 
-type GetMenuRow struct {
-	ID       int64          `json:"id"`
-	DishName string         `json:"dish_name"`
-	Quantity int32          `json:"quantity"`
-	Price    pgtype.Numeric `json:"price"`
-	Img      string         `json:"img"`
-}
-
-func (q *Queries) GetMenu(ctx context.Context, arg GetMenuParams) ([]GetMenuRow, error) {
+func (q *Queries) GetMenu(ctx context.Context, arg GetMenuParams) ([]Menu, error) {
 	rows, err := q.db.Query(ctx, getMenu, arg.AccountID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetMenuRow{}
+	items := []Menu{}
 	for rows.Next() {
-		var i GetMenuRow
+		var i Menu
 		if err := rows.Scan(
 			&i.ID,
+			&i.AccountID,
 			&i.DishName,
 			&i.Quantity,
 			&i.Price,
 			&i.Img,
+			&i.IsDelete,
 		); err != nil {
 			return nil, err
 		}

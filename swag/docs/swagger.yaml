@@ -204,6 +204,36 @@ definitions:
       total:
         type: integer
     type: object
+  menu.AddFood:
+    properties:
+      account_id:
+        type: integer
+      dish_name:
+        type: string
+      img:
+        type: string
+      price:
+        type: number
+      quantity:
+        type: integer
+    type: object
+  menu.MenuResponse:
+    properties:
+      account_id:
+        type: integer
+      dish_name:
+        type: string
+      id:
+        type: integer
+      img:
+        type: string
+      is_delete:
+        type: boolean
+      price:
+        type: number
+      quantity:
+        type: integer
+    type: object
   post.PostResponse:
     properties:
       account:
@@ -908,6 +938,65 @@ paths:
       summary: Request link
       tags:
       - ResetPassword
+  /menu:
+    get:
+      consumes:
+      - application/json
+      description: Add food
+      parameters:
+      - description: AccountID
+        in: query
+        name: account_id
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/menu.MenuResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Add food
+      tags:
+      - Menu
+    post:
+      consumes:
+      - application/json
+      description: Add food
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/menu.AddFood'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/menu.MenuResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Add food
+      tags:
+      - Menu
   /posts:
     get:
       consumes:
@@ -1401,7 +1490,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrSwaggerJson'
-      summary: Register user
+      summary: Refresh token for user
       tags:
       - Users
   /users/register:

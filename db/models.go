@@ -149,15 +149,15 @@ type Role struct {
 }
 
 type RolePermission struct {
-	ID           int32       `json:"id"`
-	PerID        pgtype.Int4 `json:"per_id"`
-	RoleID       pgtype.Int4 `json:"role_id"`
-	CanSelectAll bool        `json:"can_select_all"`
-	CanSelect    bool        `json:"can_select"`
-	CanInsert    bool        `json:"can_insert"`
-	CanUpdate    bool        `json:"can_update"`
-	CanDelete    bool        `json:"can_delete"`
-	CanDoAll     bool        `json:"can_do_all"`
+	ID           int32 `json:"id"`
+	PerID        int32 `json:"per_id"`
+	RoleID       int32 `json:"role_id"`
+	CanSelectAll bool  `json:"can_select_all"`
+	CanSelect    bool  `json:"can_select"`
+	CanInsert    bool  `json:"can_insert"`
+	CanUpdate    bool  `json:"can_update"`
+	CanDelete    bool  `json:"can_delete"`
+	CanDoAll     bool  `json:"can_do_all"`
 }
 
 type Status struct {

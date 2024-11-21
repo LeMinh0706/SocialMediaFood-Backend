@@ -7,7 +7,7 @@ import (
 )
 
 type IMenuService interface {
-	CreateDish(ctx context.Context, arg db.AddToMenuParams) (db.Menu, error)
-	GetMenu(ctx context.Context, arg db.GetMenuParams) ([]db.GetMenuRow, error)
+	CreateDish(ctx context.Context, account_id int64, quantity int32, name, img string, price float64) (db.Menu, error)
+	GetMenu(ctx context.Context, account_id int64, page, pageSize int32) ([]db.Menu, error)
 	DeleteFood(ctx context.Context, id int64) error
 }

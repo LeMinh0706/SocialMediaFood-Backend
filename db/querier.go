@@ -57,7 +57,7 @@ type Querier interface {
 	GetListPost(ctx context.Context, arg GetListPostParams) ([]int64, error)
 	GetListReact(ctx context.Context, arg GetListReactParams) ([]int64, error)
 	GetLocation(ctx context.Context, accountID int64) ([]GetLocationRow, error)
-	GetMenu(ctx context.Context, arg GetMenuParams) ([]GetMenuRow, error)
+	GetMenu(ctx context.Context, arg GetMenuParams) ([]Menu, error)
 	GetNotification(ctx context.Context, accountID int64) (Notification, error)
 	GetPersonPost(ctx context.Context, arg GetPersonPostParams) ([]int64, error)
 	GetPost(ctx context.Context, id int64) (GetPostRow, error)

@@ -18,8 +18,8 @@ type ResetPasswordController struct {
 	token   token.Maker
 }
 
-func NewResetPasswordController(s IResetPasswordService, c util.Config, t token.Maker) ResetPasswordController {
-	return ResetPasswordController{
+func NewResetPasswordController(s IResetPasswordService, c util.Config, t token.Maker) *ResetPasswordController {
+	return &ResetPasswordController{
 		service: s,
 		config:  c,
 		token:   t,
