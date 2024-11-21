@@ -9,6 +9,7 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/comment"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/follower"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/menu"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/notification"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/react"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/report"
@@ -39,6 +40,7 @@ func (s *Server) NewRouter() {
 		report.NewReportRouter(s.Router, a, fac.ReportService, s.TokenMaker)
 		reset_password.NewResetPasswordRouter(s.Router, a, fac.ResetPasswordService, s.Config, s.RefeshMaker)
 		menu.NewMenuRouter(s.Router, a, fac.MenuService, s.TokenMaker)
+		notification.NewNotificationRouter(s.Router, a, fac.NotificationService, s.TokenMaker)
 	}
 
 	s.Router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

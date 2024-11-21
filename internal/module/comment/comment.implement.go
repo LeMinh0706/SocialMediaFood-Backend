@@ -5,6 +5,7 @@ import (
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/account"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/notification"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
 	"github.com/jackc/pgx/v5/pgtype"
 )
@@ -13,6 +14,7 @@ type CommentService struct {
 	queries *db.Queries
 	post    post.IPostService
 	account account.IAccountService
+	noti    notification.INotificationService
 }
 
 // Backup implements ICommentService.
@@ -23,7 +25,7 @@ func (c *CommentService) Backup(ctx context.Context) {
 // CreateComment implements ICommentService.
 func (c *CommentService) CreateComment(ctx context.Context, account_id int64, user_id int64, post_top_id int64, description string, image string) (CommentResponse, error) {
 	var res CommentResponse
-	_, err := c.post.GetPost(ctx, account_id, post_top_id)
+	p, err := c.post.GetPost(ctx, account_id, post_top_id)
 	if err != nil {
 		return res, err
 	}
@@ -49,7 +51,12 @@ func (c *CommentService) CreateComment(ctx context.Context, account_id int64, us
 			return res, err
 		}
 	}
+	if p.AccountID != account_id {
+		c.noti.CreatePostNotification(ctx, p.AccountID, account_id, post_top_id, 1)
+	}
+
 	res = CommentRes(comment, img, acc)
+
 	return res, nil
 }
 
@@ -146,10 +153,11 @@ func (c *CommentService) UpdateComment(ctx context.Context, user_id int64, id in
 	return res, nil
 }
 
-func NewCommentService(queries *db.Queries, ps post.IPostService, as account.IAccountService) ICommentService {
+func NewCommentService(queries *db.Queries, ps post.IPostService, as account.IAccountService, ns notification.INotificationService) ICommentService {
 	return &CommentService{
 		queries: queries,
 		account: as,
 		post:    ps,
+		noti:    ns,
 	}
 }

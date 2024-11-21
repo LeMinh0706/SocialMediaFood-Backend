@@ -6,6 +6,7 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/comment"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/follower"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/menu"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/notification"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/react"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/report"
@@ -24,6 +25,7 @@ type Factory struct {
 	ReportService        report.IReportService
 	ResetPasswordService reset_password.IResetPasswordService
 	MenuService          menu.IMenuService
+	NotificationService  notification.INotificationService
 }
 
 // Đang sửa lại thành cấu trúc cũ thì thành như này
@@ -39,8 +41,9 @@ func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
 	userService := user.NewUserService(q, store)
 	accountService := account.NewAccountService(q)
 	postService := post.NewPostService(q, accountService)
-	commentService := comment.NewCommentService(q, postService, accountService)
-	reactService := react.NewReactService(q, accountService, postService)
+	notificationService := notification.NewNotificationService(q, accountService)
+	commentService := comment.NewCommentService(q, postService, accountService, notificationService)
+	reactService := react.NewReactService(q, accountService, postService, notificationService)
 	followService := follower.NewFollowerService(q, accountService)
 	reportService := report.NewReportService(q, accountService)
 	resetService := reset_password.NewResetPasswordService(q)
@@ -57,5 +60,6 @@ func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
 		ReportService:        reportService,
 		ResetPasswordService: resetService,
 		MenuService:          menuService,
+		NotificationService:  notificationService,
 	}, nil
 }
