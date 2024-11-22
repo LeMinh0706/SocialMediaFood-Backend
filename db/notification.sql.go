@@ -105,9 +105,13 @@ func (q *Queries) DeleteNoti(ctx context.Context, id int64) error {
 }
 
 const getListNoti = `-- name: GetListNoti :many
-SELECT id FROM notification
-WHERE account_id = $1
-ORDER BY id DESC
+SELECT id, user_action_id, created_at FROM (
+    SELECT DISTINCT ON (n.post_id, n.type_id) id, user_action_id, created_at
+    FROM notification n
+    WHERE n.account_id = $1
+    ORDER BY n.post_id, n.type_id, n.created_at DESC
+) sub
+ORDER BY sub.created_at DESC
 LIMIT $2
 OFFSET $3
 `
@@ -118,19 +122,25 @@ type GetListNotiParams struct {
 	Offset    int32 `json:"offset"`
 }
 
-func (q *Queries) GetListNoti(ctx context.Context, arg GetListNotiParams) ([]int64, error) {
+type GetListNotiRow struct {
+	ID           int64              `json:"id"`
+	UserActionID int64              `json:"user_action_id"`
+	CreatedAt    pgtype.Timestamptz `json:"created_at"`
+}
+
+func (q *Queries) GetListNoti(ctx context.Context, arg GetListNotiParams) ([]GetListNotiRow, error) {
 	rows, err := q.db.Query(ctx, getListNoti, arg.AccountID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []int64{}
+	items := []GetListNotiRow{}
 	for rows.Next() {
-		var id int64
-		if err := rows.Scan(&id); err != nil {
+		var i GetListNotiRow
+		if err := rows.Scan(&i.ID, &i.UserActionID, &i.CreatedAt); err != nil {
 			return nil, err
 		}
-		items = append(items, id)
+		items = append(items, i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -140,12 +150,11 @@ func (q *Queries) GetListNoti(ctx context.Context, arg GetListNotiParams) ([]int
 
 const getNotification = `-- name: GetNotification :one
 SELECT id, message, account_id, type_id, post_id, user_action_id, invoice_id, is_seen, created_at FROM notification
-WHERE account_id = $1
-LIMIT 1
+WHERE id = $1
 `
 
-func (q *Queries) GetNotification(ctx context.Context, accountID int64) (Notification, error) {
-	row := q.db.QueryRow(ctx, getNotification, accountID)
+func (q *Queries) GetNotification(ctx context.Context, id int64) (Notification, error) {
+	row := q.db.QueryRow(ctx, getNotification, id)
 	var i Notification
 	err := row.Scan(
 		&i.ID,

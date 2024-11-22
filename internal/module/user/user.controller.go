@@ -6,6 +6,7 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type UserController struct {
@@ -53,12 +54,15 @@ func (uc *UserController) Login(g *gin.Context) {
 		response.ErrorNonKnow(g, 404, err.Error())
 		return
 	}
-	token, err := uc.token.CreateToken(user.ID, user.Username, uc.config.AccessTokenDuration)
+	tokenId, _ := uuid.NewRandom()
+
+	token, err := uc.token.CreateToken(tokenId, user.ID, user.Username, uc.config.AccessTokenDuration)
 	if err != nil {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return
 	}
-	refesh, err := uc.refesh.CreateToken(user.ID, user.Username, uc.config.RefeshTokenDuration)
+	refreshId, _ := uuid.NewRandom()
+	refesh, err := uc.refesh.CreateToken(refreshId, user.ID, user.Username, uc.config.RefeshTokenDuration)
 	if err != nil {
 		response.ErrorNonKnow(g, 500, err.Error())
 	}
@@ -103,7 +107,7 @@ func (uc *UserController) RegisterTx(g *gin.Context) {
 }
 
 // User godoc
-// @Summary      Register user
+// @Summary      Refresh token for user
 // @Description  Join with us
 // @Tags         Users
 // @Accept       json
@@ -111,7 +115,7 @@ func (uc *UserController) RegisterTx(g *gin.Context) {
 // @Param        request body AccessRequest true "request"
 // @Success      200  {object}  RegisterResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
-// @Router       /users/refesh [post]
+// @Router       /users/refresh [post]
 func (uc *UserController) RefeshToken(g *gin.Context) {
 	var req AccessRequest
 	if err := g.ShouldBindJSON(&req); err != nil {
@@ -123,7 +127,9 @@ func (uc *UserController) RefeshToken(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrTokenInvalid)
 		return
 	}
-	token, err := uc.token.CreateToken(payload.UserId, payload.Username, uc.config.AccessTokenDuration)
+	tokenId, _ := uuid.NewRandom()
+
+	token, err := uc.token.CreateToken(tokenId, payload.UserId, payload.Username, uc.config.AccessTokenDuration)
 	if err != nil {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return

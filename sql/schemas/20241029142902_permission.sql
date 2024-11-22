@@ -7,8 +7,8 @@ CREATE TABLE "permissions" (
 
 CREATE TABLE "role_permission" (
   "id" serial PRIMARY KEY,
-  "per_id" int,
-  "role_id" int,
+  "per_id" int NOT NULL,
+  "role_id" int NOT NULL,
   "can_select_all" bool NOT NULL DEFAULT false,
   "can_select" bool NOT NULL DEFAULT false,
   "can_insert" bool NOT NULL DEFAULT false,

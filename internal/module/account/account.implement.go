@@ -12,6 +12,18 @@ type AccountService struct {
 	queries *db.Queries
 }
 
+// AddEmail implements IAccountService.
+func (a *AccountService) AddEmail(ctx context.Context, id int64, email string) error {
+	err := a.queries.AddEmail(ctx, db.AddEmailParams{
+		ID:    id,
+		Email: pgtype.Text{String: email, Valid: true},
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // SearchingAccount implements IAccountService.
 func (a *AccountService) SearchingAccount(ctx context.Context, searching string, page int32, pageSize int32) ([]db.SearchingAccountsRow, error) {
 	result, err := a.queries.SearchingAccounts(ctx, db.SearchingAccountsParams{

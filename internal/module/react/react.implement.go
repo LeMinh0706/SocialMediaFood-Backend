@@ -6,6 +6,7 @@ import (
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/account"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/notification"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
 	"github.com/jackc/pgx/v5"
 )
@@ -14,6 +15,7 @@ type ReactService struct {
 	queries *db.Queries
 	account account.IAccountService
 	post    post.IPostService
+	noti    notification.INotificationService
 }
 
 // Backup implements IReactService.
@@ -53,7 +55,7 @@ func (r *ReactService) CreateReact(ctx context.Context, user_id int64, account_i
 	if err != nil {
 		return res, err
 	}
-	_, err = r.post.GetPost(ctx, account_id, post_id)
+	p, err := r.post.GetPost(ctx, account_id, post_id)
 	if err != nil {
 		return res, err
 	}
@@ -65,6 +67,10 @@ func (r *ReactService) CreateReact(ctx context.Context, user_id int64, account_i
 	if err != nil {
 		return res, err
 	}
+	if p.AccountID != account_id {
+		r.noti.CreatePostNotification(ctx, p.AccountID, account_id, post_id, 2)
+	}
+
 	return react, err
 }
 
@@ -138,10 +144,11 @@ func (r *ReactService) UnReaction(ctx context.Context, user_id int64, account_id
 	return nil
 }
 
-func NewReactService(queries *db.Queries, acc account.IAccountService, post post.IPostService) IReactService {
+func NewReactService(queries *db.Queries, acc account.IAccountService, post post.IPostService, ns notification.INotificationService) IReactService {
 	return &ReactService{
 		queries: queries,
 		account: acc,
 		post:    post,
+		noti:    ns,
 	}
 }

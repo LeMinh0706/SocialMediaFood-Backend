@@ -35,7 +35,7 @@ func NewPostController(service IPostService, token token.Maker) *PostController 
 // @Param        lat formData string false "Lat"
 // @Param        images formData []file false "Images post"
 // @Security BearerAuth
-// @Success      200  {object}  PostResponse
+// @Success      201  {object}  PostResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /posts [post]
 func (pc *PostController) CreatePost(g *gin.Context) {
@@ -145,10 +145,11 @@ func (pc *PostController) GetPersonPost(g *gin.Context) {
 // @Summary      Update post
 // @Description  Just update content post
 // @Tags         Posts
-// @Accept       json
+// @Accept       multipart/form-data
 // @Produce      json
 // @Param        id path int true "ID"
 // @Param        description formData string false "Description"
+// @Param        images formData []file false "Images post"
 // @Security BearerAuth
 // @Success      201  {object} 	PostResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
@@ -162,7 +163,22 @@ func (pc *PostController) UpdateContentPost(g *gin.Context) {
 		return
 	}
 	description := g.PostForm("description")
-	update, err := pc.service.UpdateContentPost(g, description, id, auth.UserId)
+
+	form, err := g.MultipartForm()
+	if err != nil {
+		response.ErrorResponse(g, 40000)
+		return
+	}
+
+	files := form.File["images"]
+
+	images, code := AddImageFileError(g, 4, files)
+	if code > 40000 {
+		response.ErrorResponse(g, code)
+		return
+	}
+
+	update, err := pc.service.UpdateContentPost(g, description, id, auth.UserId, images)
 	if err != nil {
 		CheckPostStringError(g, err)
 		return

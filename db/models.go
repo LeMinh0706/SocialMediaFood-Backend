@@ -69,11 +69,11 @@ type Locate struct {
 
 type Menu struct {
 	ID        int64          `json:"id"`
-	AccountID pgtype.Int8    `json:"account_id"`
-	DishName  pgtype.Text    `json:"dish_name"`
-	Quantity  pgtype.Int4    `json:"quantity"`
+	AccountID int64          `json:"account_id"`
+	DishName  string         `json:"dish_name"`
+	Quantity  int32          `json:"quantity"`
 	Price     pgtype.Numeric `json:"price"`
-	Img       pgtype.Text    `json:"img"`
+	Img       string         `json:"img"`
 	IsDelete  bool           `json:"is_delete"`
 }
 
@@ -136,21 +136,28 @@ type ReportPost struct {
 	CreatedAt pgtype.Timestamptz `json:"created_at"`
 }
 
+type ResetPassword struct {
+	ID        pgtype.UUID        `json:"id"`
+	UserID    int64              `json:"user_id"`
+	ExpiresAt pgtype.Timestamptz `json:"expires_at"`
+	IsActive  bool               `json:"is_active"`
+}
+
 type Role struct {
 	ID   int32       `json:"id"`
 	Name pgtype.Text `json:"name"`
 }
 
 type RolePermission struct {
-	ID           int32       `json:"id"`
-	PerID        pgtype.Int4 `json:"per_id"`
-	RoleID       pgtype.Int4 `json:"role_id"`
-	CanSelectAll bool        `json:"can_select_all"`
-	CanSelect    bool        `json:"can_select"`
-	CanInsert    bool        `json:"can_insert"`
-	CanUpdate    bool        `json:"can_update"`
-	CanDelete    bool        `json:"can_delete"`
-	CanDoAll     bool        `json:"can_do_all"`
+	ID           int32 `json:"id"`
+	PerID        int32 `json:"per_id"`
+	RoleID       int32 `json:"role_id"`
+	CanSelectAll bool  `json:"can_select_all"`
+	CanSelect    bool  `json:"can_select"`
+	CanInsert    bool  `json:"can_insert"`
+	CanUpdate    bool  `json:"can_update"`
+	CanDelete    bool  `json:"can_delete"`
+	CanDoAll     bool  `json:"can_do_all"`
 }
 
 type Status struct {

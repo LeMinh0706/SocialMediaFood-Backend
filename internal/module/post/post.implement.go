@@ -222,7 +222,7 @@ func (p *PostService) GetPost(ctx context.Context, account_id int64, id int64) (
 }
 
 // UpdateContentPost implements IPostService.
-func (p *PostService) UpdateContentPost(ctx context.Context, desciption string, id int64, user_id int64) (PostResponse, error) {
+func (p *PostService) UpdateContentPost(ctx context.Context, desciption string, id int64, user_id int64, images []string) (PostResponse, error) {
 	var res PostResponse
 	post, err := p.GetPost(ctx, 0, id)
 	if err != nil {
@@ -232,6 +232,11 @@ func (p *PostService) UpdateContentPost(ctx context.Context, desciption string, 
 	if err != nil {
 		return res, err
 	}
+
+	for _, element := range images {
+		p.queries.AddImagePost(ctx, db.AddImagePostParams{PostID: post.ID, UrlImage: element})
+	}
+
 	update, err := p.queries.UpdatePost(ctx, db.UpdatePostParams{
 		ID:          id,
 		Description: ConvertDescription(desciption),
@@ -240,7 +245,10 @@ func (p *PostService) UpdateContentPost(ctx context.Context, desciption string, 
 	if err != nil {
 		return res, err
 	}
-	res = PostRes(db.CreatePostRow(update), acc, post.Images, post.ReactState, post.TotalLike, post.TotalComment)
+
+	pic, _ := p.queries.GetImagePost(ctx, id)
+
+	res = PostRes(db.CreatePostRow(update), acc, pic, post.ReactState, post.TotalLike, post.TotalComment)
 	return res, nil
 }
 

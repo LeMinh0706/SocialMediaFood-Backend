@@ -2,11 +2,11 @@
 -- +goose StatementBegin
 CREATE TABLE "menu" (
   "id" bigserial PRIMARY KEY,
-  "account_id" bigint,
-  "dish_name" varchar,
-  "quantity" int,
-  "price" numeric(11, 2),
-  "img" varchar,
+  "account_id" bigint NOT NULL,
+  "dish_name" varchar NOT NULL,
+  "quantity" int NOT NULL,
+  "price" DECIMAL(12, 3) NOT NULL,
+  "img" varchar NOT NULL,
   "is_delete" bool NOT NULL DEFAULT false
 );
 CREATE INDEX ON "menu" ("account_id");

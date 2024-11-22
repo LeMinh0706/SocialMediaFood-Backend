@@ -23,6 +23,13 @@ definitions:
       user_id:
         type: integer
     type: object
+  account.EmailRequest:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
   account.UpdateNameReq:
     properties:
       fullname:
@@ -136,6 +143,21 @@ definitions:
     - password
     - username
     type: object
+  db.SearchingAccountsRow:
+    properties:
+      fullname:
+        type: string
+      id:
+        type: integer
+      role_id:
+        type: integer
+      url_avatar:
+        type: string
+      url_background_profile:
+        type: string
+      user_id:
+        type: integer
+    type: object
   db.UpdateFriendParams:
     properties:
       from_follow:
@@ -180,6 +202,36 @@ definitions:
           $ref: '#/definitions/db.GetAccountByIdRow'
         type: array
       total:
+        type: integer
+    type: object
+  menu.AddFood:
+    properties:
+      account_id:
+        type: integer
+      dish_name:
+        type: string
+      img:
+        type: string
+      price:
+        type: number
+      quantity:
+        type: integer
+    type: object
+  menu.MenuResponse:
+    properties:
+      account_id:
+        type: integer
+      dish_name:
+        type: string
+      id:
+        type: integer
+      img:
+        type: string
+      is_delete:
+        type: boolean
+      price:
+        type: number
+      quantity:
         type: integer
     type: object
   post.PostResponse:
@@ -261,6 +313,22 @@ definitions:
     - account_id
     - post_id
     type: object
+  reset_password.ChangePasswordRequest:
+    properties:
+      kamehameha:
+        type: string
+      new_password:
+        minLength: 8
+        type: string
+    required:
+    - kamehameha
+    - new_password
+    type: object
+  reset_password.ResponseLink:
+    properties:
+      link:
+        type: string
+    type: object
   response.ErrSwaggerJson:
     properties:
       code:
@@ -316,6 +384,32 @@ info:
   title: Foodioo Documentations
   version: "1.0"
 paths:
+  /accounts:
+    put:
+      consumes:
+      - application/json
+      description: Add your email
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/account.EmailRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Add your email
+      tags:
+      - Accounts
   /accounts/{id}:
     get:
       consumes:
@@ -362,8 +456,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/account.AccountResponse'
         "500":
@@ -394,8 +488,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/account.AccountResponse'
         "500":
@@ -427,8 +521,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/account.AccountResponse'
         "500":
@@ -461,6 +555,45 @@ paths:
       security:
       - BearerAuth: []
       summary: It's you
+      tags:
+      - Accounts
+  /accounts/searching:
+    get:
+      consumes:
+      - application/json
+      description: To see the account, searching account
+      parameters:
+      - description: Who you want to search
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/db.SearchingAccountsRow'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Profile api
       tags:
       - Accounts
   /comments:
@@ -529,8 +662,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/comment.CommentResponse'
         "500":
@@ -564,8 +697,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/comment.CommentResponse'
         "500":
@@ -684,8 +817,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/follower.FollowResponse'
         "500":
@@ -754,6 +887,116 @@ paths:
       summary: Get status from your and the other
       tags:
       - Follower
+  /forgot-password/change:
+    post:
+      consumes:
+      - application/json
+      description: Notthing to say
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/reset_password.ChangePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/reset_password.ResponseLink'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Request link
+      tags:
+      - ResetPassword
+  /forgot-password/request:
+    post:
+      consumes:
+      - application/json
+      description: Mong chờ gì hơn ở chỗ này, chỉ cần nhập email thôi
+      parameters:
+      - description: Your email
+        in: query
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/reset_password.ResponseLink'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Request link
+      tags:
+      - ResetPassword
+  /menu:
+    get:
+      consumes:
+      - application/json
+      description: Add food
+      parameters:
+      - description: AccountID
+        in: query
+        name: account_id
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/menu.MenuResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Add food
+      tags:
+      - Menu
+    post:
+      consumes:
+      - application/json
+      description: Add food
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/menu.AddFood'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/menu.MenuResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Add food
+      tags:
+      - Menu
   /posts:
     get:
       consumes:
@@ -822,8 +1065,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/post.PostResponse'
         "500":
@@ -871,7 +1114,7 @@ paths:
       - Posts
     put:
       consumes:
-      - application/json
+      - multipart/form-data
       description: Just update content post
       parameters:
       - description: ID
@@ -883,6 +1126,13 @@ paths:
         in: formData
         name: description
         type: string
+      - collectionFormat: csv
+        description: Images post
+        in: formData
+        items:
+          type: file
+        name: images
+        type: array
       produces:
       - application/json
       responses:
@@ -1033,8 +1283,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/db.ReactPost'
         "500":
@@ -1224,7 +1474,7 @@ paths:
       summary: Login user
       tags:
       - Users
-  /users/refesh:
+  /users/refresh:
     post:
       consumes:
       - application/json
@@ -1247,7 +1497,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrSwaggerJson'
-      summary: Register user
+      summary: Refresh token for user
       tags:
       - Users
   /users/register:

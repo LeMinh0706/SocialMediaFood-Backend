@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/aead/chacha20poly1305"
+	"github.com/google/uuid"
 	"github.com/o1egl/paseto"
 )
 
@@ -13,8 +14,8 @@ type PasetoMaker struct {
 }
 
 // CreateToken implements Maker.
-func (p *PasetoMaker) CreateToken(user_id int64, username string, duration time.Duration) (string, error) {
-	payload, err := NewPayload(user_id, username, duration)
+func (p *PasetoMaker) CreateToken(tokenId uuid.UUID, user_id int64, username string, duration time.Duration) (string, error) {
+	payload, err := NewPayload(tokenId, user_id, username, duration)
 	if err != nil {
 		return "", err
 	}

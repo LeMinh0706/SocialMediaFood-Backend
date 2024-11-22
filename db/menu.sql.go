@@ -24,11 +24,11 @@ INSERT INTO menu (
 `
 
 type AddToMenuParams struct {
-	AccountID pgtype.Int8    `json:"account_id"`
-	DishName  pgtype.Text    `json:"dish_name"`
-	Quantity  pgtype.Int4    `json:"quantity"`
+	AccountID int64          `json:"account_id"`
+	DishName  string         `json:"dish_name"`
+	Quantity  int32          `json:"quantity"`
 	Price     pgtype.Numeric `json:"price"`
-	Img       pgtype.Text    `json:"img"`
+	Img       string         `json:"img"`
 }
 
 func (q *Queries) AddToMenu(ctx context.Context, arg AddToMenuParams) (Menu, error) {
@@ -52,6 +52,17 @@ func (q *Queries) AddToMenu(ctx context.Context, arg AddToMenuParams) (Menu, err
 	return i, err
 }
 
+const deleteFood = `-- name: DeleteFood :exec
+Update menu 
+SET is_delete = TRUE
+WHERE id = $1
+`
+
+func (q *Queries) DeleteFood(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, deleteFood, id)
+	return err
+}
+
 const getDish = `-- name: GetDish :one
 SELECT id, dish_name, quantity, price, img 
 FROM menu
@@ -61,13 +72,13 @@ LIMIT 1
 
 type GetDishRow struct {
 	ID       int64          `json:"id"`
-	DishName pgtype.Text    `json:"dish_name"`
-	Quantity pgtype.Int4    `json:"quantity"`
+	DishName string         `json:"dish_name"`
+	Quantity int32          `json:"quantity"`
 	Price    pgtype.Numeric `json:"price"`
-	Img      pgtype.Text    `json:"img"`
+	Img      string         `json:"img"`
 }
 
-func (q *Queries) GetDish(ctx context.Context, accountID pgtype.Int8) (GetDishRow, error) {
+func (q *Queries) GetDish(ctx context.Context, accountID int64) (GetDishRow, error) {
 	row := q.db.QueryRow(ctx, getDish, accountID)
 	var i GetDishRow
 	err := row.Scan(
@@ -81,42 +92,36 @@ func (q *Queries) GetDish(ctx context.Context, accountID pgtype.Int8) (GetDishRo
 }
 
 const getMenu = `-- name: GetMenu :many
-SELECT id, dish_name, quantity, price, img 
+SELECT id, account_id, dish_name, quantity, price, img, is_delete
 FROM menu
-WHERE account_id = $1
+WHERE account_id = $1 AND is_delete != TRUE
 LIMIT $2
 OFFSET $3
 `
 
 type GetMenuParams struct {
-	AccountID pgtype.Int8 `json:"account_id"`
-	Limit     int32       `json:"limit"`
-	Offset    int32       `json:"offset"`
+	AccountID int64 `json:"account_id"`
+	Limit     int32 `json:"limit"`
+	Offset    int32 `json:"offset"`
 }
 
-type GetMenuRow struct {
-	ID       int64          `json:"id"`
-	DishName pgtype.Text    `json:"dish_name"`
-	Quantity pgtype.Int4    `json:"quantity"`
-	Price    pgtype.Numeric `json:"price"`
-	Img      pgtype.Text    `json:"img"`
-}
-
-func (q *Queries) GetMenu(ctx context.Context, arg GetMenuParams) ([]GetMenuRow, error) {
+func (q *Queries) GetMenu(ctx context.Context, arg GetMenuParams) ([]Menu, error) {
 	rows, err := q.db.Query(ctx, getMenu, arg.AccountID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetMenuRow{}
+	items := []Menu{}
 	for rows.Next() {
-		var i GetMenuRow
+		var i Menu
 		if err := rows.Scan(
 			&i.ID,
+			&i.AccountID,
 			&i.DishName,
 			&i.Quantity,
 			&i.Price,
 			&i.Img,
+			&i.IsDelete,
 		); err != nil {
 			return nil, err
 		}
@@ -136,8 +141,8 @@ RETURNING id, account_id, dish_name, quantity, price, img, is_delete
 `
 
 type OwnerUpdateQuanityParams struct {
-	ID       int64       `json:"id"`
-	Quantity pgtype.Int4 `json:"quantity"`
+	ID       int64 `json:"id"`
+	Quantity int32 `json:"quantity"`
 }
 
 func (q *Queries) OwnerUpdateQuanity(ctx context.Context, arg OwnerUpdateQuanityParams) (Menu, error) {
@@ -163,8 +168,8 @@ RETURNING id, account_id, dish_name, quantity, price, img, is_delete
 `
 
 type UpdateQuanityParams struct {
-	ID       int64       `json:"id"`
-	Quantity pgtype.Int4 `json:"quantity"`
+	ID       int64 `json:"id"`
+	Quantity int32 `json:"quantity"`
 }
 
 func (q *Queries) UpdateQuanity(ctx context.Context, arg UpdateQuanityParams) (Menu, error) {

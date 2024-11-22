@@ -8,6 +8,7 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5"
 )
 
 type AccountController struct {
@@ -77,7 +78,7 @@ func (ac *AccountController) GetMe(g *gin.Context) {
 // @Param        account_id formData string true "AccountID"
 // @Param        image formData file true "Avatar Account"
 // @Security BearerAuth
-// @Success      200  {object}  AccountResponse
+// @Success      201  {object}  AccountResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /accounts/avatar [put]
 func (ac *AccountController) UpdateAvatar(g *gin.Context) {
@@ -115,7 +116,7 @@ func (ac *AccountController) UpdateAvatar(g *gin.Context) {
 // @Param        account_id formData string true "AccountID"
 // @Param        image formData file true "Background account"
 // @Security BearerAuth
-// @Success      200  {object}  AccountResponse
+// @Success      201  {object}  AccountResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /accounts/background [put]
 func (ac *AccountController) UpdateBackGround(g *gin.Context) {
@@ -153,7 +154,7 @@ func (ac *AccountController) UpdateBackGround(g *gin.Context) {
 // @Param        id path int true "ID"
 // @Param        request body UpdateNameReq true "request"
 // @Security BearerAuth
-// @Success      200  {object}  AccountResponse
+// @Success      201  {object}  AccountResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /accounts/fullname/{id} [put]
 func (ac *AccountController) UpdateName(g *gin.Context) {
@@ -201,6 +202,19 @@ func (as *AccountController) AddYourLocation(g *gin.Context) {
 	response.SuccessResponse(g, 201, location)
 }
 
+// Account godoc
+// @Summary      Profile api
+// @Description  To see the account, searching account
+// @Tags         Accounts
+// @Accept       json
+// @Produce      json
+// @Param        name query string true "Who you want to search"
+// @Param        page query int true "Page"
+// @Param        page_size query int true "Page Size"
+// @Security BearerAuth
+// @Success      200  {object}  []db.SearchingAccountsRow
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /accounts/searching [get]
 func (as *AccountController) Searching(g *gin.Context) {
 	param := g.Query("name")
 	if strings.TrimSpace(param) == "" {
@@ -219,4 +233,34 @@ func (as *AccountController) Searching(g *gin.Context) {
 		return
 	}
 	response.SuccessResponse(g, 200, result)
+}
+
+// Account godoc
+// @Summary      Add your email
+// @Description  Add your email
+// @Tags         Accounts
+// @Accept       json
+// @Produce      json
+// @Param        request body EmailRequest true "request"
+// @Security BearerAuth
+// @Success      204  "No content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /accounts [put]
+func (as *AccountController) AddEmail(g *gin.Context) {
+	var req EmailRequest
+	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+	if err := g.ShouldBindJSON(&req); err != nil {
+		response.ErrorResponse(g, response.ErrEmailInvalid)
+		return
+	}
+	err := as.service.AddEmail(g, auth.UserId, req.Email)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			response.ErrorResponse(g, response.ErrNotFoundUser)
+			return
+		}
+		response.ErrorResponse(g, response.ErrEmailExists)
+		return
+	}
+	response.SuccessResponse(g, response.AddEmail, nil)
 }

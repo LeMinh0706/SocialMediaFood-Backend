@@ -16,9 +16,9 @@ WHERE account_id = $1
 LIMIT 1;
 
 -- name: GetMenu :many
-SELECT id, dish_name, quantity, price, img 
+SELECT *
 FROM menu
-WHERE account_id = $1
+WHERE account_id = $1 AND is_delete != TRUE
 LIMIT $2
 OFFSET $3;
 
@@ -33,3 +33,8 @@ UPDATE menu
 SET quantity = $2
 WHERE id = $1
 RETURNING *;
+
+-- name: DeleteFood :exec
+Update menu 
+SET is_delete = TRUE
+WHERE id = $1;

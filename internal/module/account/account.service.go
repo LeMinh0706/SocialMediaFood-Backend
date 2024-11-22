@@ -16,5 +16,6 @@ type IAccountService interface {
 	UpdateBackground(ctx context.Context, id, user_id int64, url_background string) (AccountResponse, error)
 	AddLocation(ctx context.Context, user_id, account_id int64, lng, lat string) (db.CreateOwnerBranchRow, error)
 	SearchingAccount(ctx context.Context, searching string, page, pageSize int32) ([]db.SearchingAccountsRow, error)
+	AddEmail(ctx context.Context, id int64, email string) error
 	Backup(ctx context.Context)
 }
