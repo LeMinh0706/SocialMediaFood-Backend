@@ -171,8 +171,8 @@ func (pc *PostController) UpdateContentPost(g *gin.Context) {
 	}
 
 	files := form.File["images"]
-
-	images, code := AddImageFileError(g, 4, files)
+	lenImg := pc.service.GetImage(g, id)
+	images, code := AddImageFileError(g, 4-len(lenImg), files)
 	if code > 40000 {
 		response.ErrorResponse(g, code)
 		return
