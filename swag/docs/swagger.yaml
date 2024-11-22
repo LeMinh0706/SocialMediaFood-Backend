@@ -1114,7 +1114,7 @@ paths:
       - Posts
     put:
       consumes:
-      - application/json
+      - multipart/form-data
       description: Just update content post
       parameters:
       - description: ID
@@ -1126,6 +1126,13 @@ paths:
         in: formData
         name: description
         type: string
+      - collectionFormat: csv
+        description: Images post
+        in: formData
+        items:
+          type: file
+        name: images
+        type: array
       produces:
       - application/json
       responses:

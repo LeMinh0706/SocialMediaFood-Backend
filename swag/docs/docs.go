@@ -1298,7 +1298,7 @@ const docTemplate = `{
                 ],
                 "description": "Just update content post",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -1319,6 +1319,16 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Description",
                         "name": "description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "file"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Images post",
+                        "name": "images",
                         "in": "formData"
                     }
                 ],
