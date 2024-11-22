@@ -105,10 +105,13 @@ func (q *Queries) DeleteNoti(ctx context.Context, id int64) error {
 }
 
 const getListNoti = `-- name: GetListNoti :many
-SELECT DISTINCT ON (n.post_id, n.type_id) id, user_action_id 
-FROM notification n
-WHERE n.account_id = $1
-ORDER BY n.post_id, n.type_id, n.created_at DESC
+SELECT id, user_action_id, created_at FROM (
+    SELECT DISTINCT ON (n.post_id, n.type_id) id, user_action_id, created_at
+    FROM notification n
+    WHERE n.account_id = $1
+    ORDER BY n.post_id, n.type_id, n.created_at DESC
+) sub
+ORDER BY sub.created_at DESC
 LIMIT $2
 OFFSET $3
 `
@@ -120,8 +123,9 @@ type GetListNotiParams struct {
 }
 
 type GetListNotiRow struct {
-	ID           int64 `json:"id"`
-	UserActionID int64 `json:"user_action_id"`
+	ID           int64              `json:"id"`
+	UserActionID int64              `json:"user_action_id"`
+	CreatedAt    pgtype.Timestamptz `json:"created_at"`
 }
 
 func (q *Queries) GetListNoti(ctx context.Context, arg GetListNotiParams) ([]GetListNotiRow, error) {
@@ -133,7 +137,7 @@ func (q *Queries) GetListNoti(ctx context.Context, arg GetListNotiParams) ([]Get
 	items := []GetListNotiRow{}
 	for rows.Next() {
 		var i GetListNotiRow
-		if err := rows.Scan(&i.ID, &i.UserActionID); err != nil {
+		if err := rows.Scan(&i.ID, &i.UserActionID, &i.CreatedAt); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
