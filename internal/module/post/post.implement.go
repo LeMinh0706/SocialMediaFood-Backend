@@ -16,6 +16,12 @@ type PostService struct {
 	accountService account.IAccountService
 }
 
+// GetImage implements IPostService.
+func (p *PostService) GetImage(ctx context.Context, id int64) []db.PostImage {
+	images, _ := p.queries.GetImagePost(ctx, id)
+	return images
+}
+
 // GetHomePagePost implements IPostService.
 func (p *PostService) GetHomePagePost(ctx context.Context, acoount_id int64, page int32, pageSize int32) ([]PostResponse, error) {
 	var res []PostResponse
