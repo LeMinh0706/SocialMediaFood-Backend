@@ -80,7 +80,6 @@ func ValidateRegister(g *gin.Context, err error) {
 				}
 			}
 		}
-		response.ErrorNonKnow(g, 400, err.Error())
-		return
 	}
+	response.ErrorResponse(g, 40000)
 }
