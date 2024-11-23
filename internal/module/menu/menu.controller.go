@@ -3,7 +3,7 @@ package menu
 import (
 	"strconv"
 
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/handler"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
@@ -67,7 +67,7 @@ func (m *MenuController) GetMenu(g *gin.Context) {
 	}
 	pageStr := g.Query("page")
 	pageSizeStr := g.Query("page_size")
-	page, pageSize := post.CheckQuery(g, pageStr, pageSizeStr)
+	page, pageSize := handler.CheckQuery(g, pageStr, pageSizeStr)
 	if page == 0 || pageSize == 0 {
 		return
 	}

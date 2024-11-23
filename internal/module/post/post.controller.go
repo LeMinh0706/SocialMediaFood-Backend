@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/handler"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
@@ -50,7 +51,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 	lng := g.PostForm("lng")
 	lat := g.PostForm("lat")
 
-	if !CheckValidPosition(g, lng, lat) {
+	if !handler.CheckValidPosition(g, lng, lat) {
 		return
 	}
 	form, err := g.MultipartForm()
@@ -61,7 +62,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 
 	files := form.File["images"]
 
-	images, code := AddImageFileError(g, 4, files)
+	images, code := handler.AddImageFileError(g, 4, files)
 	if code > 40000 {
 		response.ErrorResponse(g, code)
 		return
@@ -129,7 +130,7 @@ func (pc *PostController) GetPersonPost(g *gin.Context) {
 	}
 	pageStr := g.Query("page")
 	pageSizeStr := g.Query("page_size")
-	page, pageSize := CheckQuery(g, pageStr, pageSizeStr)
+	page, pageSize := handler.CheckQuery(g, pageStr, pageSizeStr)
 	if page == 0 || pageSize == 0 {
 		return
 	}
@@ -172,7 +173,7 @@ func (pc *PostController) UpdateContentPost(g *gin.Context) {
 
 	files := form.File["images"]
 	lenImg := pc.service.GetImage(g, id)
-	images, code := AddImageFileError(g, 4-len(lenImg), files)
+	images, code := handler.AddImageFileError(g, 4-len(lenImg), files)
 	if code > 40000 {
 		response.ErrorResponse(g, code)
 		return
@@ -294,7 +295,7 @@ func (pc *PostController) GetHomePagePost(g *gin.Context) {
 	}
 	pageStr := g.Query("page")
 	pageSizeStr := g.Query("page_size")
-	page, pageSize := CheckQuery(g, pageStr, pageSizeStr)
+	page, pageSize := handler.CheckQuery(g, pageStr, pageSizeStr)
 	if page == 0 || pageSize == 0 {
 		return
 	}

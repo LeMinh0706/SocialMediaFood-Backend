@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/handler"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
@@ -71,7 +72,7 @@ func (rc *ReactController) GetListReact(g *gin.Context) {
 	}
 	pageStr := g.Query("page")
 	pageSizeStr := g.Query("page_size")
-	page, pageSize := post.CheckQuery(g, pageStr, pageSizeStr)
+	page, pageSize := handler.CheckQuery(g, pageStr, pageSizeStr)
 	if page == 0 || pageSize == 0 {
 		return
 	}
