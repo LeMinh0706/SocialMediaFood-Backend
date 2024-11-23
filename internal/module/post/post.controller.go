@@ -178,6 +178,11 @@ func (pc *PostController) UpdateContentPost(g *gin.Context) {
 		return
 	}
 
+	if strings.TrimSpace(description) == "" && len(images) == 0 {
+		response.ErrorResponse(g, 40022)
+		return
+	}
+
 	update, err := pc.service.UpdateContentPost(g, description, id, auth.UserId, images)
 	if err != nil {
 		CheckPostStringError(g, err)
