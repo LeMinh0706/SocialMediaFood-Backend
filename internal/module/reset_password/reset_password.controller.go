@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/handler"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
@@ -44,13 +45,13 @@ func (rc *ResetPasswordController) ForgotPassword(g *gin.Context) {
 	}
 	user, err := rc.service.ForgotPassword(g, email)
 	if err != nil {
-		ResetPasswordErr(g, err)
+		handler.ResetPasswordErr(g, err)
 		return
 	}
 	tokenId, _ := uuid.NewRandom()
 	err = rc.service.AddRequestPassword(g, tokenId, user.ID, rc.config.AccessTokenDuration)
 	if err != nil {
-		ResetPasswordErr(g, err)
+		handler.ResetPasswordErr(g, err)
 		return
 	}
 	token, err := rc.token.CreateToken(tokenId, user.ID, user.Username, rc.config.AccessTokenDuration)
@@ -89,7 +90,7 @@ func (rc *ResetPasswordController) ChangePassword(g *gin.Context) {
 
 	err = rc.service.ChangePassword(g, payload.Id, payload.UserId, req.NewPassword)
 	if err != nil {
-		ResetPasswordErr(g, err)
+		handler.ResetPasswordErr(g, err)
 		return
 	}
 

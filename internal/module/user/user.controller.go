@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/handler"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
@@ -38,7 +39,7 @@ func NewUserController(service IUserService, config util.Config, token token.Mak
 func (uc *UserController) Login(g *gin.Context) {
 	var req LoginRequest
 	if err := g.ShouldBindJSON(&req); err != nil {
-		ValidateRegister(g, err)
+		handler.ValidateRegister(g, err)
 		return
 	}
 	user, err := uc.service.Login(g, req.Username, req.Password)
@@ -83,7 +84,7 @@ func (uc *UserController) Login(g *gin.Context) {
 func (uc *UserController) RegisterTx(g *gin.Context) {
 	var req db.RegisterRequest
 	if err := g.ShouldBindJSON(&req); err != nil {
-		ValidateRegister(g, err)
+		handler.ValidateRegister(g, err)
 		return
 	}
 	res, err := uc.service.Register(g, req)

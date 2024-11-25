@@ -12,15 +12,17 @@ import (
 const createOwnerBranch = `-- name: CreateOwnerBranch :one
 INSERT INTO locate (
     account_id,
-    location
+    location,
+    address
 ) VALUES (
-    $1, ST_GeomFromText($2,4326)
+    $1, ST_GeomFromText($2,4326), $3
 ) RETURNING id, account_id, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat
 `
 
 type CreateOwnerBranchParams struct {
 	AccountID      int64       `json:"account_id"`
 	StGeomfromtext interface{} `json:"st_geomfromtext"`
+	Address        string      `json:"address"`
 }
 
 type CreateOwnerBranchRow struct {
@@ -31,7 +33,7 @@ type CreateOwnerBranchRow struct {
 }
 
 func (q *Queries) CreateOwnerBranch(ctx context.Context, arg CreateOwnerBranchParams) (CreateOwnerBranchRow, error) {
-	row := q.db.QueryRow(ctx, createOwnerBranch, arg.AccountID, arg.StGeomfromtext)
+	row := q.db.QueryRow(ctx, createOwnerBranch, arg.AccountID, arg.StGeomfromtext, arg.Address)
 	var i CreateOwnerBranchRow
 	err := row.Scan(
 		&i.ID,

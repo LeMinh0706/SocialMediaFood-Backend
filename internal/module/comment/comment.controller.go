@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/handler"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
@@ -61,7 +62,7 @@ func (cc *CommentController) CreateComment(g *gin.Context) {
 	image, err := g.FormFile("image")
 	if err == nil {
 		var code int
-		file, code = SaveCommentImage(g, image)
+		file, code = handler.SaveImage(g, "comment", image)
 		if code >= 40000 {
 			response.ErrorResponse(g, code)
 			return
@@ -92,7 +93,7 @@ func (cc *CommentController) GetListComment(g *gin.Context) {
 	postIdStr := g.Query("post_id")
 	pageStr := g.Query("page")
 	pageSizeStr := g.Query("page_size")
-	page, pageSize := post.CheckQuery(g, pageStr, pageSizeStr)
+	page, pageSize := handler.CheckQuery(g, pageStr, pageSizeStr)
 	if page == 0 || pageSize == 0 {
 		return
 	}
@@ -140,7 +141,7 @@ func (cc *CommentController) UpdateComment(g *gin.Context) {
 	image, err := g.FormFile("image")
 	if err == nil {
 		var code int
-		file, code = SaveCommentImage(g, image)
+		file, code = handler.SaveImage(g, "comment", image)
 		if code >= 40000 {
 			response.ErrorResponse(g, code)
 			return

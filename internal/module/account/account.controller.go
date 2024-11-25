@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/handler"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
@@ -93,7 +94,7 @@ func (ac *AccountController) UpdateAvatar(g *gin.Context) {
 	image, err := g.FormFile("image")
 	if err == nil {
 		var code int
-		file, code = SaveAccountImage(g, "avatar", image)
+		file, code = handler.SaveImage(g, "avatar", image)
 		if code >= 40000 {
 			response.ErrorResponse(g, code)
 			return
@@ -131,7 +132,7 @@ func (ac *AccountController) UpdateBackGround(g *gin.Context) {
 	image, err := g.FormFile("image")
 	if err == nil {
 		var code int
-		file, code = SaveAccountImage(g, "background", image)
+		file, code = handler.SaveImage(g, "background", image)
 		if code >= 40000 {
 			response.ErrorResponse(g, code)
 			return
@@ -191,7 +192,7 @@ func (as *AccountController) AddYourLocation(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrAccountID)
 		return
 	}
-	if !CheckValidPosition(g, lng, lat) {
+	if !handler.CheckValidPosition(g, lng, lat) {
 		return
 	}
 	location, err := as.service.AddLocation(g, auth.UserId, id, lng, lat)
@@ -223,7 +224,7 @@ func (as *AccountController) Searching(g *gin.Context) {
 	}
 	pageStr := g.Query("page")
 	pageSizeStr := g.Query("page_size")
-	page, pageSize := CheckQuery(g, pageStr, pageSizeStr)
+	page, pageSize := handler.CheckQuery(g, pageStr, pageSizeStr)
 	if page == 0 || pageSize == 0 {
 		return
 	}

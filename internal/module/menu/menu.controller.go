@@ -3,7 +3,7 @@ package menu
 import (
 	"strconv"
 
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/handler"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
@@ -52,14 +52,14 @@ func (m *MenuController) CreateNewFood(g *gin.Context) {
 // @Tags         Menu
 // @Accept       json
 // @Produce      json
-// @Param        account_id query int false "AccountID"
+// @Param        id path int true "ID"
 // @Param        page query int true "Page"
 // @Param        page_size query int true "Page Size"
 // @Success      201  {object}  MenuResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
-// @Router       /menu [get]
+// @Router       /menu/{id} [get]
 func (m *MenuController) GetMenu(g *gin.Context) {
-	accStr := g.Query("account_id")
+	accStr := g.Param("id")
 	account_id, err := strconv.ParseInt(accStr, 10, 64)
 	if err != nil {
 		response.ErrorResponse(g, 40004)
@@ -67,7 +67,7 @@ func (m *MenuController) GetMenu(g *gin.Context) {
 	}
 	pageStr := g.Query("page")
 	pageSizeStr := g.Query("page_size")
-	page, pageSize := post.CheckQuery(g, pageStr, pageSizeStr)
+	page, pageSize := handler.CheckQuery(g, pageStr, pageSizeStr)
 	if page == 0 || pageSize == 0 {
 		return
 	}

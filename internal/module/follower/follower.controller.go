@@ -4,8 +4,8 @@ import (
 	"strconv"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/handler"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
@@ -43,7 +43,7 @@ func (fc *FollowerController) FollowRequest(g *gin.Context) {
 	}
 	follower, err := fc.service.FollowRequest(g, auth.UserId, req.FromID, req.ToID)
 	if err != nil {
-		FollowErr(g, err)
+		handler.FollowErr(g, err)
 		return
 	}
 	response.SuccessResponse(g, 201, follower)
@@ -76,7 +76,7 @@ func (fc *FollowerController) GetFollowStatus(g *gin.Context) {
 	}
 	status, err := fc.service.GetRequestStatus(g, db.GetFollowStatusParams{FromFollow: from_id, ToFollow: to_id})
 	if err != nil {
-		FollowErr(g, err)
+		handler.FollowErr(g, err)
 		return
 	}
 	response.SuccessResponse(g, 200, status)
@@ -106,18 +106,18 @@ func (fc *FollowerController) GetFollowType(g *gin.Context) {
 	}
 	pageStr := g.Query("page")
 	pageSizeStr := g.Query("page_size")
-	page, pageSize := post.CheckQuery(g, pageStr, pageSizeStr)
+	page, pageSize := handler.CheckQuery(g, pageStr, pageSizeStr)
 	if page == 0 || pageSize == 0 {
 		return
 	}
 
-	if !StatusCheck(g, status) {
+	if !handler.StatusCheck(g, status) {
 		return
 	}
 
 	list, err := fc.service.GetFollowType(g, status, page, pageSize, from_id)
 	if err != nil {
-		FollowErr(g, err)
+		handler.FollowErr(g, err)
 		return
 	}
 	response.SuccessResponse(g, 200, list)
@@ -143,7 +143,7 @@ func (fc *FollowerController) UpdateFriend(g *gin.Context) {
 	}
 	err := fc.service.UpdateStatus(g, auth.UserId, req.FromFollow, req.ToFollow)
 	if err != nil {
-		FollowErr(g, err)
+		handler.FollowErr(g, err)
 		return
 	}
 	response.SuccessResponse(g, 20101, nil)
@@ -168,7 +168,7 @@ func (fc *FollowerController) UnFollow(g *gin.Context) {
 		return
 	}
 	if err := fc.service.UnFollow(g, auth.UserId, req.FromFollow, req.ToFollow); err != nil {
-		FollowErr(g, err)
+		handler.FollowErr(g, err)
 		return
 	}
 	response.SuccessResponse(g, 204, nil)

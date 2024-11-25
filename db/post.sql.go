@@ -161,19 +161,31 @@ func (q *Queries) GetComment(ctx context.Context, id int64) (GetCommentRow, erro
 }
 
 const getHomePagePost = `-- name: GetHomePagePost :many
+WITH posts_in_range AS (
+    SELECT p.id, p.created_at, f.status
+    FROM posts p
+    LEFT JOIN follower as f ON p.account_id = f.to_follow AND f.from_follow = $1
+    WHERE (f.from_follow = $1 OR f.from_follow IS NULL)
+      AND is_deleted != TRUE
+      AND is_banned != TRUE
+      AND post_type_id != 9
+    ORDER BY p.created_at DESC
+    LIMIT $2 OFFSET $3
+),
+has_friend_posts AS (
+    SELECT COUNT(*) AS friend_count
+    FROM posts_in_range
+    WHERE status IN ('friend','request')
+)
 SELECT p.id
-FROM posts p
-LEFT JOIN follower as f ON p.account_id = f.to_follow AND f.from_follow = $1
-WHERE (f.from_follow = $1 OR f.from_follow IS NULL) AND is_deleted != TRUE AND is_banned != TRUE AND post_type_id != 9
+FROM posts_in_range p, has_friend_posts h
 ORDER BY 
     CASE
-        WHEN f.status = 'friend' THEN 1
-        WHEN f.status = 'request' THEN 2
-        ELSE 3 
+        WHEN h.friend_count > 0 AND p.status = 'friend' THEN 1
+        WHEN h.friend_count > 0 AND p.status = 'request' THEN 2
+        ELSE 3
     END,
-p.created_at DESC
-LIMIT $2
-OFFSET $3
+    p.created_at DESC
 `
 
 type GetHomePagePostParams struct {
@@ -336,6 +348,58 @@ func (q *Queries) GetPost(ctx context.Context, id int64) (GetPostRow, error) {
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const getPostInLocate = `-- name: GetPostInLocate :many
+SELECT id, post_type_id, account_id, description, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat, created_at
+FROM posts
+WHERE is_banned != TRUE 
+AND is_deleted != TRUE
+AND ST_DWithin(location, ST_SetSRID(ST_MakePoint($1, $2), 4326), $3)
+`
+
+type GetPostInLocateParams struct {
+	StMakepoint   interface{} `json:"st_makepoint"`
+	StMakepoint_2 interface{} `json:"st_makepoint_2"`
+	StDwithin     interface{} `json:"st_dwithin"`
+}
+
+type GetPostInLocateRow struct {
+	ID          int64              `json:"id"`
+	PostTypeID  int32              `json:"post_type_id"`
+	AccountID   int64              `json:"account_id"`
+	Description pgtype.Text        `json:"description"`
+	Lng         interface{}        `json:"lng"`
+	Lat         interface{}        `json:"lat"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+}
+
+func (q *Queries) GetPostInLocate(ctx context.Context, arg GetPostInLocateParams) ([]GetPostInLocateRow, error) {
+	rows, err := q.db.Query(ctx, getPostInLocate, arg.StMakepoint, arg.StMakepoint_2, arg.StDwithin)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetPostInLocateRow{}
+	for rows.Next() {
+		var i GetPostInLocateRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.PostTypeID,
+			&i.AccountID,
+			&i.Description,
+			&i.Lng,
+			&i.Lat,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const updateComment = `-- name: UpdateComment :one

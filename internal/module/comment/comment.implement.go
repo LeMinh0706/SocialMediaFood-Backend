@@ -52,7 +52,7 @@ func (c *CommentService) CreateComment(ctx context.Context, account_id int64, us
 		}
 	}
 	if p.AccountID != account_id {
-		c.noti.CreatePostNotification(ctx, p.AccountID, account_id, post_top_id, 1)
+		go c.noti.CreatePostNotification(ctx, p.AccountID, account_id, post_top_id, 1)
 	}
 
 	res = CommentRes(comment, img, acc)

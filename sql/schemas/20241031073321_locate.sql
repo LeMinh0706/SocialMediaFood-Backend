@@ -3,7 +3,8 @@
 CREATE TABLE "locate" (
   "id" bigserial PRIMARY KEY,
   "account_id" bigint NOT NULL,
-  "location" geography(Point,4326)
+  "location" geography(Point,4326),
+  "address" varchar NOT NULL
 );
 ALTER TABLE "locate" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id");
 
