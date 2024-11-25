@@ -27,9 +27,9 @@ func (p *PostService) GetHomePagePost(ctx context.Context, acoount_id int64, pag
 	var res []PostResponse
 	ps := pageSize * 4
 	list, err := p.queries.GetHomePagePost(ctx, db.GetHomePagePostParams{
-		FromFollow: acoount_id,
-		Limit:      ps,
-		Offset:     (page - 1) * ps,
+		AccountID: acoount_id,
+		Limit:     ps,
+		Offset:    (page - 1) * ps,
 	})
 	if err != nil {
 		return res, err
