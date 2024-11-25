@@ -65,6 +65,7 @@ type Locate struct {
 	ID        int64       `json:"id"`
 	AccountID int64       `json:"account_id"`
 	Location  interface{} `json:"location"`
+	Address   string      `json:"address"`
 }
 
 type Menu struct {
