@@ -45,6 +45,7 @@ type Querier interface {
 	GetDish(ctx context.Context, accountID int64) (GetDishRow, error)
 	GetFavorite(ctx context.Context, arg GetFavoriteParams) ([]int64, error)
 	GetFollowStatus(ctx context.Context, arg GetFollowStatusParams) (GetFollowStatusRow, error)
+	// GPT Make this :))))
 	GetHomePagePost(ctx context.Context, arg GetHomePagePostParams) ([]int64, error)
 	GetImage(ctx context.Context, id int64) (PostImage, error)
 	GetImageComment(ctx context.Context, postID int64) (PostImage, error)

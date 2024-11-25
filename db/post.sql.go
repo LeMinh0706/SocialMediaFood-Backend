@@ -161,41 +161,41 @@ func (q *Queries) GetComment(ctx context.Context, id int64) (GetCommentRow, erro
 }
 
 const getHomePagePost = `-- name: GetHomePagePost :many
+
 WITH posts_in_range AS (
-    SELECT p.id, p.created_at, f.status
+    SELECT p.id, p.account_id, p.created_at, f.status
     FROM posts p
     LEFT JOIN follower as f ON p.account_id = f.to_follow AND f.from_follow = $1
-    WHERE (f.from_follow = $1 OR f.from_follow IS NULL)
-      AND is_deleted != TRUE
-      AND is_banned != TRUE
-      AND post_type_id != 9
+    WHERE (f.from_follow = $1 OR f.from_follow IS NULL) AND is_deleted != TRUE AND is_banned != TRUE AND post_type_id != 9
     ORDER BY p.created_at DESC
     LIMIT $2 OFFSET $3
 ),
 has_friend_posts AS (
     SELECT COUNT(*) AS friend_count
     FROM posts_in_range
-    WHERE status IN ('friend','request')
+    WHERE status IN ('friend','request') OR account_id = $1
 )
 SELECT p.id
 FROM posts_in_range p, has_friend_posts h
 ORDER BY 
     CASE
-        WHEN h.friend_count > 0 AND p.status = 'friend' THEN 1
-        WHEN h.friend_count > 0 AND p.status = 'request' THEN 2
-        ELSE 3
+        WHEN p.account_id = $1 THEN 1
+        WHEN h.friend_count > 0 AND p.status = 'friend' THEN 2
+        WHEN h.friend_count > 0 AND p.status = 'request' THEN 3
+        ELSE 4
     END,
     p.created_at DESC
 `
 
 type GetHomePagePostParams struct {
-	FromFollow int64 `json:"from_follow"`
-	Limit      int32 `json:"limit"`
-	Offset     int32 `json:"offset"`
+	AccountID int64 `json:"account_id"`
+	Limit     int32 `json:"limit"`
+	Offset    int32 `json:"offset"`
 }
 
+// GPT Make this :))))
 func (q *Queries) GetHomePagePost(ctx context.Context, arg GetHomePagePostParams) ([]int64, error) {
-	rows, err := q.db.Query(ctx, getHomePagePost, arg.FromFollow, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, getHomePagePost, arg.AccountID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
