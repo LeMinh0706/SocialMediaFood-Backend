@@ -38,7 +38,7 @@ func (a *AccountService) SearchingAccount(ctx context.Context, searching string,
 }
 
 // AddLocation implements IAccountService.
-func (a *AccountService) AddLocation(ctx context.Context, user_id, account_id int64, lng string, lat string) (db.CreateOwnerBranchRow, error) {
+func (a *AccountService) AddLocation(ctx context.Context, user_id, account_id int64, address string, lng string, lat string) (db.CreateOwnerBranchRow, error) {
 	_, err := a.GetAccountAction(ctx, user_id, account_id)
 	if err != nil {
 		return db.CreateOwnerBranchRow{}, err
@@ -47,6 +47,7 @@ func (a *AccountService) AddLocation(ctx context.Context, user_id, account_id in
 	point, err := a.queries.CreateOwnerBranch(ctx, db.CreateOwnerBranchParams{
 		AccountID:      account_id,
 		StGeomfromtext: location,
+		Address:        address,
 	})
 	if err != nil {
 		return db.CreateOwnerBranchRow{}, err

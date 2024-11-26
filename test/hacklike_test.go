@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"sync"
 	"testing"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
@@ -13,10 +12,10 @@ import (
 )
 
 func TestHackLike(t *testing.T) {
-	for i := 1; i < 43; i++ {
+	for i := 1; i < 32; i++ {
 		react, _ := testQueries.CreateReact(context.Background(), db.CreateReactParams{
 			AccountID: int64(i),
-			PostID:    19,
+			PostID:    500,
 			State:     1,
 		})
 		require.NotEmpty(t, react)
@@ -49,49 +48,18 @@ func TestHackFollow(t *testing.T) {
 }
 
 func TestCreatePost(t *testing.T) {
-	for i := 1; i <= 500; i++ {
-		var wg sync.WaitGroup
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			_, err := testQueries.CreatePost(context.Background(), db.CreatePostParams{
-				PostTypeID:  1,
-				AccountID:   25,
-				Description: pgtype.Text{String: "Test nguoi la", Valid: true},
-			})
+	posts := []db.CreatePostParams{
+		{PostTypeID: 1, AccountID: 25, Description: pgtype.Text{String: "Test nguoi la", Valid: true}},
+		{PostTypeID: 1, AccountID: 27, Description: pgtype.Text{String: "Test nguoi la", Valid: true}},
+		{PostTypeID: 1, AccountID: 30, Description: pgtype.Text{String: "Test nguoi la", Valid: true}},
+		{PostTypeID: 1, AccountID: 1, Description: pgtype.Text{String: "Test nguoi la", Valid: true}},
+	}
+
+	for i := 1; i <= 1000000; i++ {
+		for _, post := range posts {
+			_, err := testQueries.CreatePost(context.Background(), post)
 			require.NoError(t, err)
-		}()
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			_, err := testQueries.CreatePost(context.Background(), db.CreatePostParams{
-				PostTypeID:  1,
-				AccountID:   27,
-				Description: pgtype.Text{String: "Test nguoi la", Valid: true},
-			})
-			require.NoError(t, err)
-		}()
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			_, err := testQueries.CreatePost(context.Background(), db.CreatePostParams{
-				PostTypeID:  1,
-				AccountID:   30,
-				Description: pgtype.Text{String: "Test nguoi la", Valid: true},
-			})
-			require.NoError(t, err)
-		}()
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			_, err := testQueries.CreatePost(context.Background(), db.CreatePostParams{
-				PostTypeID:  1,
-				AccountID:   1,
-				Description: pgtype.Text{String: "Test nguoi la", Valid: true},
-			})
-			require.NoError(t, err)
-		}()
-		wg.Wait()
+		}
 	}
 }
 

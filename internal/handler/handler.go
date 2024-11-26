@@ -11,6 +11,7 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/jackc/pgx/v5"
 )
 
 func ValidateRegister(g *gin.Context, err error) {
@@ -75,12 +76,12 @@ func SaveImage(g *gin.Context, type_image string, image *multipart.FileHeader) (
 }
 
 func CheckValidPosition(g *gin.Context, lng, lat string) bool {
-	_, err := strconv.ParseInt(lng, 10, 64)
+	_, err := strconv.ParseFloat(lng, 64)
 	if err != nil {
-		response.ErrorResponse(g, 40020)
+		response.ErrorNonKnow(g, 40020, err.Error())
 		return false
 	}
-	_, err = strconv.ParseInt(lat, 10, 64)
+	_, err = strconv.ParseFloat(lat, 64)
 	if err != nil {
 		response.ErrorResponse(g, 40020)
 		return false
@@ -173,4 +174,28 @@ func StatusCheck(g *gin.Context, status string) bool {
 	}
 	response.ErrorResponse(g, 40415)
 	return false
+}
+
+func CheckPostStringError(g *gin.Context, err error) {
+	if err == pgx.ErrNoRows {
+		response.ErrorResponse(g, response.ErrFindPost)
+		return
+	}
+	if err.Error() == "not you" {
+		response.ErrorResponse(g, response.ErrYourSelf)
+		return
+	}
+	if err.Error() == "ERROR: duplicate key value violates unique constraint \"react_post_post_id_account_id_idx\" (SQLSTATE 23505)" {
+		response.ErrorResponse(g, response.ErrLike)
+		return
+	}
+	if err.Error() == "err like" {
+		response.ErrorResponse(g, response.ErrUnlike)
+		return
+	}
+	if err.Error() == "ERROR: duplicate key value violates unique constraint \"report_post_post_id_account_id_issue_id_idx\" (SQLSTATE 23505)" {
+		response.ErrorResponse(g, response.ErrReport)
+		return
+	}
+	response.ErrorNonKnow(g, 500, err.Error())
 }

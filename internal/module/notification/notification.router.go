@@ -11,5 +11,7 @@ func NewNotificationRouter(r *gin.Engine, group *gin.RouterGroup, service INotif
 	auth := r.Group(group.BasePath() + "/notification").Use(middlewares.AuthorizeMiddleware(token))
 	{
 		auth.GET("/:id", n.GetYourNotification)
+		auth.PUT("/:id", n.SeenYourNotification)
+		auth.PUT("/seen-all/:id", n.SeenAllNoti)
 	}
 }

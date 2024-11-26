@@ -6,6 +6,7 @@ const (
 	UpdateFriend          = 20101
 	ChangePassword        = 20102
 	AddEmail              = 20103
+	SeenNoti              = 20104
 	DeleteSuccess         = 204
 	ErrBadRequest         = 40000
 	ErrBadRequestPage     = 40001
@@ -63,6 +64,7 @@ var msg = map[int]string{
 	UpdateFriend:          "Success update to friend",
 	ChangePassword:        "Success to reset password",
 	AddEmail:              "Add email complete",
+	SeenNoti:              "Seen notification success",
 	ErrBadRequest:         "Bad request",
 	ErrBadRequestPage:     "Page should be number and greater 1",
 	ErrBadRequestPageSize: "Page size should be number and greater 1",

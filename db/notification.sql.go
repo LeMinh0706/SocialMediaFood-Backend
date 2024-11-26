@@ -181,7 +181,7 @@ func (q *Queries) UpdateSeen(ctx context.Context, id int64) error {
 }
 
 const updateSeenAll = `-- name: UpdateSeenAll :exec
-UPDATE notification SET is_seen = true
+UPDATE notification SET is_seen = TRUE
 WHERE account_id = $1
 `
 

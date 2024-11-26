@@ -39,7 +39,7 @@ UPDATE notification SET is_seen = true
 WHERE id = $1;
 
 -- name: UpdateSeenAll :exec
-UPDATE notification SET is_seen = true
+UPDATE notification SET is_seen = TRUE
 WHERE account_id = $1;
 
 -- name: DeleteNoti :exec

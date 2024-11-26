@@ -42,11 +42,11 @@ func (p *PostService) GetImage(ctx context.Context, id int64) []db.PostImage {
 }
 
 // GetHomePagePost implements IPostService.
-func (p *PostService) GetHomePagePost(ctx context.Context, acoount_id int64, page int32, pageSize int32) ([]PostResponse, error) {
+func (p *PostService) GetHomePagePost(ctx context.Context, account_id int64, page int32, pageSize int32) ([]PostResponse, error) {
 	var res []PostResponse
 	ps := pageSize * 4
 	list, err := p.queries.GetHomePagePost(ctx, db.GetHomePagePostParams{
-		AccountID: acoount_id,
+		AccountID: account_id,
 		Limit:     ps,
 		Offset:    (page - 1) * ps,
 	})
@@ -54,7 +54,7 @@ func (p *PostService) GetHomePagePost(ctx context.Context, acoount_id int64, pag
 		return res, err
 	}
 	for _, element := range list {
-		post, err := p.GetPost(ctx, acoount_id, element)
+		post, err := p.GetPost(ctx, account_id, element)
 		if err != nil {
 			return res, err
 		}

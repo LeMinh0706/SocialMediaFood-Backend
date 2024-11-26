@@ -9,7 +9,6 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v5"
 )
 
 type PostController struct {
@@ -186,7 +185,7 @@ func (pc *PostController) UpdateContentPost(g *gin.Context) {
 
 	update, err := pc.service.UpdateContentPost(g, description, id, auth.UserId, images)
 	if err != nil {
-		CheckPostStringError(g, err)
+		handler.CheckPostStringError(g, err)
 		return
 	}
 	response.SuccessResponse(g, 201, update)
@@ -213,7 +212,7 @@ func (pc *PostController) DeleteImage(g *gin.Context) {
 	}
 	err = pc.service.DeleteImage(g, id, auth.UserId)
 	if err != nil {
-		CheckPostStringError(g, err)
+		handler.CheckPostStringError(g, err)
 		return
 	}
 	response.SuccessResponse(g, 204, nil)
@@ -240,34 +239,10 @@ func (pc *PostController) DeletePost(g *gin.Context) {
 	}
 	err = pc.service.DeletePost(g, id, auth.UserId)
 	if err != nil {
-		CheckPostStringError(g, err)
+		handler.CheckPostStringError(g, err)
 		return
 	}
 	response.SuccessResponse(g, 204, nil)
-}
-
-func CheckPostStringError(g *gin.Context, err error) {
-	if err == pgx.ErrNoRows {
-		response.ErrorResponse(g, response.ErrFindPost)
-		return
-	}
-	if err.Error() == "not you" {
-		response.ErrorResponse(g, response.ErrYourSelf)
-		return
-	}
-	if err.Error() == "ERROR: duplicate key value violates unique constraint \"react_post_post_id_account_id_idx\" (SQLSTATE 23505)" {
-		response.ErrorResponse(g, response.ErrLike)
-		return
-	}
-	if err.Error() == "err like" {
-		response.ErrorResponse(g, response.ErrUnlike)
-		return
-	}
-	if err.Error() == "ERROR: duplicate key value violates unique constraint \"report_post_post_id_account_id_issue_id_idx\" (SQLSTATE 23505)" {
-		response.ErrorResponse(g, response.ErrReport)
-		return
-	}
-	response.ErrorNonKnow(g, 500, err.Error())
 }
 
 // Post godoc
@@ -301,7 +276,7 @@ func (pc *PostController) GetHomePagePost(g *gin.Context) {
 	}
 	list, err := pc.service.GetHomePagePost(g, account_id, page, pageSize)
 	if err != nil {
-		CheckPostStringError(g, err)
+		handler.CheckPostStringError(g, err)
 		return
 	}
 	response.SuccessResponse(g, 200, list)
@@ -334,22 +309,37 @@ func (pc *PostController) GetPostById(g *gin.Context) {
 	}
 	post, err := pc.service.GetPost(g, account_id, id)
 	if err != nil {
-		CheckPostStringError(g, err)
+		handler.CheckPostStringError(g, err)
 		return
 	}
 	response.SuccessResponse(g, 200, post)
 }
 
+// Post godoc
+// @Summary      Get list post
+// @Description  Get list post with page and page size (Limit-Offset)
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Param        lng query string false "LNG"
+// @Param        lat query string false "LAT"
+// @Param        distance query int false "Distance"
+// @Param        account_id query int false "AccountID"
+// @Param        page query int true "Page"
+// @Param        page_size query int true "Page Size"
+// @Success      200  {object}  []PostResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts/locate [get]
 func (pc *PostController) GetPostWithLocation(g *gin.Context) {
 	lng := g.Query("lng")
 	lat := g.Query("lat")
+	if !handler.CheckValidPosition(g, lng, lat) {
+		return
+	}
 	pageStr := g.Query("page")
 	pageSizeStr := g.Query("page_size")
 	page, pageSize := handler.CheckQuery(g, pageStr, pageSizeStr)
 	if page == 0 || pageSize == 0 {
-		return
-	}
-	if !handler.CheckValidPosition(g, lng, lat) {
 		return
 	}
 	accStr := g.Query("account_id")
