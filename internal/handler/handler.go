@@ -76,9 +76,12 @@ func SaveImage(g *gin.Context, type_image string, image *multipart.FileHeader) (
 }
 
 func CheckValidPosition(g *gin.Context, lng, lat string) bool {
+	if lng == "" && lat == "" {
+		return true
+	}
 	_, err := strconv.ParseFloat(lng, 64)
 	if err != nil {
-		response.ErrorNonKnow(g, 40020, err.Error())
+		response.ErrorResponse(g, 40020)
 		return false
 	}
 	_, err = strconv.ParseFloat(lat, 64)

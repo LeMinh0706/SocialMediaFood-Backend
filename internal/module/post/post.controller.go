@@ -72,7 +72,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 		return
 	}
 
-	post, err := pc.service.CreatePost(g, description, lat, lng, images, account_id, auth.UserId)
+	post, err := pc.service.CreatePost(g, description, lng, lat, images, account_id, auth.UserId)
 	if err != nil {
 		if err.Error() == "not you" {
 			response.ErrorResponse(g, response.ErrYourSelf)
@@ -321,10 +321,10 @@ func (pc *PostController) GetPostById(g *gin.Context) {
 // @Tags         Posts
 // @Accept       json
 // @Produce      json
-// @Param        lng query string false "LNG"
-// @Param        lat query string false "LAT"
-// @Param        distance query int false "Distance"
-// @Param        account_id query int false "AccountID"
+// @Param        lng query string true "LNG"
+// @Param        lat query string true "LAT"
+// @Param        distance query int true "Distance"
+// @Param        account_id query int true "AccountID"
 // @Param        page query int true "Page"
 // @Param        page_size query int true "Page Size"
 // @Success      200  {object}  []PostResponse
