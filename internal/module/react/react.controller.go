@@ -25,7 +25,7 @@ func NewReactController(service IReactService, token token.Maker) *ReactControll
 
 // React godoc
 // @Summary      Create reacttion
-// @Description  Create reaction for post
+// @Description  Create reaction type 1 for Heart, 2 for Fire, 3 for Haha, 4 for Huhu, 5 for Dislike
 // @Tags         React
 // @Accept       json
 // @Produce      json
@@ -89,7 +89,7 @@ func (rc *ReactController) GetListReact(g *gin.Context) {
 
 // React godoc
 // @Summary      Change reaction state
-// @Description  Just change reaction type 1 for like, 2 for hearth, 3 for sad, 4 for angry
+// @Description  Just change reaction type 1 for Heart, 2 for Fire, 3 for Haha, 4 for Huhu, 5 for Dislike
 // @Tags         React
 // @Accept       json
 // @Produce      json
