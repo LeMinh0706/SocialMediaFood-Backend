@@ -939,25 +939,17 @@ paths:
       tags:
       - ResetPassword
   /menu:
-    get:
+    post:
       consumes:
       - application/json
       description: Add food
       parameters:
-      - description: AccountID
-        in: query
-        name: account_id
-        type: integer
-      - description: Page
-        in: query
-        name: page
+      - description: request
+        in: body
+        name: request
         required: true
-        type: integer
-      - description: Page Size
-        in: query
-        name: page_size
-        required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/menu.AddFood'
       produces:
       - application/json
       responses:
@@ -972,17 +964,27 @@ paths:
       summary: Add food
       tags:
       - Menu
-    post:
+  /menu/{id}:
+    get:
       consumes:
       - application/json
       description: Add food
       parameters:
-      - description: request
-        in: body
-        name: request
+      - description: ID
+        in: path
+        name: id
         required: true
-        schema:
-          $ref: '#/definitions/menu.AddFood'
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -1172,6 +1174,54 @@ paths:
       security:
       - BearerAuth: []
       summary: Delete Image
+      tags:
+      - Posts
+  /posts/locate:
+    get:
+      consumes:
+      - application/json
+      description: Get list post with page and page size (Limit-Offset)
+      parameters:
+      - description: LNG
+        in: query
+        name: lng
+        type: string
+      - description: LAT
+        in: query
+        name: lat
+        type: string
+      - description: Distance
+        in: query
+        name: distance
+        type: integer
+      - description: AccountID
+        in: query
+        name: account_id
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/post.PostResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Get list post
       tags:
       - Posts
   /posts/person:

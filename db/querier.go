@@ -62,7 +62,7 @@ type Querier interface {
 	GetNotification(ctx context.Context, id int64) (Notification, error)
 	GetPersonPost(ctx context.Context, arg GetPersonPostParams) ([]int64, error)
 	GetPost(ctx context.Context, id int64) (GetPostRow, error)
-	GetPostInLocate(ctx context.Context, arg GetPostInLocateParams) ([]GetPostInLocateRow, error)
+	GetPostInLocate(ctx context.Context, arg GetPostInLocateParams) ([]int64, error)
 	GetReact(ctx context.Context, arg GetReactParams) (ReactPost, error)
 	GetRequestByUUID(ctx context.Context, id pgtype.UUID) (ResetPassword, error)
 	GetUserByEmail(ctx context.Context, email pgtype.Text) (GetUserByEmailRow, error)

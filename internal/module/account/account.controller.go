@@ -186,6 +186,7 @@ func (as *AccountController) AddYourLocation(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 	lng := g.PostForm("lng")
 	lat := g.PostForm("lat")
+	address := g.PostForm("address")
 	idStr := g.PostForm("account_id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
@@ -195,7 +196,7 @@ func (as *AccountController) AddYourLocation(g *gin.Context) {
 	if !handler.CheckValidPosition(g, lng, lat) {
 		return
 	}
-	location, err := as.service.AddLocation(g, auth.UserId, id, lng, lat)
+	location, err := as.service.AddLocation(g, auth.UserId, id, address, lng, lat)
 	if err != nil {
 		response.ErrorNonKnow(g, 401, err.Error())
 		return

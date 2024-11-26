@@ -351,50 +351,41 @@ func (q *Queries) GetPost(ctx context.Context, id int64) (GetPostRow, error) {
 }
 
 const getPostInLocate = `-- name: GetPostInLocate :many
-SELECT id, post_type_id, account_id, description, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat, created_at
+SELECT id
 FROM posts
 WHERE is_banned != TRUE 
 AND is_deleted != TRUE
-AND ST_DWithin(location, ST_SetSRID(ST_MakePoint($1, $2), 4326), $3)
+AND ST_DWithin(location, ST_GeomFromText($1,4326), $2)
+ORDER BY id DESC
+LIMIT $3
+OFFSET $4
 `
 
 type GetPostInLocateParams struct {
-	StMakepoint   interface{} `json:"st_makepoint"`
-	StMakepoint_2 interface{} `json:"st_makepoint_2"`
-	StDwithin     interface{} `json:"st_dwithin"`
+	StGeomfromtext interface{} `json:"st_geomfromtext"`
+	StDwithin      interface{} `json:"st_dwithin"`
+	Limit          int32       `json:"limit"`
+	Offset         int32       `json:"offset"`
 }
 
-type GetPostInLocateRow struct {
-	ID          int64              `json:"id"`
-	PostTypeID  int32              `json:"post_type_id"`
-	AccountID   int64              `json:"account_id"`
-	Description pgtype.Text        `json:"description"`
-	Lng         interface{}        `json:"lng"`
-	Lat         interface{}        `json:"lat"`
-	CreatedAt   pgtype.Timestamptz `json:"created_at"`
-}
-
-func (q *Queries) GetPostInLocate(ctx context.Context, arg GetPostInLocateParams) ([]GetPostInLocateRow, error) {
-	rows, err := q.db.Query(ctx, getPostInLocate, arg.StMakepoint, arg.StMakepoint_2, arg.StDwithin)
+func (q *Queries) GetPostInLocate(ctx context.Context, arg GetPostInLocateParams) ([]int64, error) {
+	rows, err := q.db.Query(ctx, getPostInLocate,
+		arg.StGeomfromtext,
+		arg.StDwithin,
+		arg.Limit,
+		arg.Offset,
+	)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetPostInLocateRow{}
+	items := []int64{}
 	for rows.Next() {
-		var i GetPostInLocateRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.PostTypeID,
-			&i.AccountID,
-			&i.Description,
-			&i.Lng,
-			&i.Lat,
-			&i.CreatedAt,
-		); err != nil {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
 			return nil, err
 		}
-		items = append(items, i)
+		items = append(items, id)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

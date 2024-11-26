@@ -98,12 +98,33 @@ func (n *NotificationService) GetNotification(ctx context.Context, id int64, use
 
 // IsSeen implements INotificationService.
 func (n *NotificationService) IsSeen(ctx context.Context, user_id int64, id int64) error {
-	panic("unimplemented")
+	noti, err := n.queries.GetNotification(ctx, id)
+	if err != nil {
+		return err
+	}
+	_, err = n.acc.GetAccountAction(ctx, noti.AccountID, user_id)
+	if err != nil {
+		return err
+	}
+
+	err = n.queries.UpdateSeen(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // IsSeenAll implements INotificationService.
 func (n *NotificationService) IsSeenAll(ctx context.Context, user_id int64, account_id int64) error {
-	panic("unimplemented")
+	_, err := n.acc.GetAccountAction(ctx, account_id, user_id)
+	if err != nil {
+		return err
+	}
+	err = n.queries.UpdateSeenAll(ctx, account_id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func NewNotificationService(q *db.Queries, a account.IAccountService) INotificationService {

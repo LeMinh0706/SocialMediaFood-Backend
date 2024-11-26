@@ -3,8 +3,8 @@ package report
 import (
 	"strconv"
 
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/handler"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
@@ -57,7 +57,7 @@ func (r *ReportController) CreateReport(g *gin.Context) {
 	}
 	list, err := r.service.CreateReportPost(g, auth.UserId, req.AccountID, req.PostID, req.IssueID)
 	if err != nil {
-		post.CheckPostStringError(g, err)
+		handler.CheckPostStringError(g, err)
 		return
 	}
 	response.SuccessResponse(g, 201, list)
@@ -91,7 +91,7 @@ func (r *ReportController) GetYourReport(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 	list, err := r.service.GetYourReport(g, auth.UserId, account_id, post_id)
 	if err != nil {
-		post.CheckPostStringError(g, err)
+		handler.CheckPostStringError(g, err)
 		return
 	}
 	response.SuccessResponse(g, 200, list)

@@ -103,8 +103,11 @@ SELECT count(id) FROM posts
 WHERE post_top_id = $1;
 
 -- name: GetPostInLocate :many
-SELECT id, post_type_id, account_id, description, ST_X(location::geometry) AS lng, ST_Y(location::geometry) AS lat, created_at
+SELECT id
 FROM posts
 WHERE is_banned != TRUE 
 AND is_deleted != TRUE
-AND ST_DWithin(location, ST_SetSRID(ST_MakePoint($1, $2), 4326), $3); 
+AND ST_DWithin(location, ST_GeomFromText($1,4326), $2)
+ORDER BY id DESC
+LIMIT $3
+OFFSET $4; 

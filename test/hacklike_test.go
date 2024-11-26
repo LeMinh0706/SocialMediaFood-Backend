@@ -2,18 +2,20 @@ package test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/stretchr/testify/require"
 )
 
 func TestHackLike(t *testing.T) {
-	for i := 1; i < 43; i++ {
+	for i := 1; i < 32; i++ {
 		react, _ := testQueries.CreateReact(context.Background(), db.CreateReactParams{
 			AccountID: int64(i),
-			PostID:    19,
+			PostID:    500,
 			State:     1,
 		})
 		require.NotEmpty(t, react)
@@ -46,11 +48,28 @@ func TestHackFollow(t *testing.T) {
 }
 
 func TestCreatePost(t *testing.T) {
-	for i := 28; i <= 40; i++ {
+	posts := []db.CreatePostParams{
+		{PostTypeID: 1, AccountID: 25, Description: pgtype.Text{String: "Test nguoi la", Valid: true}},
+		{PostTypeID: 1, AccountID: 27, Description: pgtype.Text{String: "Test nguoi la", Valid: true}},
+		{PostTypeID: 1, AccountID: 30, Description: pgtype.Text{String: "Test nguoi la", Valid: true}},
+		{PostTypeID: 1, AccountID: 1, Description: pgtype.Text{String: "Test nguoi la", Valid: true}},
+	}
+
+	for i := 1; i <= 1000000; i++ {
+		for _, post := range posts {
+			_, err := testQueries.CreatePost(context.Background(), post)
+			require.NoError(t, err)
+		}
+	}
+}
+
+func TestGetPost(t *testing.T) {
+	for i := 0; i < 500; i++ {
 		_, err := testQueries.CreatePost(context.Background(), db.CreatePostParams{
-			PostTypeID:  1,
-			AccountID:   int64(i),
-			Description: pgtype.Text{String: "Test nguoi la", Valid: true},
+			PostTypeID:     1,
+			AccountID:      27,
+			Description:    pgtype.Text{String: "Dia diem A", Valid: true},
+			StGeomfromtext: fmt.Sprintf("POINT(%f %f)", util.RandomX(), util.RandomY()),
 		})
 		require.NoError(t, err)
 	}

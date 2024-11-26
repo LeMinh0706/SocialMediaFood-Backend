@@ -6,7 +6,6 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/handler"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/middlewares"
-	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/token"
 	"github.com/gin-gonic/gin"
@@ -44,7 +43,7 @@ func (rc *ReactController) CreateReact(g *gin.Context) {
 	}
 	react, err := rc.service.CreateReact(g, auth.UserId, req.AccountID, req.PostID)
 	if err != nil {
-		post.CheckPostStringError(g, err)
+		handler.CheckPostStringError(g, err)
 		return
 	}
 	response.SuccessResponse(g, 201, react)
@@ -78,7 +77,7 @@ func (rc *ReactController) GetListReact(g *gin.Context) {
 	}
 	reacts, err := rc.service.GetListReactPost(g, page, pageSize, id)
 	if err != nil {
-		post.CheckPostStringError(g, err)
+		handler.CheckPostStringError(g, err)
 		return
 	}
 
@@ -105,7 +104,7 @@ func (rc *ReactController) ChangeReactState(g *gin.Context) {
 	}
 	update, err := rc.service.ChangeReactState(g, auth.UserId, req.AccountID, req.PostID, req.State)
 	if err != nil {
-		post.CheckPostStringError(g, err)
+		handler.CheckPostStringError(g, err)
 		return
 	}
 	response.SuccessResponse(g, 201, update)
@@ -131,7 +130,7 @@ func (rc *ReactController) UnReaction(g *gin.Context) {
 	}
 	err := rc.service.UnReaction(g, auth.UserId, req.AccountID, req.PostID)
 	if err != nil {
-		post.CheckPostStringError(g, err)
+		handler.CheckPostStringError(g, err)
 		return
 	}
 	response.SuccessResponse(g, 204, nil)
