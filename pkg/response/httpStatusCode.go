@@ -15,6 +15,7 @@ const (
 	ErrImageLen           = 40005
 	ErrImageSize          = 40006
 	ErrGender             = 40007
+	ErrDistance           = 40017
 	ErrUnauthorize        = 40101
 	ErrInvalid            = 40102
 	ErrYourSelf           = 40103
@@ -107,6 +108,7 @@ var msg = map[int]string{
 	YouHaveRequest:        "You requested a few minutes ago, please wait",
 	PasswordHaveChange:    "You have changed password before",
 	ResetPasswordTimeOut:  "You're to late, try request forgot-password again",
+	ErrDistance:           "Distance must be number",
 }
 
 // ErrOutOfDate:   "Token is out of date",

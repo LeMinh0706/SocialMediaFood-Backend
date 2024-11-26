@@ -16,6 +16,25 @@ type PostService struct {
 	accountService account.IAccountService
 }
 
+// GetPostInLocate implements IPostService.
+func (p *PostService) GetPostInLocate(ctx context.Context, dwithin int64, account_id int64, lng string, lat string, page int32, pageSize int32) ([]PostResponse, error) {
+	var res []PostResponse
+	list, err := p.queries.GetPostInLocate(ctx, db.GetPostInLocateParams{
+		StGeomfromtext: fmt.Sprintf("POINT(%s %s)", lng, lat),
+		StDwithin:      dwithin,
+		Limit:          pageSize,
+		Offset:         (page - 1) * pageSize,
+	})
+	if err != nil {
+		return res, nil
+	}
+	for _, element := range list {
+		post, _ := p.GetPost(ctx, account_id, element)
+		res = append(res, post)
+	}
+	return res, nil
+}
+
 // GetImage implements IPostService.
 func (p *PostService) GetImage(ctx context.Context, id int64) []db.PostImage {
 	images, _ := p.queries.GetImagePost(ctx, id)

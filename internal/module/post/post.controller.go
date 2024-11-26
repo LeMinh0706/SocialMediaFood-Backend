@@ -339,3 +339,35 @@ func (pc *PostController) GetPostById(g *gin.Context) {
 	}
 	response.SuccessResponse(g, 200, post)
 }
+
+func (pc *PostController) GetPostWithLocation(g *gin.Context) {
+	lng := g.Query("lng")
+	lat := g.Query("lat")
+	pageStr := g.Query("page")
+	pageSizeStr := g.Query("page_size")
+	page, pageSize := handler.CheckQuery(g, pageStr, pageSizeStr)
+	if page == 0 || pageSize == 0 {
+		return
+	}
+	if !handler.CheckValidPosition(g, lng, lat) {
+		return
+	}
+	accStr := g.Query("account_id")
+	account_id, err := strconv.ParseInt(accStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 40004)
+		return
+	}
+	dis := g.Query("distance")
+	distance, err := strconv.ParseInt(dis, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 40017)
+		return
+	}
+	list, err := pc.service.GetPostInLocate(g, distance, account_id, lng, lat, page, pageSize)
+	if err != nil {
+		response.ErrorNonKnow(g, 400, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 200, list)
+}
