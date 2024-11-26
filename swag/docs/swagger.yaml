@@ -276,6 +276,8 @@ definitions:
         type: integer
       post_id:
         type: integer
+      state:
+        type: integer
     type: object
   react.ReactResponse:
     properties:
@@ -1185,18 +1187,22 @@ paths:
       - description: LNG
         in: query
         name: lng
+        required: true
         type: string
       - description: LAT
         in: query
         name: lat
+        required: true
         type: string
       - description: Distance
         in: query
         name: distance
+        required: true
         type: integer
       - description: AccountID
         in: query
         name: account_id
+        required: true
         type: integer
       - description: Page
         in: query

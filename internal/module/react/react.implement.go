@@ -49,7 +49,7 @@ func (r *ReactService) ChangeReactState(ctx context.Context, user_id int64, acco
 }
 
 // CreateReact implements IReactService.
-func (r *ReactService) CreateReact(ctx context.Context, user_id int64, account_id int64, post_id int64) (db.ReactPost, error) {
+func (r *ReactService) CreateReact(ctx context.Context, user_id int64, account_id int64, post_id int64, state int32) (db.ReactPost, error) {
 	var res db.ReactPost
 	_, err := r.account.GetAccountAction(ctx, account_id, user_id)
 	if err != nil {
@@ -62,7 +62,7 @@ func (r *ReactService) CreateReact(ctx context.Context, user_id int64, account_i
 	react, err := r.queries.CreateReact(ctx, db.CreateReactParams{
 		AccountID: account_id,
 		PostID:    post_id,
-		State:     1,
+		State:     state,
 	})
 	if err != nil {
 		return res, err

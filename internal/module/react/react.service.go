@@ -8,7 +8,7 @@ import (
 
 type IReactService interface {
 	Backup(ctx context.Context)
-	CreateReact(ctx context.Context, user_id, account_id, post_id int64) (db.ReactPost, error)
+	CreateReact(ctx context.Context, user_id, account_id, post_id int64, state int32) (db.ReactPost, error)
 	GetReactPost(ctx context.Context, account_id, post_id int64) (ReactResponse, error)
 	GetListReactPost(ctx context.Context, page, pageSize int32, post_id int64) (ListReactResponse, error)
 	ChangeReactState(ctx context.Context, user_id, account_id, post_id int64, state int32) (db.ReactPost, error)

@@ -11,14 +11,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestHackLike(t *testing.T) {
-	for i := 1; i < 32; i++ {
-		react, _ := testQueries.CreateReact(context.Background(), db.CreateReactParams{
+func TestLikeHack(t *testing.T) {
+	for i := 5; i < 30; i++ {
+		_, err := testQueries.CreateReact(context.Background(), db.CreateReactParams{
 			AccountID: int64(i),
-			PostID:    500,
+			PostID:    282,
 			State:     1,
 		})
-		require.NotEmpty(t, react)
+		require.NoError(t, err)
 	}
 }
 
@@ -55,7 +55,7 @@ func TestCreatePost(t *testing.T) {
 		{PostTypeID: 1, AccountID: 1, Description: pgtype.Text{String: "Test nguoi la", Valid: true}},
 	}
 
-	for i := 1; i <= 1000000; i++ {
+	for i := 1; i <= 10; i++ {
 		for _, post := range posts {
 			_, err := testQueries.CreatePost(context.Background(), post)
 			require.NoError(t, err)

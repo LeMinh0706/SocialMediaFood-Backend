@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -8,13 +9,13 @@ import (
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5"
 
 	_ "github.com/lib/pq"
 )
 
 var testQueries *db.Queries
-var testDB *pgxpool.Pool
+var testDB *pgx.Conn
 
 // Fake data here
 func TestMain(m *testing.M) {
@@ -22,8 +23,8 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Fatal("Cannot connect config:", err)
 	}
-	fmt.Println("Run:", config.DBDriver)
-	testDB, err = db.GetDBConnection(config)
+	fmt.Println("Run:", config.DBProduct)
+	testDB, err = pgx.Connect(context.Background(), config.DBProduct)
 	if err != nil {
 		log.Fatal("Cannot connect db:", err)
 	}
