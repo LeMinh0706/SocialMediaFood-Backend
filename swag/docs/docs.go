@@ -1152,25 +1152,29 @@ const docTemplate = `{
                         "type": "string",
                         "description": "LNG",
                         "name": "lng",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     },
                     {
                         "type": "string",
                         "description": "LAT",
                         "name": "lat",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     },
                     {
                         "type": "integer",
                         "description": "Distance",
                         "name": "distance",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     },
                     {
                         "type": "integer",
                         "description": "AccountID",
                         "name": "account_id",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     },
                     {
                         "type": "integer",
@@ -2286,6 +2290,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "post_id": {
+                    "type": "integer"
+                },
+                "state": {
                     "type": "integer"
                 }
             }

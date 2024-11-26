@@ -41,7 +41,10 @@ func (rc *ReactController) CreateReact(g *gin.Context) {
 		response.ErrorResponse(g, 40000)
 		return
 	}
-	react, err := rc.service.CreateReact(g, auth.UserId, req.AccountID, req.PostID)
+	if req.State == 0 {
+		req.State = 1
+	}
+	react, err := rc.service.CreateReact(g, auth.UserId, req.AccountID, req.PostID, req.State)
 	if err != nil {
 		handler.CheckPostStringError(g, err)
 		return
