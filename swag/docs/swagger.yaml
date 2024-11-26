@@ -277,6 +277,8 @@ definitions:
       post_id:
         type: integer
       state:
+        example: 1
+        format: int32
         type: integer
     type: object
   react.ReactResponse:
@@ -1328,7 +1330,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create reaction for post
+      description: Create reaction type 1 for Heart, 2 for Fire, 3 for Haha, 4 for
+        Huhu, 5 for Dislike
       parameters:
       - description: request
         in: body
@@ -1355,8 +1358,8 @@ paths:
     put:
       consumes:
       - application/json
-      description: Just change reaction type 1 for like, 2 for hearth, 3 for sad,
-        4 for angry
+      description: Just change reaction type 1 for Heart, 2 for Fire, 3 for Haha,
+        4 for Huhu, 5 for Dislike
       parameters:
       - description: request
         in: body

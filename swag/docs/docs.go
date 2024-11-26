@@ -1434,7 +1434,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Just change reaction type 1 for like, 2 for hearth, 3 for sad, 4 for angry",
+                "description": "Just change reaction type 1 for Heart, 2 for Fire, 3 for Haha, 4 for Huhu, 5 for Dislike",
                 "consumes": [
                     "application/json"
                 ],
@@ -1477,7 +1477,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Create reaction for post",
+                "description": "Create reaction type 1 for Heart, 2 for Fire, 3 for Haha, 4 for Huhu, 5 for Dislike",
                 "consumes": [
                     "application/json"
                 ],
@@ -2293,7 +2293,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "state": {
-                    "type": "integer"
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 1
                 }
             }
         },
