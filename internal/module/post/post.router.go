@@ -20,5 +20,6 @@ func NewPostRouter(r *gin.Engine, group *gin.RouterGroup, service IPostService, 
 		auth.POST("/soft-delete/:id", pc.DeletePost)
 		auth.GET(":id", pc.GetPostById)
 		postGroup.GET("/locate", pc.GetPostWithLocation)
+		postGroup.GET("/images", pc.GetListImage)
 	}
 }

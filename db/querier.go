@@ -53,6 +53,7 @@ type Querier interface {
 	GetIssue(ctx context.Context, id int32) (IssuePost, error)
 	//comment
 	GetListComment(ctx context.Context, arg GetListCommentParams) ([]int64, error)
+	GetListImage(ctx context.Context, arg GetListImageParams) ([]PostImage, error)
 	GetListIssue(ctx context.Context) ([]IssuePost, error)
 	GetListNoti(ctx context.Context, arg GetListNotiParams) ([]GetListNotiRow, error)
 	GetListPost(ctx context.Context, arg GetListPostParams) ([]int64, error)

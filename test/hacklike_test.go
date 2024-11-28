@@ -64,13 +64,17 @@ func TestCreatePost(t *testing.T) {
 }
 
 func TestGetPost(t *testing.T) {
-	for i := 0; i < 500; i++ {
-		_, err := testQueries.CreatePost(context.Background(), db.CreatePostParams{
+	for i := 0; i < 10; i++ {
+		post, err := testQueries.CreatePost(context.Background(), db.CreatePostParams{
 			PostTypeID:     1,
 			AccountID:      27,
 			Description:    pgtype.Text{String: "Dia diem A", Valid: true},
 			StGeomfromtext: fmt.Sprintf("POINT(%f %f)", util.RandomX(), util.RandomY()),
 		})
 		require.NoError(t, err)
+		testQueries.AddImagePost(context.Background(), db.AddImagePostParams{UrlImage: util.RandomImage(), PostID: post.ID})
+		testQueries.AddImagePost(context.Background(), db.AddImagePostParams{UrlImage: util.RandomImage(), PostID: post.ID})
+		testQueries.AddImagePost(context.Background(), db.AddImagePostParams{UrlImage: util.RandomImage(), PostID: post.ID})
+		testQueries.AddImagePost(context.Background(), db.AddImagePostParams{UrlImage: util.RandomImage(), PostID: post.ID})
 	}
 }

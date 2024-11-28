@@ -101,6 +101,38 @@ func (q *Queries) GetImagePost(ctx context.Context, postID int64) ([]PostImage, 
 	return items, nil
 }
 
+const getListImage = `-- name: GetListImage :many
+SELECT id, url_image, post_id FROM post_image
+ORDER BY id DESC
+LIMIT $1
+OFFSET $2
+`
+
+type GetListImageParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetListImage(ctx context.Context, arg GetListImageParams) ([]PostImage, error) {
+	rows, err := q.db.Query(ctx, getListImage, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []PostImage{}
+	for rows.Next() {
+		var i PostImage
+		if err := rows.Scan(&i.ID, &i.UrlImage, &i.PostID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateImagePost = `-- name: UpdateImagePost :one
 UPDATE post_image SET url_image = $2
 WHERE post_id = $1
