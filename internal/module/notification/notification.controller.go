@@ -81,7 +81,7 @@ func (n *NotificationController) SeenYourNotification(g *gin.Context) {
 		handler.CheckPostStringError(g, err)
 		return
 	}
-	response.SuccessResponse(g, response.SeenNoti, nil)
+	response.SuccessResponse(g, 201, nil)
 }
 
 // Notification godoc
@@ -109,7 +109,7 @@ func (n *NotificationController) SeenAllNoti(g *gin.Context) {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return
 	}
-	response.SuccessResponse(g, response.SeenNoti, nil)
+	response.SuccessResponse(g, 201, nil)
 }
 
 // Notification godoc
@@ -133,7 +133,7 @@ func (n *NotificationController) DeleteNotification(g *gin.Context) {
 	}
 	err = n.service.DeleteNoti(g, auth.UserId, id)
 	if err != nil {
-		response.ErrorResponse(g, response.CantDelete)
+		response.ErrorResponse(g, response.DeleteSuccess)
 		return
 	}
 	response.SuccessResponse(g, response.DeleteNoti, nil)

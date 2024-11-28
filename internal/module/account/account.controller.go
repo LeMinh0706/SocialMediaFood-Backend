@@ -24,17 +24,6 @@ func NewAccountController(service IAccountService, token token.Maker) *AccountCo
 	}
 }
 
-// Account godoc
-// @Summary      Profile api
-// @Description  To see the account, fetch profile
-// @Tags         Accounts
-// @Accept       json
-// @Produce      json
-// @Param        id path int true "ID"
-// @Security BearerAuth
-// @Success      200  {object}  AccountResponse
-// @Failure      500  {object}  response.ErrSwaggerJson
-// @Router       /accounts/{id} [get]
 func (ac *AccountController) GetAccount(g *gin.Context) {
 	idStr := g.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
