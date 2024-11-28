@@ -56,7 +56,19 @@ func (n *NotificationService) CreatePostNotification(ctx context.Context, accoun
 
 // DeleteNoti implements INotificationService.
 func (n *NotificationService) DeleteNoti(ctx context.Context, user_id int64, id int64) error {
-	panic("unimplemented")
+	noti, err := n.queries.GetNotification(ctx, id)
+	if err != nil {
+		return err
+	}
+	_, err = n.acc.GetAccountAction(ctx, noti.AccountID, user_id)
+	if err != nil {
+		return err
+	}
+	err = n.queries.DeleteNoti(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // GetListNotification implements INotificationService.

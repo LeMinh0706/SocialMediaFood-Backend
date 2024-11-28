@@ -88,6 +88,7 @@ type Notification struct {
 	InvoiceID    pgtype.Int8        `json:"invoice_id"`
 	IsSeen       bool               `json:"is_seen"`
 	CreatedAt    pgtype.Timestamptz `json:"created_at"`
+	IsDelete     bool               `json:"is_delete"`
 }
 
 type NotificationType struct {

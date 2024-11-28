@@ -12,6 +12,7 @@ func NewNotificationRouter(r *gin.Engine, group *gin.RouterGroup, service INotif
 	{
 		auth.GET("/:id", n.GetYourNotification)
 		auth.PUT("/:id", n.SeenYourNotification)
+		auth.POST("/:id", n.DeleteNotification)
 		auth.PUT("/seen-all/:id", n.SeenAllNoti)
 	}
 }

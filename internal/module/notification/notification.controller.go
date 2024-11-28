@@ -45,7 +45,7 @@ func (n *NotificationController) GetYourNotification(g *gin.Context) {
 	}
 	pageStr := g.Query("page")
 	pageSizeStr := g.Query("page_size")
-	page, pageSize := CheckQuery(g, pageStr, pageSizeStr)
+	page, pageSize := handler.CheckQuery(g, pageStr, pageSizeStr)
 	if page == 0 || pageSize == 0 {
 		return
 	}
@@ -110,4 +110,31 @@ func (n *NotificationController) SeenAllNoti(g *gin.Context) {
 		return
 	}
 	response.SuccessResponse(g, response.SeenNoti, nil)
+}
+
+// Notification godoc
+// @Summary      Delete Notification
+// @Description  Soft delete notification and handle when you get list
+// @Tags         Notification
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "ID"
+// @Security BearerAuth
+// @Success      204  "No content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /notification/{id} [post]
+func (n *NotificationController) DeleteNotification(g *gin.Context) {
+	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+	idStr := g.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, response.ErrBadRequestId)
+		return
+	}
+	err = n.service.DeleteNoti(g, auth.UserId, id)
+	if err != nil {
+		response.ErrorResponse(g, response.CantDelete)
+		return
+	}
+	response.SuccessResponse(g, response.DeleteNoti, nil)
 }

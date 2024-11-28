@@ -43,5 +43,5 @@ UPDATE notification SET is_seen = TRUE
 WHERE account_id = $1;
 
 -- name: DeleteNoti :exec
-DELETE FROM notification 
+UPDATE notification SET is_delete = TRUE
 WHERE id = $1;
