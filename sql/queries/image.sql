@@ -32,3 +32,9 @@ WHERE post_id = $1;
 UPDATE post_image SET url_image = $2
 WHERE post_id = $1
 RETURNING *;
+
+-- name: GetListImage :many
+SELECT * FROM post_image
+ORDER BY id DESC
+LIMIT $1
+OFFSET $2;

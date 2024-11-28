@@ -16,6 +16,18 @@ type PostService struct {
 	accountService account.IAccountService
 }
 
+// GetListImage implements IPostService.
+func (p *PostService) GetListImage(ctx context.Context, page int32, pageSize int32) ([]db.PostImage, error) {
+	list, err := p.queries.GetListImage(ctx, db.GetListImageParams{
+		Limit:  pageSize,
+		Offset: (page - 1) * pageSize,
+	})
+	if err != nil {
+		return []db.PostImage{}, err
+	}
+	return list, err
+}
+
 // GetPostInLocate implements IPostService.
 func (p *PostService) GetPostInLocate(ctx context.Context, dwithin int64, account_id int64, lng string, lat string, page int32, pageSize int32) ([]PostResponse, error) {
 	var res []PostResponse

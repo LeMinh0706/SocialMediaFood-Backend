@@ -17,5 +17,6 @@ type IPostService interface {
 	GetImage(ctx context.Context, id int64) []db.PostImage
 	DeletePost(ctx context.Context, id, user_id int64) error
 	DeleteImage(ctx context.Context, id, user_id int64) error
+	GetListImage(ctx context.Context, page, pageSize int32) ([]db.PostImage, error)
 	Backup(ctx context.Context)
 }

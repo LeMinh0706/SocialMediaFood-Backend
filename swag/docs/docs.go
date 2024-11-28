@@ -971,6 +971,144 @@ const docTemplate = `{
                 }
             }
         },
+        "/notification/seen-all/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update seen list notification with your account_id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notification"
+                ],
+                "summary": "Update Notification",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "AccountID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "No content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/notification/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get list Notification with your account_id, page and page size (Limit-Offset)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notification"
+                ],
+                "summary": "Get list Notification",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "AccountID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page Size",
+                        "name": "page_size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/notification.NotificationResponse"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update notification id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notification"
+                ],
+                "summary": "Update Notification",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "No content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/posts": {
             "get": {
                 "description": "Get list post with page and page size (Limit-Offset)",
@@ -1324,7 +1462,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Get list post with page and page size (Limit-Offset)",
+                "description": "Get post with id",
                 "consumes": [
                     "application/json"
                 ],
@@ -1334,7 +1472,7 @@ const docTemplate = `{
                 "tags": [
                     "Posts"
                 ],
-                "summary": "Get list post",
+                "summary": "Get post with id",
                 "parameters": [
                     {
                         "type": "integer",
@@ -2229,6 +2367,38 @@ const docTemplate = `{
                 }
             }
         },
+        "notification.NotificationResponse": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "invoice_id": {
+                    "type": "integer"
+                },
+                "is_seen": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "post_id": {
+                    "type": "integer"
+                },
+                "type_id": {
+                    "type": "integer"
+                },
+                "user_action": {
+                    "$ref": "#/definitions/db.GetAccountByIdRow"
+                }
+            }
+        },
         "post.PostResponse": {
             "type": "object",
             "properties": {
@@ -2293,9 +2463,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "state": {
-                    "type": "integer",
-                    "format": "int32",
-                    "example": 1
+                    "type": "integer"
                 }
             }
         },
@@ -2462,7 +2630,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "foodioo.camenryder.xyz:80",
+	Host:             "localhost:8070",
 	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "Foodioo Documentations",
