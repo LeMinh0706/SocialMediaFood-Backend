@@ -40,7 +40,8 @@ CREATE TABLE "notification" (
   "user_action_id" bigint NOT NULL,
   "invoice_id" bigint,
   "is_seen" bool NOT NULL DEFAULT false,
-  "created_at" timestamptz NOT NULL DEFAULT (now())
+  "created_at" timestamptz NOT NULL DEFAULT (now()),
+  "is_delete" bool NOT NULL DEFAULT false
 );
 
 CREATE INDEX ON "invoice" ("from_account_id");

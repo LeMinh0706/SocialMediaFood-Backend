@@ -1,12 +1,9 @@
 package notification
 
 import (
-	"strconv"
 	"time"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
-	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
-	"github.com/gin-gonic/gin"
 )
 
 type NotificationResponse struct {
@@ -19,6 +16,7 @@ type NotificationResponse struct {
 	InvoiceID  int64                `json:"invoice_id"`
 	IsSeen     bool                 `json:"is_seen"`
 	CreatedAt  time.Time            `json:"created_at"`
+	IsDelete   bool                 `json:"is_delete"`
 }
 
 func NotiRes(noti db.Notification, other db.GetAccountByIdRow) NotificationResponse {
@@ -32,19 +30,6 @@ func NotiRes(noti db.Notification, other db.GetAccountByIdRow) NotificationRespo
 		InvoiceID:  noti.InvoiceID.Int64,
 		IsSeen:     noti.IsSeen,
 		CreatedAt:  noti.CreatedAt.Time,
+		IsDelete:   noti.IsDelete,
 	}
-}
-
-func CheckQuery(g *gin.Context, pageStr, pageSizeStr string) (int32, int32) {
-	page, err := strconv.ParseInt(pageStr, 10, 32)
-	if err != nil {
-		response.ErrorResponse(g, 40001)
-		return 0, 0
-	}
-	pageSize, err := strconv.ParseInt(pageSizeStr, 10, 32)
-	if err != nil {
-		response.ErrorResponse(g, 40002)
-		return 0, 0
-	}
-	return int32(page), int32(pageSize)
 }

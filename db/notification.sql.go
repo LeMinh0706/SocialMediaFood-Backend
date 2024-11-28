@@ -19,7 +19,7 @@ INSERT INTO notification (
     user_action_id
 ) VALUES (
     $1, $2, $3, $4
-) RETURNING id, message, account_id, type_id, post_id, user_action_id, invoice_id, is_seen, created_at
+) RETURNING id, message, account_id, type_id, post_id, user_action_id, invoice_id, is_seen, created_at, is_delete
 `
 
 type CreateActionNotiParams struct {
@@ -47,6 +47,7 @@ func (q *Queries) CreateActionNoti(ctx context.Context, arg CreateActionNotiPara
 		&i.InvoiceID,
 		&i.IsSeen,
 		&i.CreatedAt,
+		&i.IsDelete,
 	)
 	return i, err
 }
@@ -60,7 +61,7 @@ INSERT INTO notification (
     user_action_id
 ) VALUES (
     $1, $2, $3, $4, $5
-) RETURNING id, message, account_id, type_id, post_id, user_action_id, invoice_id, is_seen, created_at
+) RETURNING id, message, account_id, type_id, post_id, user_action_id, invoice_id, is_seen, created_at, is_delete
 `
 
 type CreatePostNotiParams struct {
@@ -90,12 +91,13 @@ func (q *Queries) CreatePostNoti(ctx context.Context, arg CreatePostNotiParams) 
 		&i.InvoiceID,
 		&i.IsSeen,
 		&i.CreatedAt,
+		&i.IsDelete,
 	)
 	return i, err
 }
 
 const deleteNoti = `-- name: DeleteNoti :exec
-DELETE FROM notification 
+UPDATE notification SET is_delete = TRUE
 WHERE id = $1
 `
 
@@ -149,7 +151,7 @@ func (q *Queries) GetListNoti(ctx context.Context, arg GetListNotiParams) ([]Get
 }
 
 const getNotification = `-- name: GetNotification :one
-SELECT id, message, account_id, type_id, post_id, user_action_id, invoice_id, is_seen, created_at FROM notification
+SELECT id, message, account_id, type_id, post_id, user_action_id, invoice_id, is_seen, created_at, is_delete FROM notification
 WHERE id = $1
 `
 
@@ -166,6 +168,7 @@ func (q *Queries) GetNotification(ctx context.Context, id int64) (Notification, 
 		&i.InvoiceID,
 		&i.IsSeen,
 		&i.CreatedAt,
+		&i.IsDelete,
 	)
 	return i, err
 }

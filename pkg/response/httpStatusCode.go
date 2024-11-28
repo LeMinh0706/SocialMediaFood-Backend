@@ -8,6 +8,7 @@ const (
 	AddEmail              = 20103
 	SeenNoti              = 20104
 	DeleteSuccess         = 204
+	DeleteNoti            = 20401
 	ErrBadRequest         = 40000
 	ErrBadRequestPage     = 40001
 	ErrBadRequestPageSize = 40002
@@ -55,6 +56,7 @@ const (
 	YouHaveRequest        = 40307
 	PasswordHaveChange    = 40308
 	ResetPasswordTimeOut  = 40309
+	CantDelete            = 40425
 )
 
 var msg = map[int]string{
@@ -65,6 +67,7 @@ var msg = map[int]string{
 	ChangePassword:        "Success to reset password",
 	AddEmail:              "Add email complete",
 	SeenNoti:              "Seen notification success",
+	DeleteNoti:            "Delete notification success",
 	ErrBadRequest:         "Bad request",
 	ErrBadRequestPage:     "Page should be number and greater 1",
 	ErrBadRequestPageSize: "Page size should be number and greater 1",
@@ -111,6 +114,7 @@ var msg = map[int]string{
 	PasswordHaveChange:    "You have changed password before",
 	ResetPasswordTimeOut:  "You're to late, try request forgot-password again",
 	ErrDistance:           "Distance must be number",
+	CantDelete:            "Notification not found",
 }
 
 // ErrOutOfDate:   "Token is out of date",
