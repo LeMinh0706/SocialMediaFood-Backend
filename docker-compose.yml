@@ -9,3 +9,9 @@ services:
     volumes:
       - ./upload:/app/upload
       - ./app.env:/app/app.env
+      - ./logs:/app/logs
+    networks:
+      - socialmedia-network
+networks:
+  socialmedia-network:
+    external: true
