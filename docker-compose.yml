@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8070:8070"
+    volumes:
+      - ./upload:/app/upload
+      - ./app.env:/app/app.env
+      - ./logs:/app/logs
+    networks:
+      - socialmedia-network
+networks:
+  socialmedia-network:
+    external: true

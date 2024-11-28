@@ -2630,7 +2630,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "foodioo.camenryder.xyz:80",
+	Host:             "localhost:8070",
 	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "Foodioo Documentations",
