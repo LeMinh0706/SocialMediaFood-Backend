@@ -12,6 +12,6 @@ FROM alpine:3.20
 WORKDIR /app
 COPY --from=builder /app/backend .
 
-EXPOSE 8070
+EXPOSE 80
 
 CMD ["./backend"]
