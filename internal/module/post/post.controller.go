@@ -283,8 +283,8 @@ func (pc *PostController) GetHomePagePost(g *gin.Context) {
 }
 
 // Post godoc
-// @Summary      Get list post
-// @Description  Get list post with page and page size (Limit-Offset)
+// @Summary      Get post with id
+// @Description  Get post with id
 // @Tags         Posts
 // @Accept       json
 // @Produce      json
@@ -357,6 +357,22 @@ func (pc *PostController) GetPostWithLocation(g *gin.Context) {
 	list, err := pc.service.GetPostInLocate(g, distance, account_id, lng, lat, page, pageSize)
 	if err != nil {
 		response.ErrorNonKnow(g, 400, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 200, list)
+}
+
+func (pc *PostController) GetListImage(g *gin.Context) {
+	pageStr := g.Query("page")
+	pageSizeStr := g.Query("page_size")
+	page, pageSize := handler.CheckQuery(g, pageStr, pageSizeStr)
+	if page == 0 || pageSize == 0 {
+		return
+	}
+
+	list, err := pc.service.GetListImage(g, page, pageSize)
+	if err != nil {
+		response.ErrorNonKnow(g, 50000, err.Error())
 		return
 	}
 	response.SuccessResponse(g, 200, list)

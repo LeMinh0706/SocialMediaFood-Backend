@@ -234,6 +234,27 @@ definitions:
       quantity:
         type: integer
     type: object
+  notification.NotificationResponse:
+    properties:
+      account_id:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      invoice_id:
+        type: integer
+      is_seen:
+        type: boolean
+      message:
+        type: string
+      post_id:
+        type: integer
+      type_id:
+        type: integer
+      user_action:
+        $ref: '#/definitions/db.GetAccountByIdRow'
+    type: object
   post.PostResponse:
     properties:
       account:
@@ -277,8 +298,6 @@ definitions:
       post_id:
         type: integer
       state:
-        example: 1
-        format: int32
         type: integer
     type: object
   react.ReactResponse:
@@ -1003,6 +1022,95 @@ paths:
       summary: Add food
       tags:
       - Menu
+  /notification/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get list Notification with your account_id, page and page size
+        (Limit-Offset)
+      parameters:
+      - description: AccountID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/notification.NotificationResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Get list Notification
+      tags:
+      - Notification
+    put:
+      consumes:
+      - application/json
+      description: Update notification id
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Update Notification
+      tags:
+      - Notification
+  /notification/seen-all/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update seen list notification with your account_id
+      parameters:
+      - description: AccountID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Update Notification
+      tags:
+      - Notification
   /posts:
     get:
       consumes:
@@ -1088,7 +1196,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get list post with page and page size (Limit-Offset)
+      description: Get post with id
       parameters:
       - description: ID
         in: path
@@ -1115,7 +1223,7 @@ paths:
             $ref: '#/definitions/response.ErrSwaggerJson'
       security:
       - BearerAuth: []
-      summary: Get list post
+      summary: Get post with id
       tags:
       - Posts
     put:

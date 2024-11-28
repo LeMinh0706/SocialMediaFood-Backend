@@ -22,6 +22,19 @@ func NewNotificationController(service INotificationService, token token.Maker) 
 	}
 }
 
+// Notification godoc
+// @Summary      Get list Notification
+// @Description  Get list Notification with your account_id, page and page size (Limit-Offset)
+// @Tags         Notification
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "AccountID"
+// @Param        page query int true "Page"
+// @Param        page_size query int true "Page Size"
+// @Security BearerAuth
+// @Success      200  {object}  []NotificationResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /notification/{id} [get]
 func (n *NotificationController) GetYourNotification(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 	str := g.Param("id")
@@ -44,6 +57,17 @@ func (n *NotificationController) GetYourNotification(g *gin.Context) {
 	response.SuccessResponse(g, 200, list)
 }
 
+// Notification godoc
+// @Summary      Update Notification
+// @Description  Update notification id
+// @Tags         Notification
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "ID"
+// @Security BearerAuth
+// @Success      201  "No content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /notification/{id} [put]
 func (n *NotificationController) SeenYourNotification(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 	idStr := g.Param("id")
@@ -60,6 +84,17 @@ func (n *NotificationController) SeenYourNotification(g *gin.Context) {
 	response.SuccessResponse(g, response.SeenNoti, nil)
 }
 
+// Notification godoc
+// @Summary      Update Notification
+// @Description  Update seen list notification with your account_id
+// @Tags         Notification
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "AccountID"
+// @Security BearerAuth
+// @Success      201  "No content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /notification/seen-all/{id} [put]
 func (n *NotificationController) SeenAllNoti(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 	accStr := g.Param("id")
