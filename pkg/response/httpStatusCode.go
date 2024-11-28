@@ -74,7 +74,7 @@ var msg = map[int]string{
 	ErrBadLngLat:          "Lat, Lng should be number",
 	ErrBadRequestMime:     "Can only use file .png, .jpg, .jpeg, .gif",
 	ErrBadRequestId:       "Id must be number, can't convert from this request",
-	ErrImageLen:           "Images shoud less than 4",
+	ErrImageLen:           "Images shoud less than 10",
 	ErrGender:             "Gender should be 0 (for female) or 1 (for male)",
 	ErrUnauthorize:        "Unauthorized",
 	ErrInvalid:            "Invalid Token",

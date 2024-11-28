@@ -48,9 +48,12 @@ func (p *PostService) GetPostInLocate(ctx context.Context, dwithin int64, accoun
 }
 
 // GetImage implements IPostService.
-func (p *PostService) GetImage(ctx context.Context, id int64) []db.PostImage {
-	images, _ := p.queries.GetImagePost(ctx, id)
-	return images
+func (p *PostService) GetImage(ctx context.Context, id int64) ([]db.PostImage, error) {
+	images, err := p.queries.GetImagePost(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return images, nil
 }
 
 // GetHomePagePost implements IPostService.

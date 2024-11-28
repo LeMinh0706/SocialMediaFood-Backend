@@ -61,7 +61,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 
 	files := form.File["images"]
 
-	images, code := handler.AddImageFileError(g, 4, files)
+	images, code := handler.AddImageFileError(g, 10, files)
 	if code > 40000 {
 		response.ErrorResponse(g, code)
 		return
@@ -171,8 +171,12 @@ func (pc *PostController) UpdateContentPost(g *gin.Context) {
 	}
 
 	files := form.File["images"]
-	lenImg := pc.service.GetImage(g, id)
-	images, code := handler.AddImageFileError(g, 4-len(lenImg), files)
+	lenImg, err := pc.service.GetImage(g, id)
+	if err != nil {
+		response.ErrorResponse(g, response.ErrFindPost)
+		return
+	}
+	images, code := handler.AddImageFileError(g, 10-len(lenImg), files)
 	if code > 40000 {
 		response.ErrorResponse(g, code)
 		return
