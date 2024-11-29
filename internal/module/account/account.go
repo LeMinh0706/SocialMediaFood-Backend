@@ -18,6 +18,7 @@ type AccountResponse struct {
 	Country              string `json:"country"`
 	Language             string `json:"language"`
 	Address              string `json:"address"`
+	RoleID               int32  `json:"role_id"`
 	IsUpgrade            bool   `json:"is_upgrade"`
 }
 
@@ -36,6 +37,7 @@ func AccountRes(account db.Account) AccountResponse {
 		Country:              account.Country.String,
 		Language:             account.Language.String,
 		Address:              account.Address.String,
+		RoleID:               account.RoleID,
 		IsUpgrade:            account.IsUpgrade.Bool,
 	}
 }

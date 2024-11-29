@@ -167,6 +167,19 @@ type Status struct {
 	Name string `json:"name"`
 }
 
+type UpgradePrice struct {
+	ID        int32              `json:"id"`
+	Price     pgtype.Numeric     `json:"price"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+}
+
+type UpgradeQueue struct {
+	AccountID      int64              `json:"account_id"`
+	UpgradePriceID pgtype.Int4        `json:"upgrade_price_id"`
+	CreatedAt      pgtype.Timestamptz `json:"created_at"`
+	Status         string             `json:"status"`
+}
+
 type User struct {
 	ID           int64              `json:"id"`
 	Email        pgtype.Text        `json:"email"`

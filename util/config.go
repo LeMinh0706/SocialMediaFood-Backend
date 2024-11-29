@@ -19,6 +19,11 @@ type Config struct {
 	MaxConnIdleTime     time.Duration `mapstructure:"MAX_CONN_IDLE_TIME"`
 	MaxConnLifetime     time.Duration `mapstructure:"MAX_CONN_LIFE_TIME"`
 	FrontEndUrl         string        `mapstructure:"FRONTEND_URL"`
+	EmailAdmin          string        `mapstructure:"EMAIL_ADMIN"`
+	SMTPHost            string        `mapstructure:"SMTP_HOST"`
+	SMTPPort            string        `mapstructure:"SMTP_PORT"`
+	SMTPUsername        string        `mapstructure:"SMTP_USERNAME"`
+	SMTPPassword        string        `mapstructure:"SMTP_PASSWORD"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

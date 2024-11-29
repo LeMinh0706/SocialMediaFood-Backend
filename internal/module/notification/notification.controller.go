@@ -133,7 +133,7 @@ func (n *NotificationController) DeleteNotification(g *gin.Context) {
 	}
 	err = n.service.DeleteNoti(g, auth.UserId, id)
 	if err != nil {
-		response.ErrorResponse(g, response.DeleteSuccess)
+		handler.CheckPostStringError(g, err)
 		return
 	}
 	response.SuccessResponse(g, response.DeleteNoti, nil)
