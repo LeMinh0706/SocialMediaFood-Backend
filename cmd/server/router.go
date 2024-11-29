@@ -21,7 +21,7 @@ import (
 )
 
 func (s *Server) NewRouter() {
-	fac, err := factory.NewFactory(s.DBConn)
+	fac, err := factory.NewFactory(s.DBConn, s.Config)
 	if err != nil {
 		log.Fatal(err)
 	}

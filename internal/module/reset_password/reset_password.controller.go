@@ -1,9 +1,8 @@
 package reset_password
 
 import (
-	"fmt"
+	"context"
 	"strings"
-	"time"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/handler"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/pkg/response"
@@ -43,7 +42,7 @@ func (rc *ResetPasswordController) ForgotPassword(g *gin.Context) {
 		response.ErrorResponse(g, 4000000)
 		return
 	}
-	user, err := rc.service.ForgotPassword(g, email)
+	user, err := rc.service.ForgotPassword(g, email, rc.config)
 	if err != nil {
 		handler.ResetPasswordErr(g, err)
 		return
@@ -59,9 +58,12 @@ func (rc *ResetPasswordController) ForgotPassword(g *gin.Context) {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return
 	}
-	link := fmt.Sprintf("%v?kamehameha=%v", rc.config.FrontEndUrl, token)
-	time.Sleep(time.Second)
-	response.SuccessResponse(g, 201, ResponseLink{Link: link})
+	errMail := rc.service.SendMail(context.Background(), email, token, rc.config)
+	if errMail != nil {
+		response.ErrorNonKnow(g, 50000, errMail.Error())
+		return
+	}
+	response.SuccessResponse(g, 201, nil)
 }
 
 func (rc *ResetPasswordController) FetchLink(g *gin.Context) {}

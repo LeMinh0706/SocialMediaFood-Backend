@@ -14,6 +14,7 @@ type Querier interface {
 	AddEmail(ctx context.Context, arg AddEmailParams) error
 	AddImagePost(ctx context.Context, arg AddImagePostParams) (PostImage, error)
 	AddToMenu(ctx context.Context, arg AddToMenuParams) (Menu, error)
+	AddUpgradePrice(ctx context.Context, price pgtype.Numeric) (UpgradePrice, error)
 	CountComment(ctx context.Context, postTopID pgtype.Int8) (int64, error)
 	CountFollower(ctx context.Context, fromFollow int64) (int64, error)
 	CountFriend(ctx context.Context, fromFollow int64) (int64, error)
@@ -66,12 +67,15 @@ type Querier interface {
 	GetPostInLocate(ctx context.Context, arg GetPostInLocateParams) ([]int64, error)
 	GetReact(ctx context.Context, arg GetReactParams) (ReactPost, error)
 	GetRequestByUUID(ctx context.Context, id pgtype.UUID) (ResetPassword, error)
+	GetUpgradePrice(ctx context.Context, arg GetUpgradePriceParams) ([]UpgradePrice, error)
+	GetUpgradeQueue(ctx context.Context, arg GetUpgradeQueueParams) ([]int64, error)
 	GetUserByEmail(ctx context.Context, email pgtype.Text) (GetUserByEmailRow, error)
 	GetUserById(ctx context.Context, id int64) (GetUserByIdRow, error)
 	GetYourFollower(ctx context.Context, arg GetYourFollowerParams) ([]int64, error)
 	GetYourFriend(ctx context.Context, arg GetYourFriendParams) ([]int64, error)
 	GetYourReport(ctx context.Context, arg GetYourReportParams) ([]GetYourReportRow, error)
 	GetYourRequest(ctx context.Context, arg GetYourRequestParams) ([]int64, error)
+	IsAdmin(ctx context.Context, userID int64) (int32, error)
 	ListAccountReact(ctx context.Context, postID int64) ([]int64, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	OwnerUpdateQuanity(ctx context.Context, arg OwnerUpdateQuanityParams) (Menu, error)
@@ -90,6 +94,8 @@ type Querier interface {
 	UpdateSeen(ctx context.Context, id int64) error
 	UpdateSeenAll(ctx context.Context, accountID int64) error
 	UpdateState(ctx context.Context, arg UpdateStateParams) (ReactPost, error)
+	UpgradeOwner(ctx context.Context, id int64) error
+	UpgradeStateQueue(ctx context.Context, accountID int64) error
 	UpgradeSuccess(ctx context.Context, id int64) (int64, error)
 }
 

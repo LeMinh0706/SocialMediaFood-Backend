@@ -3,6 +3,7 @@ package factory
 import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/account"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/admin"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/comment"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/follower"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/menu"
@@ -12,6 +13,7 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/report"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/reset_password"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/user"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -26,11 +28,13 @@ type Factory struct {
 	ResetPasswordService reset_password.IResetPasswordService
 	MenuService          menu.IMenuService
 	NotificationService  notification.INotificationService
+	AdminService         admin.IAdminService
 }
 
 // Đang sửa lại thành cấu trúc cũ thì thành như này
-func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
+func NewFactory(pq *pgxpool.Pool, config util.Config) (*Factory, error) {
 
+	//Store transaction
 	store := db.NewStore(pq)
 
 	//Repo
@@ -48,6 +52,7 @@ func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
 	reportService := report.NewReportService(q, accountService)
 	resetService := reset_password.NewResetPasswordService(q)
 	menuService := menu.NewMenuService(q)
+	adminService := admin.NewAdminService(q, accountService, postService)
 
 	///return
 	return &Factory{
@@ -61,5 +66,6 @@ func NewFactory(pq *pgxpool.Pool) (*Factory, error) {
 		ResetPasswordService: resetService,
 		MenuService:          menuService,
 		NotificationService:  notificationService,
+		AdminService:         adminService,
 	}, nil
 }

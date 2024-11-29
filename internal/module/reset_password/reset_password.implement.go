@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/mails"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/util"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -16,8 +17,18 @@ type ResetPasswordService struct {
 	queries *db.Queries
 }
 
+// SendMail implements IResetPasswordService.
+func (r *ResetPasswordService) SendMail(ctx context.Context, email string, token string, config util.Config) error {
+	link := fmt.Sprintf("%v?token=%v", config.FrontEndUrl, token)
+	err := mails.SendMailResetPassword([]string{email}, link, config)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // ForgotPassword implements IResetPasswordService.
-func (r *ResetPasswordService) ForgotPassword(ctx context.Context, email string) (db.GetUserByEmailRow, error) {
+func (r *ResetPasswordService) ForgotPassword(ctx context.Context, email string, config util.Config) (db.GetUserByEmailRow, error) {
 	var res db.GetUserByEmailRow
 	user, err := r.queries.GetUserByEmail(ctx, pgtype.Text{String: email, Valid: true})
 	if err != nil {
@@ -73,11 +84,6 @@ func (r *ResetPasswordService) ChangePassword(ctx context.Context, uuid uuid.UUI
 		return err
 	}
 	return nil
-}
-
-// SendMail implements IResetPasswordService.
-func (r *ResetPasswordService) SendMail(ctx context.Context, arg db.GetUserByEmailRow) error {
-	panic("unimplemented")
 }
 
 func NewResetPasswordService(queries *db.Queries) IResetPasswordService {
