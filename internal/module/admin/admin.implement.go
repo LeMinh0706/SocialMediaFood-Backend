@@ -21,9 +21,9 @@ type AdminService struct {
 func (a *AdminService) AddUpgragePrice(ctx context.Context, user_id int64, price float64) (UpgradePrice, error) {
 	err := a.IsAdmin(ctx, user_id)
 	if err != nil {
-		return UpgradePrice{}, fmt.Errorf("not admin")
+		return UpgradePrice{}, err
 	}
-	create, err := a.queries.AddUpgradePrice(ctx, pgtype.Numeric{Exp: -3, Int: big.NewInt(int64(price * 1000))})
+	create, err := a.queries.AddUpgradePrice(ctx, pgtype.Numeric{Exp: -3, Int: big.NewInt(int64(price * 1000)), Valid: true})
 	if err != nil {
 		return UpgradePrice{}, err
 	}
@@ -44,7 +44,7 @@ func (a *AdminService) GetListReportPost(ctx context.Context, user_id int64, acc
 // GetUpgradePrice implements IAdminService.
 func (a *AdminService) GetUpgradePrice(ctx context.Context, page int32, page_size int32) ([]UpgradePrice, error) {
 	var res []UpgradePrice
-	list, err := a.queries.GetUpgradePrice(ctx, db.GetUpgradePriceParams{
+	list, err := a.queries.GetListUpgradePrice(ctx, db.GetListUpgradePriceParams{
 		Limit:  page_size,
 		Offset: (page - 1) * page_size,
 	})

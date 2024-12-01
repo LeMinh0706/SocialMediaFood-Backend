@@ -28,7 +28,7 @@ ORDER BY expires_at DESC
 LIMIT 1;
 
 -- name: GetUserById :one
-SELECT id, username FROM users
+SELECT id, username, email FROM users
 WHERE id = $1
 LIMIT 1;
 

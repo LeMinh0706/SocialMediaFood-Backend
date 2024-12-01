@@ -175,7 +175,7 @@ type UpgradePrice struct {
 
 type UpgradeQueue struct {
 	AccountID      int64              `json:"account_id"`
-	UpgradePriceID pgtype.Int4        `json:"upgrade_price_id"`
+	UpgradePriceID int32              `json:"upgrade_price_id"`
 	CreatedAt      pgtype.Timestamptz `json:"created_at"`
 	Status         string             `json:"status"`
 }

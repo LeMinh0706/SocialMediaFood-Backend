@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE "upgrade_queue" (
   "account_id" bigint UNIQUE NOT NULL,
-  "upgrade_price_id" int,
+  "upgrade_price_id" int NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "status" varchar NOT NULL DEFAULT 'pending'
 );

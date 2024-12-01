@@ -52,6 +52,7 @@ type Querier interface {
 	GetImageComment(ctx context.Context, postID int64) (PostImage, error)
 	GetImagePost(ctx context.Context, postID int64) ([]PostImage, error)
 	GetIssue(ctx context.Context, id int32) (IssuePost, error)
+	GetLastPrice(ctx context.Context) (UpgradePrice, error)
 	//comment
 	GetListComment(ctx context.Context, arg GetListCommentParams) ([]int64, error)
 	GetListImage(ctx context.Context, arg GetListImageParams) ([]PostImage, error)
@@ -59,6 +60,7 @@ type Querier interface {
 	GetListNoti(ctx context.Context, arg GetListNotiParams) ([]GetListNotiRow, error)
 	GetListPost(ctx context.Context, arg GetListPostParams) ([]int64, error)
 	GetListReact(ctx context.Context, arg GetListReactParams) ([]int64, error)
+	GetListUpgradePrice(ctx context.Context, arg GetListUpgradePriceParams) ([]UpgradePrice, error)
 	GetLocation(ctx context.Context, accountID int64) ([]GetLocationRow, error)
 	GetMenu(ctx context.Context, arg GetMenuParams) ([]Menu, error)
 	GetNotification(ctx context.Context, id int64) (Notification, error)
@@ -67,7 +69,6 @@ type Querier interface {
 	GetPostInLocate(ctx context.Context, arg GetPostInLocateParams) ([]int64, error)
 	GetReact(ctx context.Context, arg GetReactParams) (ReactPost, error)
 	GetRequestByUUID(ctx context.Context, id pgtype.UUID) (ResetPassword, error)
-	GetUpgradePrice(ctx context.Context, arg GetUpgradePriceParams) ([]UpgradePrice, error)
 	GetUpgradeQueue(ctx context.Context, arg GetUpgradeQueueParams) ([]int64, error)
 	GetUserByEmail(ctx context.Context, email pgtype.Text) (GetUserByEmailRow, error)
 	GetUserById(ctx context.Context, id int64) (GetUserByIdRow, error)
@@ -85,6 +86,7 @@ type Querier interface {
 	UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) (UpdateAvatarRow, error)
 	UpdateBackground(ctx context.Context, arg UpdateBackgroundParams) (UpdateBackgroundRow, error)
 	UpdateComment(ctx context.Context, arg UpdateCommentParams) (UpdateCommentRow, error)
+	UpdateEmail(ctx context.Context, arg UpdateEmailParams) error
 	UpdateFriend(ctx context.Context, arg UpdateFriendParams) error
 	UpdateImagePost(ctx context.Context, arg UpdateImagePostParams) (PostImage, error)
 	UpdateName(ctx context.Context, arg UpdateNameParams) (UpdateNameRow, error)
@@ -94,6 +96,7 @@ type Querier interface {
 	UpdateSeen(ctx context.Context, id int64) error
 	UpdateSeenAll(ctx context.Context, accountID int64) error
 	UpdateState(ctx context.Context, arg UpdateStateParams) (ReactPost, error)
+	UpgradeOnwerRequest(ctx context.Context, arg UpgradeOnwerRequestParams) error
 	UpgradeOwner(ctx context.Context, id int64) error
 	UpgradeStateQueue(ctx context.Context, accountID int64) error
 	UpgradeSuccess(ctx context.Context, id int64) (int64, error)

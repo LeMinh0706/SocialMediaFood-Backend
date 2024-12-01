@@ -202,3 +202,13 @@ func CheckPostStringError(g *gin.Context, err error) {
 	}
 	response.ErrorNonKnow(g, 500, err.Error())
 }
+
+func AdminErr(g *gin.Context, err error) {
+	switch err.Error() {
+	case "permission":
+		response.ErrorResponse(g, 40118)
+		return
+	}
+	response.ErrorNonKnow(g, 500, err.Error())
+
+}

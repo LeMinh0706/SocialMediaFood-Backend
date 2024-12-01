@@ -7,3 +7,7 @@ type UpgradePrice struct {
 	Price     float64   `json:"price"`
 	CreatedAt time.Time `json:"created_at"`
 }
+
+type AddUpgradePrice struct {
+	Price float64 `json:"price" binding:"required"`
+}
