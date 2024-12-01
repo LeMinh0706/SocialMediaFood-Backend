@@ -24,6 +24,7 @@ type Config struct {
 	SMTPPort            string        `mapstructure:"SMTP_PORT"`
 	SMTPUsername        string        `mapstructure:"SMTP_USERNAME"`
 	SMTPPassword        string        `mapstructure:"SMTP_PASSWORD"`
+	APKLink             string        `mapstructure:"APK_LINK"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

@@ -35,3 +35,20 @@ func SendMailResetPassword(to []string, link string, config util.Config) error {
 	}
 	return nil
 }
+
+func SpamMailAPK(to []string, link string, config util.Config) error {
+	content := Mail{
+		From:    EmailAddress{Address: config.EmailAdmin, Name: "Foodioo Team"},
+		To:      to,
+		Subject: "Foodioo's gift",
+		Body:    fmt.Sprintf("%s\nNhấn vào <a href='%s'>đây</a> để nhận được sản phẩm", link, config.APKLink),
+	}
+	message := BuildMessage(content)
+
+	auth := smtp.PlainAuth("", config.SMTPUsername, config.SMTPPassword, config.SMTPHost)
+	err := smtp.SendMail(config.SMTPHost+config.SMTPPort, auth, config.EmailAdmin, to, []byte(message))
+	if err != nil {
+		logger.Logger.Error("Send email fail: ", zap.Error(err))
+	}
+	return nil
+}
