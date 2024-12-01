@@ -109,9 +109,22 @@ func (q *Queries) GetListUpgradePrice(ctx context.Context, arg GetListUpgradePri
 	return items, nil
 }
 
+const getStatusQueue = `-- name: GetStatusQueue :one
+SELECT status FROM upgrade_queue
+WHERE account_id = $1
+LIMIT 1
+`
+
+func (q *Queries) GetStatusQueue(ctx context.Context, accountID int64) (string, error) {
+	row := q.db.QueryRow(ctx, getStatusQueue, accountID)
+	var status string
+	err := row.Scan(&status)
+	return status, err
+}
+
 const getUpgradeQueue = `-- name: GetUpgradeQueue :many
 SELECT account_id FROM upgrade_queue
-WHERE state = 'pending'
+WHERE status = 'pending'
 ORDER BY created_at
 LIMIT $1
 OFFSET $2
@@ -144,7 +157,7 @@ func (q *Queries) GetUpgradeQueue(ctx context.Context, arg GetUpgradeQueueParams
 
 const getUpgradeSuccess = `-- name: GetUpgradeSuccess :many
 SELECT account_id FROM upgrade_queue
-WHERE state = 'paid'
+WHERE status = 'paid'
 ORDER BY created_at
 LIMIT $1
 OFFSET $2
@@ -242,7 +255,7 @@ func (q *Queries) ReportPostDetail(ctx context.Context, arg ReportPostDetailPara
 }
 
 const upgradeOwner = `-- name: UpgradeOwner :exec
-UPDATE accounts SET is_upgrade = TRUE AND role_id = 2
+UPDATE accounts SET is_upgrade = TRUE, role_id = 2
 WHERE id = $1
 `
 
@@ -252,7 +265,7 @@ func (q *Queries) UpgradeOwner(ctx context.Context, id int64) error {
 }
 
 const upgradeStateQueue = `-- name: UpgradeStateQueue :exec
-UPDATE upgrade_queue SET state = 'paid'
+UPDATE upgrade_queue SET status = 'paid'
 WHERE account_id = $1
 `
 

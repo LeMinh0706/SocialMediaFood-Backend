@@ -23,22 +23,22 @@ LIMIT 1;
 
 -- name: GetUpgradeQueue :many
 SELECT account_id FROM upgrade_queue
-WHERE state = 'pending'
+WHERE status = 'pending'
 ORDER BY created_at
 LIMIT $1
 OFFSET $2;
 
 -- name: UpgradeStateQueue :exec
-UPDATE upgrade_queue SET state = 'paid'
+UPDATE upgrade_queue SET status = 'paid'
 WHERE account_id = $1;
 
 -- name: UpgradeOwner :exec
-UPDATE accounts SET is_upgrade = TRUE AND role_id = 2
+UPDATE accounts SET is_upgrade = TRUE, role_id = 2
 WHERE id = $1;
 
 -- name: GetUpgradeSuccess :many
 SELECT account_id FROM upgrade_queue
-WHERE state = 'paid'
+WHERE status = 'paid'
 ORDER BY created_at
 LIMIT $1
 OFFSET $2;
@@ -59,3 +59,8 @@ WHERE r.post_id = $1
 ORDER BY r.created_at DESC 
 LIMIT $2
 OFFSET $3;
+
+-- name: GetStatusQueue :one
+SELECT status FROM upgrade_queue
+WHERE account_id = $1
+LIMIT 1;

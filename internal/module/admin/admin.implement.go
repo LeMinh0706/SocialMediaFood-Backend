@@ -158,8 +158,18 @@ func (a *AdminService) UpgradeSuccess(ctx context.Context, user_id int64, accoun
 	if err != nil {
 		return res, err
 	}
-	a.queries.UpgradeStateQueue(ctx, account_id)
-	a.queries.UpgradeOwner(ctx, account_id)
+	_, err = a.queries.GetStatusQueue(ctx, account_id)
+	if err != nil {
+		return res, fmt.Errorf("they're not request to upgrade")
+	}
+	err = a.queries.UpgradeStateQueue(ctx, account_id)
+	if err != nil {
+		return res, err
+	}
+	err = a.queries.UpgradeOwner(ctx, account_id)
+	if err != nil {
+		return res, err
+	}
 	account, _ := a.acc.GetAccount(ctx, account_id)
 	return account, nil
 }

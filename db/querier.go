@@ -70,6 +70,7 @@ type Querier interface {
 	GetPostInLocate(ctx context.Context, arg GetPostInLocateParams) ([]int64, error)
 	GetReact(ctx context.Context, arg GetReactParams) (ReactPost, error)
 	GetRequestByUUID(ctx context.Context, id pgtype.UUID) (ResetPassword, error)
+	GetStatusQueue(ctx context.Context, accountID int64) (string, error)
 	GetUpgradeQueue(ctx context.Context, arg GetUpgradeQueueParams) ([]int64, error)
 	GetUpgradeSuccess(ctx context.Context, arg GetUpgradeSuccessParams) ([]int64, error)
 	GetUserByEmail(ctx context.Context, email pgtype.Text) (GetUserByEmailRow, error)
