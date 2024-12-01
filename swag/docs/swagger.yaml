@@ -825,7 +825,7 @@ paths:
     delete:
       consumes:
       - application/json
-      description: They're waiting for your accept
+      description: Cái này tạm thời chưa có, cảm ơn vì đã xem
       parameters:
       - description: ID
         in: path

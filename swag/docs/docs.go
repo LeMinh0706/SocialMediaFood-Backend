@@ -685,7 +685,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "They're waiting for your accept",
+                "description": "Cái này tạm thời chưa có, cảm ơn vì đã xem",
                 "consumes": [
                     "application/json"
                 ],
