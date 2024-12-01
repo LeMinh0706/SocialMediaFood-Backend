@@ -662,6 +662,35 @@ paths:
       tags:
       - Accounts
   /admin/price:
+    get:
+      consumes:
+      - application/json
+      description: Get list price for upgrade in admin dashboard
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Only admin can do this
+      tags:
+      - Admin
     post:
       consumes:
       - application/json
@@ -673,6 +702,160 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/admin.AddUpgradePrice'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Only admin can do this
+      tags:
+      - Admin
+  /admin/report:
+    get:
+      consumes:
+      - application/json
+      description: Get list post were reported
+      parameters:
+      - description: AccountID
+        in: query
+        name: account_id
+        required: true
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Only admin can do this
+      tags:
+      - Admin
+  /admin/report/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get list report, who report for upgrade in admin dashboard
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: AccountID
+        in: query
+        name: account_id
+        required: true
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Only admin can do this
+      tags:
+      - Admin
+  /admin/upgrade-queue:
+    get:
+      consumes:
+      - application/json
+      description: They're waiting for your accept
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Only admin can do this
+      tags:
+      - Admin
+  /admin/upgrade-queue/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: They're waiting for your accept
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Only admin can do this
+      tags:
+      - Admin
+    post:
+      consumes:
+      - application/json
+      description: They're waiting for your accept
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:

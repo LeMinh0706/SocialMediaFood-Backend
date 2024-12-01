@@ -38,8 +38,48 @@ func (q *Queries) GetLastPrice(ctx context.Context) (UpgradePrice, error) {
 	return i, err
 }
 
+const getListPostReport = `-- name: GetListPostReport :many
+SELECT post_id, count(account_id) FROM report_post
+GROUP BY post_id
+HAVING count(account_id)>4
+ORDER BY created_at DESC 
+LIMIT $1
+OFFSET $2
+`
+
+type GetListPostReportParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+type GetListPostReportRow struct {
+	PostID int64 `json:"post_id"`
+	Count  int64 `json:"count"`
+}
+
+func (q *Queries) GetListPostReport(ctx context.Context, arg GetListPostReportParams) ([]GetListPostReportRow, error) {
+	rows, err := q.db.Query(ctx, getListPostReport, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetListPostReportRow{}
+	for rows.Next() {
+		var i GetListPostReportRow
+		if err := rows.Scan(&i.PostID, &i.Count); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getListUpgradePrice = `-- name: GetListUpgradePrice :many
 SELECT id, price, created_at FROM upgrade_price
+ORDER BY id DESC
 LIMIT $1
 OFFSET $2
 `
@@ -102,6 +142,39 @@ func (q *Queries) GetUpgradeQueue(ctx context.Context, arg GetUpgradeQueueParams
 	return items, nil
 }
 
+const getUpgradeSuccess = `-- name: GetUpgradeSuccess :many
+SELECT account_id FROM upgrade_queue
+WHERE state = 'paid'
+ORDER BY created_at
+LIMIT $1
+OFFSET $2
+`
+
+type GetUpgradeSuccessParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetUpgradeSuccess(ctx context.Context, arg GetUpgradeSuccessParams) ([]int64, error) {
+	rows, err := q.db.Query(ctx, getUpgradeSuccess, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []int64{}
+	for rows.Next() {
+		var account_id int64
+		if err := rows.Scan(&account_id); err != nil {
+			return nil, err
+		}
+		items = append(items, account_id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const isAdmin = `-- name: IsAdmin :one
 SELECT role_id FROM accounts
 WHERE user_id = $1
@@ -114,6 +187,58 @@ func (q *Queries) IsAdmin(ctx context.Context, userID int64) (int32, error) {
 	var role_id int32
 	err := row.Scan(&role_id)
 	return role_id, err
+}
+
+const reportPostDetail = `-- name: ReportPostDetail :many
+SELECT r.account_id, r.issue_id, r.created_at, i.id, i.name, i.is_deleted FROM report_post r
+LEFT JOIN issue_post i
+ON r.issue_id = i.id 
+WHERE r.post_id = $1  
+ORDER BY r.created_at DESC 
+LIMIT $2
+OFFSET $3
+`
+
+type ReportPostDetailParams struct {
+	PostID int64 `json:"post_id"`
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+type ReportPostDetailRow struct {
+	AccountID int64              `json:"account_id"`
+	IssueID   int32              `json:"issue_id"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+	ID        pgtype.Int4        `json:"id"`
+	Name      pgtype.Text        `json:"name"`
+	IsDeleted pgtype.Bool        `json:"is_deleted"`
+}
+
+func (q *Queries) ReportPostDetail(ctx context.Context, arg ReportPostDetailParams) ([]ReportPostDetailRow, error) {
+	rows, err := q.db.Query(ctx, reportPostDetail, arg.PostID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ReportPostDetailRow{}
+	for rows.Next() {
+		var i ReportPostDetailRow
+		if err := rows.Scan(
+			&i.AccountID,
+			&i.IssueID,
+			&i.CreatedAt,
+			&i.ID,
+			&i.Name,
+			&i.IsDeleted,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const upgradeOwner = `-- name: UpgradeOwner :exec

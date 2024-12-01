@@ -59,6 +59,7 @@ const (
 	PasswordHaveChange    = 40308
 	ResetPasswordTimeOut  = 40309
 	CantDelete            = 40425
+	ErrBadRequestQuery    = 40023
 )
 
 var msg = map[int]string{
@@ -73,6 +74,7 @@ var msg = map[int]string{
 	ErrBadRequest:         "Bad request",
 	ErrBadRequestPage:     "Page should be number and greater 1",
 	ErrBadRequestPageSize: "Page size should be number and greater 1",
+	ErrBadRequestQuery:    "Page and page size should be number and greater 1",
 	ErrBadLngLat:          "Lat, Lng should be number",
 	ErrBadRequestMime:     "Can only use file .png, .jpg, .jpeg, .gif",
 	ErrBadRequestId:       "Id must be number, can't convert from this request",

@@ -107,6 +107,10 @@ func CheckQuery(g *gin.Context, pageStr, pageSizeStr string) (int32, int32) {
 		response.ErrorResponse(g, 40002)
 		return 0, 0
 	}
+	if page <= 0 || pageSize <= 0 {
+		response.ErrorResponse(g, 40023)
+		return 0, 0
+	}
 	return int32(page), int32(pageSize)
 }
 
