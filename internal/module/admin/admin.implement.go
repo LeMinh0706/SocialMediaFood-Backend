@@ -17,6 +17,40 @@ type AdminService struct {
 	post    post.IPostService
 }
 
+// GetDetailReportPost implements IAdminService.
+func (a *AdminService) GetDetailReportPost(ctx context.Context, post_id int64, user_id int64, account_id int64, page int32, page_size int32) (ReportDetailResponse, error) {
+	var res ReportDetailResponse
+	err := a.IsAdmin(ctx, user_id)
+	if err != nil {
+		return res, err
+	}
+	post, err := a.post.GetPost(ctx, account_id, post_id)
+	if err != nil {
+		return res, err
+	}
+	list, err := a.queries.ReportPostDetail(ctx, db.ReportPostDetailParams{
+		PostID: post_id,
+		Limit:  page_size,
+		Offset: (page - 1) * page_size,
+	})
+	if err != nil {
+		return res, err
+	}
+	arr := make([]ReportFrom, 0)
+	for _, element := range list {
+		acc, _ := a.acc.GetAccountById(ctx, element.AccountID)
+		i := ReportFrom{Account: acc, Issue: db.IssuePost{ID: element.IssueID, Name: element.Name.String, IsDeleted: element.IsDeleted.Bool}}
+		arr = append(arr, i)
+	}
+	res = ReportDetailResponse{Post: post, IssuePosts: arr}
+	return res, nil
+}
+
+// GetUpgradeSuccess implements IAdminService.
+func (a *AdminService) GetUpgradeSuccess(ctx context.Context, page int32, page_size int32) ([]account.AccountResponse, error) {
+	panic("unimplemented")
+}
+
 // AddUpgragePrice implements IAdminService.
 func (a *AdminService) AddUpgragePrice(ctx context.Context, user_id int64, price float64) (UpgradePrice, error) {
 	err := a.IsAdmin(ctx, user_id)
@@ -38,7 +72,26 @@ func (a *AdminService) BanPost(ctx context.Context, user_id int64, post_id int64
 
 // GetListReportPost implements IAdminService.
 func (a *AdminService) GetListReportPost(ctx context.Context, user_id int64, account_id int64, page int32, page_size int32) ([]post.PostResponse, error) {
-	panic("unimplemented")
+	var res []post.PostResponse
+	err := a.IsAdmin(ctx, user_id)
+	if err != nil {
+		return nil, err
+	}
+	list, err := a.queries.GetListPostReport(ctx, db.GetListPostReportParams{
+		Limit:  page_size,
+		Offset: (page - 1) * page_size,
+	})
+	if err != nil {
+		return nil, err
+	}
+	for _, element := range list {
+		post, err := a.post.GetPost(ctx, account_id, element.PostID)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, post)
+	}
+	return res, nil
 }
 
 // GetUpgradePrice implements IAdminService.
@@ -105,8 +158,18 @@ func (a *AdminService) UpgradeSuccess(ctx context.Context, user_id int64, accoun
 	if err != nil {
 		return res, err
 	}
-	go a.queries.UpgradeStateQueue(ctx, account_id)
-	go a.queries.UpgradeOwner(ctx, account_id)
+	_, err = a.queries.GetStatusQueue(ctx, account_id)
+	if err != nil {
+		return res, fmt.Errorf("they're not request to upgrade")
+	}
+	err = a.queries.UpgradeStateQueue(ctx, account_id)
+	if err != nil {
+		return res, err
+	}
+	err = a.queries.UpgradeOwner(ctx, account_id)
+	if err != nil {
+		return res, err
+	}
 	account, _ := a.acc.GetAccount(ctx, account_id)
 	return account, nil
 }

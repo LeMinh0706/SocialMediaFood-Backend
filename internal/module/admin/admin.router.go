@@ -11,5 +11,10 @@ func NewAdminRouter(r *gin.Engine, group *gin.RouterGroup, service IAdminService
 	adminGroup := r.Group(group.BasePath() + "/admin").Use(middlewares.AuthorizeMiddleware(token))
 	{
 		adminGroup.POST("/price", ac.AddUpgradePrice)
+		adminGroup.GET("/price", ac.GetListUpgradePrice)
+		adminGroup.GET("/report", ac.GetListReportPost)
+		adminGroup.GET("/report/:id", ac.GetDetailReportPost)
+		adminGroup.GET("/upgrade-queue", ac.GetUpgradeQueue)
+		adminGroup.POST("/upgrade-queue/:id", ac.UpgradeSuccess)
 	}
 }
