@@ -25,19 +25,32 @@ func (q *Queries) AddUpgradePrice(ctx context.Context, price pgtype.Numeric) (Up
 	return i, err
 }
 
-const getUpgradePrice = `-- name: GetUpgradePrice :many
+const getLastPrice = `-- name: GetLastPrice :one
+SELECT id, price, created_at FROM upgrade_price
+ORDER BY id DESC
+LIMIT 1
+`
+
+func (q *Queries) GetLastPrice(ctx context.Context) (UpgradePrice, error) {
+	row := q.db.QueryRow(ctx, getLastPrice)
+	var i UpgradePrice
+	err := row.Scan(&i.ID, &i.Price, &i.CreatedAt)
+	return i, err
+}
+
+const getListUpgradePrice = `-- name: GetListUpgradePrice :many
 SELECT id, price, created_at FROM upgrade_price
 LIMIT $1
 OFFSET $2
 `
 
-type GetUpgradePriceParams struct {
+type GetListUpgradePriceParams struct {
 	Limit  int32 `json:"limit"`
 	Offset int32 `json:"offset"`
 }
 
-func (q *Queries) GetUpgradePrice(ctx context.Context, arg GetUpgradePriceParams) ([]UpgradePrice, error) {
-	rows, err := q.db.Query(ctx, getUpgradePrice, arg.Limit, arg.Offset)
+func (q *Queries) GetListUpgradePrice(ctx context.Context, arg GetListUpgradePriceParams) ([]UpgradePrice, error) {
+	rows, err := q.db.Query(ctx, getListUpgradePrice, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -59,6 +72,7 @@ func (q *Queries) GetUpgradePrice(ctx context.Context, arg GetUpgradePriceParams
 const getUpgradeQueue = `-- name: GetUpgradeQueue :many
 SELECT account_id FROM upgrade_queue
 WHERE state = 'pending'
+ORDER BY created_at
 LIMIT $1
 OFFSET $2
 `
@@ -103,7 +117,7 @@ func (q *Queries) IsAdmin(ctx context.Context, userID int64) (int32, error) {
 }
 
 const upgradeOwner = `-- name: UpgradeOwner :exec
-UPDATE accounts SET role_id = 2
+UPDATE accounts SET is_upgrade = TRUE AND role_id = 2
 WHERE id = $1
 `
 

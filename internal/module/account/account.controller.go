@@ -239,7 +239,7 @@ func (as *AccountController) Searching(g *gin.Context) {
 
 // Account godoc
 // @Summary      Add your email
-// @Description  Add your email
+// @Description  Add your email, you can also update email here
 // @Tags         Accounts
 // @Accept       json
 // @Produce      json
@@ -265,4 +265,34 @@ func (as *AccountController) AddEmail(g *gin.Context) {
 		return
 	}
 	response.SuccessResponse(g, response.AddEmail, nil)
+}
+
+// Account godoc
+// @Summary      Upgrade to role owner
+// @Description  Request here and join with us, create your own eatery
+// @Tags         Accounts
+// @Accept       json
+// @Produce      json
+// @Param        request body UpgradeOwnerRequest true "request"
+// @Security BearerAuth
+// @Success      204  "No content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /accounts/upgrade [post]
+func (as *AccountController) UpgradeOnwerRequest(g *gin.Context) {
+	var req UpgradeOwnerRequest
+	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+	if err := g.ShouldBindJSON(&req); err != nil {
+		response.ErrorResponse(g, response.ErrBadRequest)
+		return
+	}
+	err := as.service.UpgradeOwnerRequest(g, auth.UserId, req.AccountID)
+	if err != nil {
+		if err.Error() == "ERROR: duplicate key value violates unique constraint \"upgrade_queue_account_id_key\" (SQLSTATE 23505)" {
+			response.ErrorResponse(g, response.ErrVerify)
+			return
+		}
+		response.ErrorNonKnow(g, 500, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 201, nil)
 }

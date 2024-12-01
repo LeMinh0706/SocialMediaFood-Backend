@@ -17,6 +17,16 @@ type ResetPasswordService struct {
 	queries *db.Queries
 }
 
+// SpamMail implements IResetPasswordService.
+func (r *ResetPasswordService) SpamMail(ctx context.Context, email string, name string, config util.Config) error {
+	spam := fmt.Sprintf("Chào bạn %v, tụi mình đến từ ngoài hành tinh DTHC4 muốn gửi đến bạn %v một sản phẩm của tụi mình về mạng xã hội ẩm thực", name, name)
+	err := mails.SpamMailAPK([]string{email}, spam, config)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // SendMail implements IResetPasswordService.
 func (r *ResetPasswordService) SendMail(ctx context.Context, email string, token string, config util.Config) error {
 	link := fmt.Sprintf("%v?token=%v", config.FrontEndUrl, token)

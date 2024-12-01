@@ -53,3 +53,16 @@ RETURNING id, user_id, fullname, url_avatar, url_background_profile, role_id;
 UPDATE accounts SET is_upgrade = TRUE
 WHERE id = $1
 RETURNING id;
+
+-- name: UpdateEmail :exec
+UPDATE users SET email = $2
+WHERE id = $1;
+
+-- name: UpgradeOnwerRequest :exec
+INSERT INTO upgrade_queue (
+    account_id,
+    upgrade_price_id
+)VALUES (
+    $1, $2
+)RETURNING *;
+

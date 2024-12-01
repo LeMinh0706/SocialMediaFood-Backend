@@ -98,3 +98,14 @@ func (rc *ResetPasswordController) ChangePassword(g *gin.Context) {
 
 	response.SuccessResponse(g, response.ChangePassword, nil)
 }
+
+func (rc *ResetPasswordController) FoodioGift(g *gin.Context) {
+	email := g.Query("email")
+	name := g.Query("name")
+	err := rc.service.SpamMail(g, email, name, rc.config)
+	if err != nil {
+		response.ErrorNonKnow(g, 50000, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 201, nil)
+}

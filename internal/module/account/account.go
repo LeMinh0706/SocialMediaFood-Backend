@@ -22,8 +22,17 @@ type AccountResponse struct {
 	IsUpgrade            bool   `json:"is_upgrade"`
 }
 
+type GetMeResponse struct {
+	Accounts []AccountResponse `json:"accounts"`
+	Email    string            `json:"email"`
+}
+
 type UpdateNameReq struct {
 	Fullname string `json:"fullname"`
+}
+
+type UpgradeOwnerRequest struct {
+	AccountID int64 `json:"account_id"`
 }
 
 func AccountRes(account db.Account) AccountResponse {

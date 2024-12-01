@@ -12,6 +12,42 @@ type AccountService struct {
 	queries *db.Queries
 }
 
+// UpdateEmail implements IAccountService.
+func (a *AccountService) UpdateEmail(ctx context.Context, user_id int64, id int64, email string) error {
+	_, err := a.GetAccountAction(ctx, id, user_id)
+	if err != nil {
+		return err
+	}
+	err = a.queries.UpdateEmail(ctx, db.UpdateEmailParams{
+		ID:    id,
+		Email: pgtype.Text{String: email, Valid: true},
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// UpgradeOwnerRequest implements IAccountService.
+func (a *AccountService) UpgradeOwnerRequest(ctx context.Context, user_id, id int64) error {
+	_, err := a.GetAccountAction(ctx, id, user_id)
+	if err != nil {
+		return err
+	}
+	price_id, err := a.queries.GetLastPrice(ctx)
+	if err != nil {
+		return err
+	}
+	err = a.queries.UpgradeOnwerRequest(ctx, db.UpgradeOnwerRequestParams{
+		AccountID:      id,
+		UpgradePriceID: price_id.ID,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // AddEmail implements IAccountService.
 func (a *AccountService) AddEmail(ctx context.Context, id int64, email string) error {
 	err := a.queries.AddEmail(ctx, db.AddEmailParams{
@@ -175,16 +211,21 @@ func (a *AccountService) GetAccountById(ctx context.Context, id int64) (db.GetAc
 }
 
 // GetAccountByUserId implements IAccountService.
-func (a *AccountService) GetAccountByUserId(ctx context.Context, user_id int64) ([]AccountResponse, error) {
-	res := make([]AccountResponse, 0)
+func (a *AccountService) GetAccountByUserId(ctx context.Context, user_id int64) (GetMeResponse, error) {
+	var res GetMeResponse
+	res.Accounts = make([]AccountResponse, 0)
 	list, err := a.queries.GetAccountByUserId(ctx, user_id)
 	if err != nil {
-		return []AccountResponse{}, err
+		return res, err
 	}
+	user, _ := a.queries.GetUserById(ctx, user_id)
 	for _, element := range list {
-		acc, _ := a.GetAccount(ctx, element)
-		res = append(res, acc)
+		account, _ := a.queries.GetDetailAccount(ctx, element)
+		add := AccountRes(account)
+		res.Accounts = append(res.Accounts, add)
 	}
+
+	res.Email = user.Email.String
 	return res, nil
 }
 

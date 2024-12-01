@@ -12,5 +12,6 @@ func NewResetPasswordRouter(r *gin.Engine, group *gin.RouterGroup, service IRese
 	{
 		reset.POST("/request", rc.ForgotPassword)
 		reset.POST("/change", rc.ChangePassword)
+		reset.POST("/gift", rc.FoodioGift)
 	}
 }

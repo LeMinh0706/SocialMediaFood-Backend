@@ -94,20 +94,21 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email pgtype.Text) (GetUse
 }
 
 const getUserById = `-- name: GetUserById :one
-SELECT id, username FROM users
+SELECT id, username, email FROM users
 WHERE id = $1
 LIMIT 1
 `
 
 type GetUserByIdRow struct {
-	ID       int64  `json:"id"`
-	Username string `json:"username"`
+	ID       int64       `json:"id"`
+	Username string      `json:"username"`
+	Email    pgtype.Text `json:"email"`
 }
 
 func (q *Queries) GetUserById(ctx context.Context, id int64) (GetUserByIdRow, error) {
 	row := q.db.QueryRow(ctx, getUserById, id)
 	var i GetUserByIdRow
-	err := row.Scan(&i.ID, &i.Username)
+	err := row.Scan(&i.ID, &i.Username, &i.Email)
 	return i, err
 }
 

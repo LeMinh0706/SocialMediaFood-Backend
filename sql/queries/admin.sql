@@ -10,14 +10,20 @@ INSERT INTO upgrade_price (
 )VALUES ($1)
 RETURNING *;
 
--- name: GetUpgradePrice :many
+-- name: GetListUpgradePrice :many
 SELECT * FROM upgrade_price
 LIMIT $1
 OFFSET $2;
 
+-- name: GetLastPrice :one
+SELECT * FROM upgrade_price
+ORDER BY id DESC
+LIMIT 1;
+
 -- name: GetUpgradeQueue :many
 SELECT account_id FROM upgrade_queue
 WHERE state = 'pending'
+ORDER BY created_at
 LIMIT $1
 OFFSET $2;
 
@@ -26,5 +32,5 @@ UPDATE upgrade_queue SET state = 'paid'
 WHERE account_id = $1;
 
 -- name: UpgradeOwner :exec
-UPDATE accounts SET role_id = 2
+UPDATE accounts SET is_upgrade = TRUE AND role_id = 2
 WHERE id = $1;

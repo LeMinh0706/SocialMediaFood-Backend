@@ -269,6 +269,21 @@ func (q *Queries) UpdateBackground(ctx context.Context, arg UpdateBackgroundPara
 	return i, err
 }
 
+const updateEmail = `-- name: UpdateEmail :exec
+UPDATE users SET email = $2
+WHERE id = $1
+`
+
+type UpdateEmailParams struct {
+	ID    int64       `json:"id"`
+	Email pgtype.Text `json:"email"`
+}
+
+func (q *Queries) UpdateEmail(ctx context.Context, arg UpdateEmailParams) error {
+	_, err := q.db.Exec(ctx, updateEmail, arg.ID, arg.Email)
+	return err
+}
+
 const updateName = `-- name: UpdateName :one
 UPDATE accounts SET fullname = $2
 WHERE id = $1
@@ -291,6 +306,25 @@ func (q *Queries) UpdateName(ctx context.Context, arg UpdateNameParams) (UpdateN
 	var i UpdateNameRow
 	err := row.Scan(&i.ID, &i.UserID, &i.Fullname)
 	return i, err
+}
+
+const upgradeOnwerRequest = `-- name: UpgradeOnwerRequest :exec
+INSERT INTO upgrade_queue (
+    account_id,
+    upgrade_price_id
+)VALUES (
+    $1, $2
+)RETURNING account_id, upgrade_price_id, created_at, status
+`
+
+type UpgradeOnwerRequestParams struct {
+	AccountID      int64 `json:"account_id"`
+	UpgradePriceID int32 `json:"upgrade_price_id"`
+}
+
+func (q *Queries) UpgradeOnwerRequest(ctx context.Context, arg UpgradeOnwerRequestParams) error {
+	_, err := q.db.Exec(ctx, upgradeOnwerRequest, arg.AccountID, arg.UpgradePriceID)
+	return err
 }
 
 const upgradeSuccess = `-- name: UpgradeSuccess :one

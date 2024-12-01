@@ -22,7 +22,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Add your email",
+                "description": "Add your email, you can also update email here",
                 "consumes": [
                     "application/json"
                 ],
@@ -306,6 +306,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/upgrade": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Request here and join with us, create your own eatery",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Upgrade to role owner",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/account.UpgradeOwnerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/accounts/{id}": {
             "get": {
                 "security": [
@@ -339,6 +381,48 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/account.AccountResponse"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/price": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Add price for upgrade",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Only admin can do this",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admin.AddUpgradePrice"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -2072,6 +2156,9 @@ const docTemplate = `{
                 "language": {
                     "type": "string"
                 },
+                "role_id": {
+                    "type": "integer"
+                },
                 "url_avatar": {
                     "type": "string"
                 },
@@ -2099,6 +2186,25 @@ const docTemplate = `{
             "properties": {
                 "fullname": {
                     "type": "string"
+                }
+            }
+        },
+        "account.UpgradeOwnerRequest": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "admin.AddUpgradePrice": {
+            "type": "object",
+            "required": [
+                "price"
+            ],
+            "properties": {
+                "price": {
+                    "type": "number"
                 }
             }
         },

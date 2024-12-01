@@ -52,6 +52,8 @@ const (
 	ErrInputSearch        = 40015
 	ErrEmailInvalid       = 40016
 	ErrReport             = 40116
+	ErrVerify             = 40117
+	ErrNotAdmin           = 40118
 	ErrEmailNotExists     = 40420
 	YouHaveRequest        = 40307
 	PasswordHaveChange    = 40308
@@ -115,6 +117,8 @@ var msg = map[int]string{
 	ResetPasswordTimeOut:  "You're to late, try request forgot-password again",
 	ErrDistance:           "Distance must be number",
 	CantDelete:            "Notification not found",
+	ErrVerify:             "Please wait for approval",
+	ErrNotAdmin:           "Access denied",
 }
 
 // ErrOutOfDate:   "Token is out of date",
