@@ -23,8 +23,9 @@ type AccountResponse struct {
 }
 
 type GetMeResponse struct {
-	Accounts []AccountResponse `json:"accounts"`
-	Email    string            `json:"email"`
+	Accounts    []AccountResponse `json:"accounts"`
+	Email       string            `json:"email"`
+	AccessToken string            `json:"access_token"`
 }
 
 type UpdateNameReq struct {
