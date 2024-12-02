@@ -62,11 +62,13 @@ func (ac *AccountController) GetAccount(g *gin.Context) {
 // @Router       /accounts/me [get]
 func (ac *AccountController) GetMe(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+	token := g.GetHeader("Authorization")
 	me, err := ac.service.GetAccountByUserId(g, auth.UserId)
 	if err != nil {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return
 	}
+	me.AccessToken = token[7:]
 	response.SuccessResponse(g, 200, me)
 }
 
