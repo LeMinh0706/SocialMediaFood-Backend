@@ -128,7 +128,7 @@ func (p *PostService) CreatePost(ctx context.Context, description string, lng st
 	go func() {
 		defer wg.Done()
 		if lat != "" && lng != "" {
-			location = pgtype.Text{String: fmt.Sprintf("POINT(%s %s)", lat, lng), Valid: true}
+			location = pgtype.Text{String: fmt.Sprintf("POINT(%s %s)", lng, lat), Valid: true}
 		} else {
 			location = pgtype.Text{Valid: false}
 		}
