@@ -122,7 +122,7 @@ func (p *PostService) CreatePost(ctx context.Context, description string, lng st
 	var res PostResponse
 	var wg sync.WaitGroup
 	var location pgtype.Text
-	var acc db.GetAccountByIdRow
+	var acc db.Account
 	var err error
 	wg.Add(1)
 	go func() {

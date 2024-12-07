@@ -17,7 +17,7 @@ type CommentResponse struct {
 	Account     db.GetAccountByIdRow `json:"account"`
 }
 
-func CommentRes(comment db.CreateCommentRow, image db.PostImage, account db.GetAccountByIdRow) CommentResponse {
+func CommentRes(comment db.CreateCommentRow, image db.PostImage, account db.Account) CommentResponse {
 	return CommentResponse{
 		ID:          comment.ID,
 		PostTypeID:  comment.PostTypeID,
@@ -26,6 +26,31 @@ func CommentRes(comment db.CreateCommentRow, image db.PostImage, account db.GetA
 		Description: comment.Description.String,
 		CreatedAt:   comment.CreatedAt.Time,
 		Image:       image,
-		Account:     account,
+		Account: db.GetAccountByIdRow{
+			ID:                   account.ID,
+			Fullname:             account.Fullname,
+			UrlAvatar:            account.UrlAvatar,
+			UrlBackgroundProfile: account.UrlBackgroundProfile,
+			RoleID:               account.RoleID,
+		},
+	}
+}
+
+func GetCommentRes(comment db.CreateCommentRow, image db.PostImage, account db.GetAccountByIdRow) CommentResponse {
+	return CommentResponse{
+		ID:          comment.ID,
+		PostTypeID:  comment.PostTypeID,
+		AccountID:   comment.AccountID,
+		PostTopID:   comment.PostTopID.Int64,
+		Description: comment.Description.String,
+		CreatedAt:   comment.CreatedAt.Time,
+		Image:       image,
+		Account: db.GetAccountByIdRow{
+			ID:                   account.ID,
+			Fullname:             account.Fullname,
+			UrlAvatar:            account.UrlAvatar,
+			UrlBackgroundProfile: account.UrlBackgroundProfile,
+			RoleID:               account.RoleID,
+		},
 	}
 }

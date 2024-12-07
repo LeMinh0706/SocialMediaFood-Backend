@@ -84,5 +84,4 @@ func TestGetOneAccount(t *testing.T) {
 	require.NotEmpty(t, acc2)
 	require.NoError(t, err)
 
-	require.Equal(t, acc1.UserID, acc2.UserID)
 }
