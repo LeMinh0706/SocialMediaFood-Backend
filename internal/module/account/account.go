@@ -10,7 +10,6 @@ type EmailRequest struct {
 
 type AccountResponse struct {
 	ID                   int64  `json:"id"`
-	UserID               int64  `json:"user_id"`
 	Fullname             string `json:"fullname"`
 	UrlAvatar            string `json:"url_avatar"`
 	UrlBackgroundProfile string `json:"url_background_profile"`
@@ -39,7 +38,6 @@ type UpgradeOwnerRequest struct {
 func AccountRes(account db.Account) AccountResponse {
 	return AccountResponse{
 		ID:                   account.ID,
-		UserID:               account.UserID,
 		Fullname:             account.Fullname,
 		UrlAvatar:            account.UrlAvatar,
 		UrlBackgroundProfile: account.UrlBackgroundProfile,

@@ -24,22 +24,22 @@ SELECT * FROM accounts
 WHERE id = $1;
 
 -- name: GetAccountById :one
-SELECT id, user_id, fullname, url_avatar, url_background_profile, role_id FROM accounts
+SELECT id, fullname, url_avatar, url_background_profile, role_id FROM accounts
 WHERE id = $1
 LIMIT 1;
 
 -- name: UpdateName :one
 UPDATE accounts SET fullname = $2
 WHERE id = $1
-RETURNING id, user_id, fullname;
+RETURNING id, fullname;
 
 -- name: UpdateAvatar :one
 UPDATE accounts SET url_avatar = $2
 WHERE id = $1
-RETURNING id, user_id, fullname, url_avatar, url_background_profile, role_id;
+RETURNING id, fullname, url_avatar, url_background_profile, role_id;
 
 -- name: SearchingAccounts :many
-SELECT id, user_id, fullname, url_avatar, url_background_profile, role_id FROM accounts
+SELECT id, fullname, url_avatar, url_background_profile, role_id FROM accounts
 WHERE fullname ILIKE '%' || $1 || '%'
 LIMIT $2
 OFFSET $3;
@@ -47,7 +47,7 @@ OFFSET $3;
 -- name: UpdateBackground :one
 UPDATE accounts SET url_background_profile = $2
 WHERE id = $1
-RETURNING id, user_id, fullname, url_avatar, url_background_profile, role_id;
+RETURNING id, fullname, url_avatar, url_background_profile, role_id;
 
 -- name: UpgradeSuccess :one
 UPDATE accounts SET is_upgrade = TRUE

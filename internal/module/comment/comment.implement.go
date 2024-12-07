@@ -95,7 +95,7 @@ func (c *CommentService) GetComment(ctx context.Context, id int64) (CommentRespo
 	var image db.PostImage
 	account, _ := c.account.GetAccountById(ctx, comment.AccountID)
 	image, _ = c.queries.GetImageComment(ctx, comment.ID)
-	res = CommentRes(db.CreateCommentRow(comment), image, account)
+	res = GetCommentRes(db.CreateCommentRow(comment), image, account)
 	return res, nil
 }
 

@@ -22,8 +22,6 @@ definitions:
         type: string
       url_background_profile:
         type: string
-      user_id:
-        type: integer
     type: object
   account.EmailRequest:
     properties:
@@ -94,8 +92,6 @@ definitions:
         type: string
       url_background_profile:
         type: string
-      user_id:
-        type: integer
     type: object
   db.GetFollowStatusRow:
     properties:
@@ -169,8 +165,6 @@ definitions:
         type: string
       url_background_profile:
         type: string
-      user_id:
-        type: integer
     type: object
   db.UpdateFriendParams:
     properties:

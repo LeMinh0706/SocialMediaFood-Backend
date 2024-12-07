@@ -189,9 +189,9 @@ func (a *AccountService) GetAccount(ctx context.Context, id int64) (AccountRespo
 }
 
 // GetAccountAction implements IAccountService.
-func (a *AccountService) GetAccountAction(ctx context.Context, id int64, user_id int64) (db.GetAccountByIdRow, error) {
-	var res db.GetAccountByIdRow
-	acc, err := a.queries.GetAccountById(ctx, id)
+func (a *AccountService) GetAccountAction(ctx context.Context, id int64, user_id int64) (db.Account, error) {
+	var res db.Account
+	acc, err := a.queries.GetDetailAccount(ctx, id)
 	if err != nil {
 		return res, err
 	}

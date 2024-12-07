@@ -22,17 +22,23 @@ type PostResponse struct {
 	TotalComment int64                `json:"total_comment"`
 }
 
-func PostRes(post db.CreatePostRow, account db.GetAccountByIdRow, imgs []db.PostImage, reactState db.ReactPost, totalLike, totalComment int64) PostResponse {
+func PostRes(post db.CreatePostRow, account db.Account, imgs []db.PostImage, reactState db.ReactPost, totalLike, totalComment int64) PostResponse {
 	return PostResponse{
-		ID:           post.ID,
-		PostTypeID:   post.PostTypeID,
-		AccountID:    post.AccountID,
-		Description:  post.Description.String,
-		Lng:          post.Lng,
-		Lat:          post.Lat,
-		CreatedAt:    post.CreatedAt.Time,
-		Images:       imgs,
-		Account:      account,
+		ID:          post.ID,
+		PostTypeID:  post.PostTypeID,
+		AccountID:   post.AccountID,
+		Description: post.Description.String,
+		Lng:         post.Lng,
+		Lat:         post.Lat,
+		CreatedAt:   post.CreatedAt.Time,
+		Images:      imgs,
+		Account: db.GetAccountByIdRow{
+			ID:                   account.ID,
+			Fullname:             account.Fullname,
+			UrlAvatar:            account.UrlAvatar,
+			UrlBackgroundProfile: account.UrlBackgroundProfile,
+			RoleID:               account.RoleID,
+		},
 		ReactState:   reactState,
 		TotalLike:    totalLike,
 		TotalComment: totalComment,

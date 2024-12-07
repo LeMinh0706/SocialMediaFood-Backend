@@ -70,14 +70,13 @@ func (q *Queries) CreateAccounts(ctx context.Context, arg CreateAccountsParams) 
 }
 
 const getAccountById = `-- name: GetAccountById :one
-SELECT id, user_id, fullname, url_avatar, url_background_profile, role_id FROM accounts
+SELECT id, fullname, url_avatar, url_background_profile, role_id FROM accounts
 WHERE id = $1
 LIMIT 1
 `
 
 type GetAccountByIdRow struct {
 	ID                   int64  `json:"id"`
-	UserID               int64  `json:"user_id"`
 	Fullname             string `json:"fullname"`
 	UrlAvatar            string `json:"url_avatar"`
 	UrlBackgroundProfile string `json:"url_background_profile"`
@@ -89,7 +88,6 @@ func (q *Queries) GetAccountById(ctx context.Context, id int64) (GetAccountByIdR
 	var i GetAccountByIdRow
 	err := row.Scan(
 		&i.ID,
-		&i.UserID,
 		&i.Fullname,
 		&i.UrlAvatar,
 		&i.UrlBackgroundProfile,
@@ -153,7 +151,7 @@ func (q *Queries) GetDetailAccount(ctx context.Context, id int64) (Account, erro
 }
 
 const searchingAccounts = `-- name: SearchingAccounts :many
-SELECT id, user_id, fullname, url_avatar, url_background_profile, role_id FROM accounts
+SELECT id, fullname, url_avatar, url_background_profile, role_id FROM accounts
 WHERE fullname ILIKE '%' || $1 || '%'
 LIMIT $2
 OFFSET $3
@@ -167,7 +165,6 @@ type SearchingAccountsParams struct {
 
 type SearchingAccountsRow struct {
 	ID                   int64  `json:"id"`
-	UserID               int64  `json:"user_id"`
 	Fullname             string `json:"fullname"`
 	UrlAvatar            string `json:"url_avatar"`
 	UrlBackgroundProfile string `json:"url_background_profile"`
@@ -185,7 +182,6 @@ func (q *Queries) SearchingAccounts(ctx context.Context, arg SearchingAccountsPa
 		var i SearchingAccountsRow
 		if err := rows.Scan(
 			&i.ID,
-			&i.UserID,
 			&i.Fullname,
 			&i.UrlAvatar,
 			&i.UrlBackgroundProfile,
@@ -204,7 +200,7 @@ func (q *Queries) SearchingAccounts(ctx context.Context, arg SearchingAccountsPa
 const updateAvatar = `-- name: UpdateAvatar :one
 UPDATE accounts SET url_avatar = $2
 WHERE id = $1
-RETURNING id, user_id, fullname, url_avatar, url_background_profile, role_id
+RETURNING id, fullname, url_avatar, url_background_profile, role_id
 `
 
 type UpdateAvatarParams struct {
@@ -214,7 +210,6 @@ type UpdateAvatarParams struct {
 
 type UpdateAvatarRow struct {
 	ID                   int64  `json:"id"`
-	UserID               int64  `json:"user_id"`
 	Fullname             string `json:"fullname"`
 	UrlAvatar            string `json:"url_avatar"`
 	UrlBackgroundProfile string `json:"url_background_profile"`
@@ -226,7 +221,6 @@ func (q *Queries) UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) (Upd
 	var i UpdateAvatarRow
 	err := row.Scan(
 		&i.ID,
-		&i.UserID,
 		&i.Fullname,
 		&i.UrlAvatar,
 		&i.UrlBackgroundProfile,
@@ -238,7 +232,7 @@ func (q *Queries) UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) (Upd
 const updateBackground = `-- name: UpdateBackground :one
 UPDATE accounts SET url_background_profile = $2
 WHERE id = $1
-RETURNING id, user_id, fullname, url_avatar, url_background_profile, role_id
+RETURNING id, fullname, url_avatar, url_background_profile, role_id
 `
 
 type UpdateBackgroundParams struct {
@@ -248,7 +242,6 @@ type UpdateBackgroundParams struct {
 
 type UpdateBackgroundRow struct {
 	ID                   int64  `json:"id"`
-	UserID               int64  `json:"user_id"`
 	Fullname             string `json:"fullname"`
 	UrlAvatar            string `json:"url_avatar"`
 	UrlBackgroundProfile string `json:"url_background_profile"`
@@ -260,7 +253,6 @@ func (q *Queries) UpdateBackground(ctx context.Context, arg UpdateBackgroundPara
 	var i UpdateBackgroundRow
 	err := row.Scan(
 		&i.ID,
-		&i.UserID,
 		&i.Fullname,
 		&i.UrlAvatar,
 		&i.UrlBackgroundProfile,
@@ -287,7 +279,7 @@ func (q *Queries) UpdateEmail(ctx context.Context, arg UpdateEmailParams) error 
 const updateName = `-- name: UpdateName :one
 UPDATE accounts SET fullname = $2
 WHERE id = $1
-RETURNING id, user_id, fullname
+RETURNING id, fullname
 `
 
 type UpdateNameParams struct {
@@ -297,14 +289,13 @@ type UpdateNameParams struct {
 
 type UpdateNameRow struct {
 	ID       int64  `json:"id"`
-	UserID   int64  `json:"user_id"`
 	Fullname string `json:"fullname"`
 }
 
 func (q *Queries) UpdateName(ctx context.Context, arg UpdateNameParams) (UpdateNameRow, error) {
 	row := q.db.QueryRow(ctx, updateName, arg.ID, arg.Fullname)
 	var i UpdateNameRow
-	err := row.Scan(&i.ID, &i.UserID, &i.Fullname)
+	err := row.Scan(&i.ID, &i.Fullname)
 	return i, err
 }
 
