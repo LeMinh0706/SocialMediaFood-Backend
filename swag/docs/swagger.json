@@ -2443,9 +2443,6 @@
                 },
                 "url_background_profile": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },
@@ -2555,9 +2552,6 @@
                 },
                 "url_background_profile": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },
@@ -2666,9 +2660,6 @@
                 },
                 "url_background_profile": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },

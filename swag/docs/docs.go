@@ -2449,9 +2449,6 @@ const docTemplate = `{
                 },
                 "url_background_profile": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },
@@ -2561,9 +2558,6 @@ const docTemplate = `{
                 },
                 "url_background_profile": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },
@@ -2672,9 +2666,6 @@ const docTemplate = `{
                 },
                 "url_background_profile": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },
