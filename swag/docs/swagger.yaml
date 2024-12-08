@@ -1235,9 +1235,24 @@ paths:
       - application/json
       responses:
         "201":
-          description: Created
+          description: Success
+        "500":
+          description: Internal Server Error
           schema:
-            $ref: '#/definitions/reset_password.ResponseLink'
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      summary: Request link
+      tags:
+      - ResetPassword
+  /forgot-password/check-ip:
+    post:
+      consumes:
+      - application/json
+      description: CheckIP
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Success
         "500":
           description: Internal Server Error
           schema:

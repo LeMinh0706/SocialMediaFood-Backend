@@ -75,7 +75,7 @@ func (rc *ResetPasswordController) FetchLink(g *gin.Context) {}
 // @Accept       json
 // @Produce      json
 // @Param        request body ChangePasswordRequest true "request"
-// @Success      201  {object}  ResponseLink
+// @Success      201  "Success"
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /forgot-password/change [post]
 func (rc *ResetPasswordController) ChangePassword(g *gin.Context) {
@@ -108,4 +108,18 @@ func (rc *ResetPasswordController) FoodioGift(g *gin.Context) {
 		return
 	}
 	response.SuccessResponse(g, 201, nil)
+}
+
+// ResetPassword godoc
+// @Summary      Request link
+// @Description  CheckIP
+// @Tags         ResetPassword
+// @Accept       json
+// @Produce      json
+// @Success      201  "Success"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /forgot-password/check-ip [post]
+func (rc *ResetPasswordController) CheckIP(g *gin.Context) {
+	ip := g.ClientIP()
+	response.SuccessResponse(g, 201, ip)
 }

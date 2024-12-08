@@ -1264,10 +1264,33 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created",
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/reset_password.ResponseLink"
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
                         }
+                    }
+                }
+            }
+        },
+        "/forgot-password/check-ip": {
+            "post": {
+                "description": "CheckIP",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ResetPassword"
+                ],
+                "summary": "Request link",
+                "responses": {
+                    "201": {
+                        "description": "Success"
                     },
                     "500": {
                         "description": "Internal Server Error",
