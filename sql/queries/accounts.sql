@@ -66,3 +66,8 @@ INSERT INTO upgrade_queue (
     $1, $2
 )RETURNING *;
 
+-- name: GetPrice :one
+SELECT id,title,benefit, price
+FROM upgrade_price
+WHERE is_choose = TRUE 
+LIMIT 1; 

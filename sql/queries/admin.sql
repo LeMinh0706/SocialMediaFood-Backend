@@ -6,8 +6,10 @@ LIMIT 1;
 
 -- name: AddUpgradePrice :one
 INSERT INTO upgrade_price (
-    price 
-)VALUES ($1)
+    title,
+    price,
+    benefit
+)VALUES ($1, $2, $3)
 RETURNING *;
 
 -- name: GetListUpgradePrice :many
@@ -16,9 +18,9 @@ ORDER BY id DESC
 LIMIT $1
 OFFSET $2;
 
--- name: GetLastPrice :one
+-- name: GetChoosePrice :one
 SELECT * FROM upgrade_price
-ORDER BY id DESC
+WHERE is_choose = TRUE
 LIMIT 1;
 
 -- name: GetUpgradeQueue :many
@@ -64,3 +66,10 @@ OFFSET $3;
 SELECT status FROM upgrade_queue
 WHERE account_id = $1
 LIMIT 1;
+
+-- name: UnableChoose :exec
+UPDATE upgrade_price SET is_choose = FALSE;
+
+-- name: PriceChoosing :exec
+UPDATE upgrade_price SET is_choose = TRUE 
+WHERE id = $1;

@@ -14,7 +14,7 @@ type Querier interface {
 	AddEmail(ctx context.Context, arg AddEmailParams) error
 	AddImagePost(ctx context.Context, arg AddImagePostParams) (PostImage, error)
 	AddToMenu(ctx context.Context, arg AddToMenuParams) (Menu, error)
-	AddUpgradePrice(ctx context.Context, price pgtype.Numeric) (UpgradePrice, error)
+	AddUpgradePrice(ctx context.Context, arg AddUpgradePriceParams) (UpgradePrice, error)
 	CountComment(ctx context.Context, postTopID pgtype.Int8) (int64, error)
 	CountFollower(ctx context.Context, fromFollow int64) (int64, error)
 	CountFriend(ctx context.Context, fromFollow int64) (int64, error)
@@ -41,6 +41,7 @@ type Querier interface {
 	GetAccountById(ctx context.Context, id int64) (GetAccountByIdRow, error)
 	GetAccountByUserId(ctx context.Context, userID int64) ([]int64, error)
 	GetCheckAction(ctx context.Context, userID int64) (ResetPassword, error)
+	GetChoosePrice(ctx context.Context) (UpgradePrice, error)
 	GetComment(ctx context.Context, id int64) (GetCommentRow, error)
 	GetDetailAccount(ctx context.Context, id int64) (Account, error)
 	GetDish(ctx context.Context, accountID int64) (GetDishRow, error)
@@ -52,7 +53,6 @@ type Querier interface {
 	GetImageComment(ctx context.Context, postID int64) (PostImage, error)
 	GetImagePost(ctx context.Context, postID int64) ([]PostImage, error)
 	GetIssue(ctx context.Context, id int32) (IssuePost, error)
-	GetLastPrice(ctx context.Context) (UpgradePrice, error)
 	//comment
 	GetListComment(ctx context.Context, arg GetListCommentParams) ([]int64, error)
 	GetListImage(ctx context.Context, arg GetListImageParams) ([]PostImage, error)
@@ -68,6 +68,7 @@ type Querier interface {
 	GetPersonPost(ctx context.Context, arg GetPersonPostParams) ([]int64, error)
 	GetPost(ctx context.Context, id int64) (GetPostRow, error)
 	GetPostInLocate(ctx context.Context, arg GetPostInLocateParams) ([]int64, error)
+	GetPrice(ctx context.Context) (GetPriceRow, error)
 	GetReact(ctx context.Context, arg GetReactParams) (ReactPost, error)
 	GetRequestByUUID(ctx context.Context, id pgtype.UUID) (ResetPassword, error)
 	GetStatusQueue(ctx context.Context, accountID int64) (string, error)
@@ -83,9 +84,11 @@ type Querier interface {
 	ListAccountReact(ctx context.Context, postID int64) ([]int64, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	OwnerUpdateQuanity(ctx context.Context, arg OwnerUpdateQuanityParams) (Menu, error)
+	PriceChoosing(ctx context.Context, id int64) error
 	Register(ctx context.Context, arg RegisterParams) (RegisterRow, error)
 	ReportPostDetail(ctx context.Context, arg ReportPostDetailParams) ([]ReportPostDetailRow, error)
 	SearchingAccounts(ctx context.Context, arg SearchingAccountsParams) ([]SearchingAccountsRow, error)
+	UnableChoose(ctx context.Context) error
 	UpdateActive(ctx context.Context, id pgtype.UUID) error
 	UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) (UpdateAvatarRow, error)
 	UpdateBackground(ctx context.Context, arg UpdateBackgroundParams) (UpdateBackgroundRow, error)

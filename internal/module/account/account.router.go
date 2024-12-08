@@ -21,5 +21,6 @@ func NewAccountRouter(r *gin.Engine, group *gin.RouterGroup, service IAccountSer
 		auth.GET("/searching", ac.Searching)
 		auth.PUT("", ac.AddEmail)
 		auth.POST("/upgrade", ac.UpgradeOnwerRequest)
+		auth.GET("/upgrade-price", ac.GetUpgradePrice)
 	}
 }

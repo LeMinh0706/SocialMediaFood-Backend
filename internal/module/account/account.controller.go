@@ -298,3 +298,20 @@ func (as *AccountController) UpgradeOnwerRequest(g *gin.Context) {
 	}
 	response.SuccessResponse(g, 201, nil)
 }
+
+// Account godoc
+// @Summary      Get price to upgrade
+// @Description  Get price to upgrade
+// @Tags         Accounts
+// @Security BearerAuth
+// @Success      201  {object}  UpgradePrice
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /accounts/upgrade-price [get]
+func (as *AccountController) GetUpgradePrice(g *gin.Context) {
+	res, err := as.service.GetUpgradePrice(g)
+	if err != nil {
+		response.ErrorNonKnow(g, 500, err.Error())
+		return
+	}
+	response.SuccessResponse(g, 201, res)
+}

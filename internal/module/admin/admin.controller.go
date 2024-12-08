@@ -38,7 +38,7 @@ func (a *AdminController) AddUpgradePrice(g *gin.Context) {
 		return
 	}
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
-	res, err := a.service.AddUpgragePrice(g, auth.UserId, req.Price)
+	res, err := a.service.AddUpgragePrice(g, auth.UserId, req.Title, req.Benefit, req.Price)
 	if err != nil {
 		handler.AdminErr(g, err)
 		return
@@ -223,10 +223,37 @@ func (a *AdminController) UpgradeReject(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrAccountID)
 		return
 	}
-	acc, err := a.service.UpgradeSuccess(g, auth.UserId, id)
+	acc, err := a.service.UpgradeReject(g, auth.UserId, id)
 	if err != nil {
 		handler.AdminErr(g, err)
 		return
 	}
 	response.SuccessResponse(g, 200, acc)
+}
+
+// Admin godoc
+// @Summary      Only admin can do this
+// @Description	 Cái này tạm thời chưa có, cảm ơn vì đã xem
+// @Tags         Admin
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "ID"
+// @Security BearerAuth
+// @Success      204  "No content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /admin/price-choosing/{id} [post]
+func (a *AdminController) PriceChoosing(g *gin.Context) {
+	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+	idStr := g.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, response.ErrBadRequestId)
+		return
+	}
+	err = a.service.ChoosingPrice(g, auth.UserId, id)
+	if err != nil {
+		handler.AdminErr(g, err)
+		return
+	}
+	response.SuccessResponse(g, 200, nil)
 }
