@@ -127,7 +127,7 @@ func (a *AdminService) GetUpgradePrice(ctx context.Context, page int32, page_siz
 	}
 	for _, element := range list {
 		priceFloat, _ := element.Price.Float64Value()
-		add := UpgradePrice{ID: element.ID, Price: priceFloat.Float64, CreatedAt: element.CreatedAt.Time}
+		add := UpgradePrice{ID: element.ID, Price: priceFloat.Float64, CreatedAt: element.CreatedAt.Time, Title: element.Title, Benefit: element.Benefit}
 		res = append(res, add)
 	}
 	return res, err

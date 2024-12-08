@@ -12,6 +12,7 @@ type UpgradePrice struct {
 	Title     string    `json:"title" binding:"required"`
 	Benefit   string    `json:"benefit" binding:"required"`
 	Price     float64   `json:"price"`
+	IsChoose  bool      `json:"is_choose"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
