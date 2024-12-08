@@ -232,10 +232,10 @@ func (a *AccountService) GetAccountByUserId(ctx context.Context, user_id int64) 
 	return res, nil
 }
 
-func (a *AccountService) GetUpgradePrice(ctx context.Context) (db.UpgradePrice, error) {
+func (a *AccountService) GetUpgradePrice(ctx context.Context) (db.GetChoosePriceRow, error) {
 	res, err := a.queries.GetChoosePrice(ctx)
 	if err != nil {
-		return db.UpgradePrice{}, err
+		return db.GetChoosePriceRow{}, err
 	}
 	return res, nil
 }

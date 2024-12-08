@@ -41,20 +41,27 @@ func (q *Queries) AddUpgradePrice(ctx context.Context, arg AddUpgradePriceParams
 }
 
 const getChoosePrice = `-- name: GetChoosePrice :one
-SELECT id, title, benefit, price, is_choose, created_at FROM upgrade_price
+SELECT id, title,benefit,price,created_at FROM upgrade_price
 WHERE is_choose = TRUE
 LIMIT 1
 `
 
-func (q *Queries) GetChoosePrice(ctx context.Context) (UpgradePrice, error) {
+type GetChoosePriceRow struct {
+	ID        int64              `json:"id"`
+	Title     string             `json:"title"`
+	Benefit   string             `json:"benefit"`
+	Price     pgtype.Numeric     `json:"price"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+}
+
+func (q *Queries) GetChoosePrice(ctx context.Context) (GetChoosePriceRow, error) {
 	row := q.db.QueryRow(ctx, getChoosePrice)
-	var i UpgradePrice
+	var i GetChoosePriceRow
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
 		&i.Benefit,
 		&i.Price,
-		&i.IsChoose,
 		&i.CreatedAt,
 	)
 	return i, err

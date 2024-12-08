@@ -41,7 +41,7 @@ type Querier interface {
 	GetAccountById(ctx context.Context, id int64) (GetAccountByIdRow, error)
 	GetAccountByUserId(ctx context.Context, userID int64) ([]int64, error)
 	GetCheckAction(ctx context.Context, userID int64) (ResetPassword, error)
-	GetChoosePrice(ctx context.Context) (UpgradePrice, error)
+	GetChoosePrice(ctx context.Context) (GetChoosePriceRow, error)
 	GetComment(ctx context.Context, id int64) (GetCommentRow, error)
 	GetDetailAccount(ctx context.Context, id int64) (Account, error)
 	GetDish(ctx context.Context, accountID int64) (GetDishRow, error)

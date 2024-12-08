@@ -19,7 +19,7 @@ LIMIT $1
 OFFSET $2;
 
 -- name: GetChoosePrice :one
-SELECT * FROM upgrade_price
+SELECT id, title,benefit,price,created_at FROM upgrade_price
 WHERE is_choose = TRUE
 LIMIT 1;
 
