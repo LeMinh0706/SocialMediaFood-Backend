@@ -96,7 +96,7 @@ func (rc *ResetPasswordController) ChangePassword(g *gin.Context) {
 		return
 	}
 
-	response.SuccessResponse(g, response.ChangePassword, nil)
+	response.SuccessResponse(g, 201, nil)
 }
 
 func (rc *ResetPasswordController) FoodioGift(g *gin.Context) {
