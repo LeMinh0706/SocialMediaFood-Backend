@@ -13,28 +13,50 @@ import (
 
 const addUpgradePrice = `-- name: AddUpgradePrice :one
 INSERT INTO upgrade_price (
-    price 
-)VALUES ($1)
-RETURNING id, price, created_at
+    title,
+    price,
+    benefit
+)VALUES ($1, $2, $3)
+RETURNING id, title, benefit, price, is_choose, created_at
 `
 
-func (q *Queries) AddUpgradePrice(ctx context.Context, price pgtype.Numeric) (UpgradePrice, error) {
-	row := q.db.QueryRow(ctx, addUpgradePrice, price)
+type AddUpgradePriceParams struct {
+	Title   string         `json:"title"`
+	Price   pgtype.Numeric `json:"price"`
+	Benefit string         `json:"benefit"`
+}
+
+func (q *Queries) AddUpgradePrice(ctx context.Context, arg AddUpgradePriceParams) (UpgradePrice, error) {
+	row := q.db.QueryRow(ctx, addUpgradePrice, arg.Title, arg.Price, arg.Benefit)
 	var i UpgradePrice
-	err := row.Scan(&i.ID, &i.Price, &i.CreatedAt)
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Benefit,
+		&i.Price,
+		&i.IsChoose,
+		&i.CreatedAt,
+	)
 	return i, err
 }
 
-const getLastPrice = `-- name: GetLastPrice :one
-SELECT id, price, created_at FROM upgrade_price
-ORDER BY id DESC
+const getChoosePrice = `-- name: GetChoosePrice :one
+SELECT id, title, benefit, price, is_choose, created_at FROM upgrade_price
+WHERE is_choose = TRUE
 LIMIT 1
 `
 
-func (q *Queries) GetLastPrice(ctx context.Context) (UpgradePrice, error) {
-	row := q.db.QueryRow(ctx, getLastPrice)
+func (q *Queries) GetChoosePrice(ctx context.Context) (UpgradePrice, error) {
+	row := q.db.QueryRow(ctx, getChoosePrice)
 	var i UpgradePrice
-	err := row.Scan(&i.ID, &i.Price, &i.CreatedAt)
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Benefit,
+		&i.Price,
+		&i.IsChoose,
+		&i.CreatedAt,
+	)
 	return i, err
 }
 
@@ -78,7 +100,7 @@ func (q *Queries) GetListPostReport(ctx context.Context, arg GetListPostReportPa
 }
 
 const getListUpgradePrice = `-- name: GetListUpgradePrice :many
-SELECT id, price, created_at FROM upgrade_price
+SELECT id, title, benefit, price, is_choose, created_at FROM upgrade_price
 ORDER BY id DESC
 LIMIT $1
 OFFSET $2
@@ -98,7 +120,14 @@ func (q *Queries) GetListUpgradePrice(ctx context.Context, arg GetListUpgradePri
 	items := []UpgradePrice{}
 	for rows.Next() {
 		var i UpgradePrice
-		if err := rows.Scan(&i.ID, &i.Price, &i.CreatedAt); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.Benefit,
+			&i.Price,
+			&i.IsChoose,
+			&i.CreatedAt,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -202,6 +231,16 @@ func (q *Queries) IsAdmin(ctx context.Context, userID int64) (int32, error) {
 	return role_id, err
 }
 
+const priceChoosing = `-- name: PriceChoosing :exec
+UPDATE upgrade_price SET is_choose = TRUE 
+WHERE id = $1
+`
+
+func (q *Queries) PriceChoosing(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, priceChoosing, id)
+	return err
+}
+
 const reportPostDetail = `-- name: ReportPostDetail :many
 SELECT r.account_id, r.issue_id, r.created_at, i.id, i.name, i.is_deleted FROM report_post r
 LEFT JOIN issue_post i
@@ -252,6 +291,15 @@ func (q *Queries) ReportPostDetail(ctx context.Context, arg ReportPostDetailPara
 		return nil, err
 	}
 	return items, nil
+}
+
+const unableChoose = `-- name: UnableChoose :exec
+UPDATE upgrade_price SET is_choose = FALSE
+`
+
+func (q *Queries) UnableChoose(ctx context.Context) error {
+	_, err := q.db.Exec(ctx, unableChoose)
+	return err
 }
 
 const upgradeOwner = `-- name: UpgradeOwner :exec

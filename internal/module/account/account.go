@@ -1,6 +1,8 @@
 package account
 
 import (
+	"time"
+
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 )
 
@@ -33,6 +35,14 @@ type UpdateNameReq struct {
 
 type UpgradeOwnerRequest struct {
 	AccountID int64 `json:"account_id"`
+}
+
+type UpgradePrice struct {
+	ID        int64     `json:"id"`
+	Title     string    `json:"title" binding:"required"`
+	Benefit   string    `json:"benefit" binding:"required"`
+	Price     float64   `json:"price"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 func AccountRes(account db.Account) AccountResponse {

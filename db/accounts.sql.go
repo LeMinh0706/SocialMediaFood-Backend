@@ -150,6 +150,32 @@ func (q *Queries) GetDetailAccount(ctx context.Context, id int64) (Account, erro
 	return i, err
 }
 
+const getPrice = `-- name: GetPrice :one
+SELECT id,title,benefit, price
+FROM upgrade_price
+WHERE is_choose = TRUE 
+LIMIT 1
+`
+
+type GetPriceRow struct {
+	ID      int64          `json:"id"`
+	Title   string         `json:"title"`
+	Benefit string         `json:"benefit"`
+	Price   pgtype.Numeric `json:"price"`
+}
+
+func (q *Queries) GetPrice(ctx context.Context) (GetPriceRow, error) {
+	row := q.db.QueryRow(ctx, getPrice)
+	var i GetPriceRow
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Benefit,
+		&i.Price,
+	)
+	return i, err
+}
+
 const searchingAccounts = `-- name: SearchingAccounts :many
 SELECT id, fullname, url_avatar, url_background_profile, role_id FROM accounts
 WHERE fullname ILIKE '%' || $1 || '%'
@@ -310,7 +336,7 @@ INSERT INTO upgrade_queue (
 
 type UpgradeOnwerRequestParams struct {
 	AccountID      int64 `json:"account_id"`
-	UpgradePriceID int32 `json:"upgrade_price_id"`
+	UpgradePriceID int64 `json:"upgrade_price_id"`
 }
 
 func (q *Queries) UpgradeOnwerRequest(ctx context.Context, arg UpgradeOnwerRequestParams) error {

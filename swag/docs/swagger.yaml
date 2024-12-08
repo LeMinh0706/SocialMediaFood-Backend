@@ -40,12 +40,34 @@ definitions:
       account_id:
         type: integer
     type: object
-  admin.AddUpgradePrice:
+  account.UpgradePrice:
     properties:
+      benefit:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
       price:
         type: number
+      title:
+        type: string
     required:
+    - benefit
+    - title
+    type: object
+  admin.AddUpgradePrice:
+    properties:
+      benefit:
+        type: string
+      price:
+        type: number
+      title:
+        type: string
+    required:
+    - benefit
     - price
+    - title
     type: object
   comment.CommentResponse:
     properties:
@@ -655,6 +677,23 @@ paths:
       summary: Upgrade to role owner
       tags:
       - Accounts
+  /accounts/upgrade-price:
+    get:
+      description: Get price to upgrade
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/account.UpgradePrice'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Get price to upgrade
+      tags:
+      - Accounts
   /admin/price:
     get:
       consumes:
@@ -696,6 +735,31 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/admin.AddUpgradePrice'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Only admin can do this
+      tags:
+      - Admin
+  /admin/price-choosing/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Cái này tạm thời chưa có, cảm ơn vì đã xem
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:

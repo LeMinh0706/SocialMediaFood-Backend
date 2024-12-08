@@ -348,6 +348,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/upgrade-price": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get price to upgrade",
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Get price to upgrade",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/account.UpgradePrice"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/accounts/{id}": {
             "get": {
                 "security": [
@@ -463,6 +491,46 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/admin.AddUpgradePrice"
                         }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/price-choosing/{id}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Cái này tạm thời chưa có, cảm ơn vì đã xem",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Only admin can do this",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2479,14 +2547,46 @@ const docTemplate = `{
                 }
             }
         },
+        "account.UpgradePrice": {
+            "type": "object",
+            "required": [
+                "benefit",
+                "title"
+            ],
+            "properties": {
+                "benefit": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "admin.AddUpgradePrice": {
             "type": "object",
             "required": [
-                "price"
+                "benefit",
+                "price",
+                "title"
             ],
             "properties": {
+                "benefit": {
+                    "type": "string"
+                },
                 "price": {
                     "type": "number"
+                },
+                "title": {
+                    "type": "string"
                 }
             }
         },

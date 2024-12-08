@@ -30,11 +30,14 @@ func (a *AccountService) UpdateEmail(ctx context.Context, user_id int64, id int6
 
 // UpgradeOwnerRequest implements IAccountService.
 func (a *AccountService) UpgradeOwnerRequest(ctx context.Context, user_id, id int64) error {
-	_, err := a.GetAccountAction(ctx, id, user_id)
+	acc, err := a.GetAccountAction(ctx, id, user_id)
+	if acc.RoleID != 3 {
+		return fmt.Errorf("your account can't upgrade")
+	}
 	if err != nil {
 		return err
 	}
-	price_id, err := a.queries.GetLastPrice(ctx)
+	price_id, err := a.queries.GetChoosePrice(ctx)
 	if err != nil {
 		return err
 	}
@@ -226,6 +229,14 @@ func (a *AccountService) GetAccountByUserId(ctx context.Context, user_id int64) 
 	}
 
 	res.Email = user.Email.String
+	return res, nil
+}
+
+func (a *AccountService) GetUpgradePrice(ctx context.Context) (db.UpgradePrice, error) {
+	res, err := a.queries.GetChoosePrice(ctx)
+	if err != nil {
+		return db.UpgradePrice{}, err
+	}
 	return res, nil
 }
 

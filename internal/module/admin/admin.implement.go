@@ -17,6 +17,23 @@ type AdminService struct {
 	post    post.IPostService
 }
 
+// ChoosingPrice implements IAdminService.
+func (a *AdminService) ChoosingPrice(ctx context.Context, user_id int64, id int64) error {
+	err := a.IsAdmin(ctx, user_id)
+	if err != nil {
+		return err
+	}
+	err = a.queries.UnableChoose(ctx)
+	if err != nil {
+		return err
+	}
+	err = a.queries.PriceChoosing(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // GetDetailReportPost implements IAdminService.
 func (a *AdminService) GetDetailReportPost(ctx context.Context, post_id int64, user_id int64, account_id int64, page int32, page_size int32) (ReportDetailResponse, error) {
 	var res ReportDetailResponse
@@ -52,12 +69,16 @@ func (a *AdminService) GetUpgradeSuccess(ctx context.Context, page int32, page_s
 }
 
 // AddUpgragePrice implements IAdminService.
-func (a *AdminService) AddUpgragePrice(ctx context.Context, user_id int64, price float64) (UpgradePrice, error) {
+func (a *AdminService) AddUpgragePrice(ctx context.Context, user_id int64, title string, benefit string, price float64) (UpgradePrice, error) {
 	err := a.IsAdmin(ctx, user_id)
 	if err != nil {
 		return UpgradePrice{}, err
 	}
-	create, err := a.queries.AddUpgradePrice(ctx, pgtype.Numeric{Exp: -3, Int: big.NewInt(int64(price * 1000)), Valid: true})
+	create, err := a.queries.AddUpgradePrice(ctx, db.AddUpgradePriceParams{
+		Title:   title,
+		Price:   pgtype.Numeric{Exp: -3, Int: big.NewInt(int64(price * 1000)), Valid: true},
+		Benefit: benefit,
+	})
 	if err != nil {
 		return UpgradePrice{}, err
 	}

@@ -8,13 +8,17 @@ import (
 )
 
 type UpgradePrice struct {
-	ID        int32     `json:"id"`
+	ID        int64     `json:"id"`
+	Title     string    `json:"title" binding:"required"`
+	Benefit   string    `json:"benefit" binding:"required"`
 	Price     float64   `json:"price"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
 type AddUpgradePrice struct {
-	Price float64 `json:"price" binding:"required"`
+	Title   string  `json:"title" binding:"required"`
+	Benefit string  `json:"benefit" binding:"required"`
+	Price   float64 `json:"price" binding:"required"`
 }
 
 type ReportFrom struct {
