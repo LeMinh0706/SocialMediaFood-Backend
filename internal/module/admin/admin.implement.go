@@ -23,11 +23,11 @@ func (a *AdminService) ChoosingPrice(ctx context.Context, user_id int64, id int6
 	if err != nil {
 		return err
 	}
-	err = a.queries.UnableChoose(ctx)
+	err = a.queries.PriceChoosing(ctx, id)
 	if err != nil {
 		return err
 	}
-	err = a.queries.PriceChoosing(ctx, id)
+	err = a.queries.UnableChoose(ctx)
 	if err != nil {
 		return err
 	}
