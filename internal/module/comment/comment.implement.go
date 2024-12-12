@@ -17,19 +17,14 @@ type CommentService struct {
 	noti    notification.INotificationService
 }
 
-// Backup implements ICommentService.
-func (c *CommentService) Backup(ctx context.Context) {
-	panic("unimplemented")
-}
-
 // CreateComment implements ICommentService.
-func (c *CommentService) CreateComment(ctx context.Context, account_id int64, user_id int64, post_top_id int64, description string, image string) (CommentResponse, error) {
+func (c *CommentService) CreateComment(ctx context.Context, username string, account_id int64, post_top_id int64, description string, image string) (CommentResponse, error) {
 	var res CommentResponse
 	p, err := c.post.GetPost(ctx, account_id, post_top_id)
 	if err != nil {
 		return res, err
 	}
-	acc, err := c.account.GetAccountAction(ctx, account_id, user_id)
+	acc, err := c.account.GetAccountAction(ctx, account_id, username)
 	if err != nil {
 		return res, err
 	}
@@ -60,13 +55,18 @@ func (c *CommentService) CreateComment(ctx context.Context, account_id int64, us
 	return res, nil
 }
 
+// Backup implements ICommentService.
+func (c *CommentService) Backup(ctx context.Context) {
+	panic("unimplemented")
+}
+
 // DeleteComment implements ICommentService.
-func (c *CommentService) DeleteComment(ctx context.Context, id int64, user_id int64) error {
+func (c *CommentService) DeleteComment(ctx context.Context, id int64, username string) error {
 	comment, err := c.GetComment(ctx, id)
 	if err != nil {
 		return err
 	}
-	_, err = c.account.GetAccountAction(ctx, comment.AccountID, user_id)
+	_, err = c.account.GetAccountAction(ctx, comment.AccountID, username)
 	if err != nil {
 		return err
 	}
@@ -121,13 +121,13 @@ func (c *CommentService) GetListComment(ctx context.Context, page int32, pageSiz
 }
 
 // UpdateComment implements ICommentService.
-func (c *CommentService) UpdateComment(ctx context.Context, user_id int64, id int64, description string, image string) (CommentResponse, error) {
+func (c *CommentService) UpdateComment(ctx context.Context, id int64, username string, description string, image string) (CommentResponse, error) {
 	var res CommentResponse
 	comment, err := c.GetComment(ctx, id)
 	if err != nil {
 		return res, err
 	}
-	acc, err := c.account.GetAccountAction(ctx, comment.AccountID, user_id)
+	acc, err := c.account.GetAccountAction(ctx, comment.AccountID, username)
 	if err != nil {
 		return res, err
 	}

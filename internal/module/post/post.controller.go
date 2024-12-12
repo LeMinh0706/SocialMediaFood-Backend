@@ -72,7 +72,7 @@ func (pc *PostController) CreatePost(g *gin.Context) {
 		return
 	}
 
-	post, err := pc.service.CreatePost(g, description, lng, lat, images, account_id, auth.UserId)
+	post, err := pc.service.CreatePost(g, auth.Username, description, lng, lat, images, account_id)
 	if err != nil {
 		if err.Error() == "not you" {
 			response.ErrorResponse(g, response.ErrYourSelf)
@@ -187,7 +187,7 @@ func (pc *PostController) UpdateContentPost(g *gin.Context) {
 		return
 	}
 
-	update, err := pc.service.UpdateContentPost(g, description, id, auth.UserId, images)
+	update, err := pc.service.UpdateContentPost(g, auth.Username, description, id, images)
 	if err != nil {
 		handler.CheckPostStringError(g, err)
 		return
@@ -214,7 +214,7 @@ func (pc *PostController) DeleteImage(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrBadRequestId)
 		return
 	}
-	err = pc.service.DeleteImage(g, id, auth.UserId)
+	err = pc.service.DeleteImage(g, auth.Username, id)
 	if err != nil {
 		handler.CheckPostStringError(g, err)
 		return
@@ -241,7 +241,7 @@ func (pc *PostController) DeletePost(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrBadRequestId)
 		return
 	}
-	err = pc.service.DeletePost(g, id, auth.UserId)
+	err = pc.service.DeletePost(g, auth.Username, id)
 	if err != nil {
 		handler.CheckPostStringError(g, err)
 		return

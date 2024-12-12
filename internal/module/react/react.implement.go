@@ -24,9 +24,9 @@ func (r *ReactService) Backup(ctx context.Context) {
 }
 
 // ChangeReactState implements IReactService.
-func (r *ReactService) ChangeReactState(ctx context.Context, user_id int64, account_id int64, post_id int64, state int32) (db.ReactPost, error) {
+func (r *ReactService) ChangeReactState(ctx context.Context, username string, account_id int64, post_id int64, state int32) (db.ReactPost, error) {
 	var res db.ReactPost
-	_, err := r.account.GetAccountAction(ctx, account_id, user_id)
+	_, err := r.account.GetAccountAction(ctx, account_id, username)
 	if err != nil {
 		return res, err
 	}
@@ -49,9 +49,9 @@ func (r *ReactService) ChangeReactState(ctx context.Context, user_id int64, acco
 }
 
 // CreateReact implements IReactService.
-func (r *ReactService) CreateReact(ctx context.Context, user_id int64, account_id int64, post_id int64, state int32) (db.ReactPost, error) {
+func (r *ReactService) CreateReact(ctx context.Context, username string, account_id int64, post_id int64, state int32) (db.ReactPost, error) {
 	var res db.ReactPost
-	_, err := r.account.GetAccountAction(ctx, account_id, user_id)
+	_, err := r.account.GetAccountAction(ctx, account_id, username)
 	if err != nil {
 		return res, err
 	}
@@ -125,8 +125,8 @@ func (r *ReactService) GetReactPost(ctx context.Context, account_id int64, post_
 }
 
 // UnReaction implements IReactService.
-func (r *ReactService) UnReaction(ctx context.Context, user_id int64, account_id int64, post_id int64) error {
-	_, err := r.account.GetAccountAction(ctx, account_id, user_id)
+func (r *ReactService) UnReaction(ctx context.Context, username string, account_id int64, post_id int64) error {
+	_, err := r.account.GetAccountAction(ctx, account_id, username)
 	if err != nil {
 		return err
 	}

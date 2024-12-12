@@ -78,3 +78,13 @@ func TestGetPost(t *testing.T) {
 		testQueries.AddImagePost(context.Background(), db.AddImagePostParams{UrlImage: util.RandomImage(), PostID: post.ID})
 	}
 }
+
+func TestUpgradeQueueHach(t *testing.T) {
+	for i := 30; i <= 40; i++ {
+		err := testQueries.UpgradeOnwerRequest(context.Background(), db.UpgradeOnwerRequestParams{
+			AccountID:      int64(i),
+			UpgradePriceID: 1,
+		})
+		require.NoError(t, err)
+	}
+}

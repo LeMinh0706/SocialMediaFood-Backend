@@ -67,7 +67,7 @@ func (cc *CommentController) CreateComment(g *gin.Context) {
 			return
 		}
 	}
-	comment, err := cc.service.CreateComment(g, account_id, auth.UserId, post_id, description, file)
+	comment, err := cc.service.CreateComment(g, auth.Username, account_id, post_id, description, file)
 	if err != nil {
 		handler.CheckPostStringError(g, err)
 		return
@@ -146,7 +146,7 @@ func (cc *CommentController) UpdateComment(g *gin.Context) {
 			return
 		}
 	}
-	comment, err := cc.service.UpdateComment(g, auth.UserId, id, description, file)
+	comment, err := cc.service.UpdateComment(g, id, auth.Username, description, file)
 	if err != nil {
 		handler.CheckPostStringError(g, err)
 		return
@@ -173,7 +173,7 @@ func (cc *CommentController) DeleteComment(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrBadRequestId)
 		return
 	}
-	err = cc.service.DeleteComment(g, id, auth.UserId)
+	err = cc.service.DeleteComment(g, id, auth.Username)
 	if err != nil {
 		handler.CheckPostStringError(g, err)
 		// response.ErrorResponse(g, 40119)

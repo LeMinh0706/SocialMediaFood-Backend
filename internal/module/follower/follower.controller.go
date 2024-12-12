@@ -41,7 +41,7 @@ func (fc *FollowerController) FollowRequest(g *gin.Context) {
 		response.ErrorResponse(g, 40000)
 		return
 	}
-	follower, err := fc.service.FollowRequest(g, auth.UserId, req.FromID, req.ToID)
+	follower, err := fc.service.FollowRequest(g, auth.Username, req.FromID, req.ToID)
 	if err != nil {
 		handler.FollowErr(g, err)
 		return
@@ -141,7 +141,7 @@ func (fc *FollowerController) UpdateFriend(g *gin.Context) {
 		response.ErrorResponse(g, 40000)
 		return
 	}
-	err := fc.service.UpdateStatus(g, auth.UserId, req.FromFollow, req.ToFollow)
+	err := fc.service.UpdateStatus(g, auth.Username, req.FromFollow, req.ToFollow)
 	if err != nil {
 		handler.FollowErr(g, err)
 		return
@@ -167,7 +167,7 @@ func (fc *FollowerController) UnFollow(g *gin.Context) {
 		response.ErrorResponse(g, 40000)
 		return
 	}
-	if err := fc.service.UnFollow(g, auth.UserId, req.FromFollow, req.ToFollow); err != nil {
+	if err := fc.service.UnFollow(g, auth.Username, req.FromFollow, req.ToFollow); err != nil {
 		handler.FollowErr(g, err)
 		return
 	}

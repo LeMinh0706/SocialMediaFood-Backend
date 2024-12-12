@@ -38,7 +38,7 @@ func (a *AdminController) AddUpgradePrice(g *gin.Context) {
 		return
 	}
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
-	res, err := a.service.AddUpgragePrice(g, auth.UserId, req.Title, req.Benefit, req.Price)
+	res, err := a.service.AddUpgragePrice(g, auth.Username, req.Title, req.Benefit, req.Price)
 	if err != nil {
 		handler.AdminErr(g, err)
 		return
@@ -100,7 +100,7 @@ func (a *AdminController) GetListReportPost(g *gin.Context) {
 		response.ErrorResponse(g, 40004)
 		return
 	}
-	res, err := a.service.GetListReportPost(g, auth.UserId, account_id, page, pageSize)
+	res, err := a.service.GetListReportPost(g, auth.Username, account_id, page, pageSize)
 	if err != nil {
 		handler.AdminErr(g, err)
 		return
@@ -142,7 +142,7 @@ func (a *AdminController) GetDetailReportPost(g *gin.Context) {
 		response.ErrorResponse(g, 40004)
 		return
 	}
-	res, err := a.service.GetDetailReportPost(g, id, auth.UserId, account_id, page, pageSize)
+	res, err := a.service.GetDetailReportPost(g, auth.Username, id, account_id, page, pageSize)
 	if err != nil {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return
@@ -196,7 +196,7 @@ func (a *AdminController) UpgradeSuccess(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrAccountID)
 		return
 	}
-	acc, err := a.service.UpgradeSuccess(g, auth.UserId, id)
+	acc, err := a.service.UpgradeSuccess(g, auth.Username, id)
 	if err != nil {
 		handler.AdminErr(g, err)
 		return
@@ -223,7 +223,7 @@ func (a *AdminController) UpgradeReject(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrAccountID)
 		return
 	}
-	acc, err := a.service.UpgradeReject(g, auth.UserId, id)
+	acc, err := a.service.UpgradeReject(g, auth.Username, id)
 	if err != nil {
 		handler.AdminErr(g, err)
 		return
@@ -250,7 +250,7 @@ func (a *AdminController) PriceChoosing(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrBadRequestId)
 		return
 	}
-	err = a.service.ChoosingPrice(g, auth.UserId, id)
+	err = a.service.ChoosingPrice(g, auth.Username, id)
 	if err != nil {
 		handler.AdminErr(g, err)
 		return

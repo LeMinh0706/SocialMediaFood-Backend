@@ -18,8 +18,8 @@ type AdminService struct {
 }
 
 // ChoosingPrice implements IAdminService.
-func (a *AdminService) ChoosingPrice(ctx context.Context, user_id int64, id int64) error {
-	err := a.IsAdmin(ctx, user_id)
+func (a *AdminService) ChoosingPrice(ctx context.Context, username string, id int64) error {
+	err := a.IsAdmin(ctx, username)
 	if err != nil {
 		return err
 	}
@@ -35,9 +35,9 @@ func (a *AdminService) ChoosingPrice(ctx context.Context, user_id int64, id int6
 }
 
 // GetDetailReportPost implements IAdminService.
-func (a *AdminService) GetDetailReportPost(ctx context.Context, post_id int64, user_id int64, account_id int64, page int32, page_size int32) (ReportDetailResponse, error) {
+func (a *AdminService) GetDetailReportPost(ctx context.Context, username string, post_id int64, account_id int64, page int32, page_size int32) (ReportDetailResponse, error) {
 	var res ReportDetailResponse
-	err := a.IsAdmin(ctx, user_id)
+	err := a.IsAdmin(ctx, username)
 	if err != nil {
 		return res, err
 	}
@@ -69,8 +69,8 @@ func (a *AdminService) GetUpgradeSuccess(ctx context.Context, page int32, page_s
 }
 
 // AddUpgragePrice implements IAdminService.
-func (a *AdminService) AddUpgragePrice(ctx context.Context, user_id int64, title string, benefit string, price float64) (UpgradePrice, error) {
-	err := a.IsAdmin(ctx, user_id)
+func (a *AdminService) AddUpgragePrice(ctx context.Context, username string, title string, benefit string, price float64) (UpgradePrice, error) {
+	err := a.IsAdmin(ctx, username)
 	if err != nil {
 		return UpgradePrice{}, err
 	}
@@ -87,14 +87,14 @@ func (a *AdminService) AddUpgragePrice(ctx context.Context, user_id int64, title
 }
 
 // BanPost implements IAdminService.
-func (a *AdminService) BanPost(ctx context.Context, user_id int64, post_id int64) (post.PostResponse, error) {
+func (a *AdminService) BanPost(ctx context.Context, username string, post_id int64) (post.PostResponse, error) {
 	panic("unimplemented")
 }
 
 // GetListReportPost implements IAdminService.
-func (a *AdminService) GetListReportPost(ctx context.Context, user_id int64, account_id int64, page int32, page_size int32) ([]post.PostResponse, error) {
+func (a *AdminService) GetListReportPost(ctx context.Context, username string, account_id int64, page int32, page_size int32) ([]post.PostResponse, error) {
 	var res []post.PostResponse
-	err := a.IsAdmin(ctx, user_id)
+	err := a.IsAdmin(ctx, username)
 	if err != nil {
 		return nil, err
 	}
@@ -151,8 +151,12 @@ func (a *AdminService) GetUpgradeQueue(ctx context.Context, page int32, page_siz
 }
 
 // IsAdmin implements IAdminService.
-func (a *AdminService) IsAdmin(ctx context.Context, user_id int64) error {
-	role, err := a.queries.IsAdmin(ctx, user_id)
+func (a *AdminService) IsAdmin(ctx context.Context, username string) error {
+	user, err := a.queries.Login(ctx, username)
+	if err != nil {
+		return fmt.Errorf("permission")
+	}
+	role, err := a.queries.IsAdmin(ctx, user.ID)
 	if err != nil {
 		return err
 	}
@@ -163,19 +167,19 @@ func (a *AdminService) IsAdmin(ctx context.Context, user_id int64) error {
 }
 
 // RejectBan implements IAdminService.
-func (a *AdminService) RejectBan(ctx context.Context, user_id int64, post_id int64) error {
+func (a *AdminService) RejectBan(ctx context.Context, username string, post_id int64) error {
 	panic("unimplemented")
 }
 
 // UpgradeReject implements IAdminService.
-func (a *AdminService) UpgradeReject(ctx context.Context, user_id int64, account_id int64) (account.AccountResponse, error) {
+func (a *AdminService) UpgradeReject(ctx context.Context, username string, account_id int64) (account.AccountResponse, error) {
 	panic("unimplemented")
 }
 
 // UpgradeSuccess implements IAdminService.
-func (a *AdminService) UpgradeSuccess(ctx context.Context, user_id int64, account_id int64) (account.AccountResponse, error) {
+func (a *AdminService) UpgradeSuccess(ctx context.Context, username string, account_id int64) (account.AccountResponse, error) {
 	var res account.AccountResponse
-	err := a.IsAdmin(ctx, user_id)
+	err := a.IsAdmin(ctx, username)
 	if err != nil {
 		return res, err
 	}

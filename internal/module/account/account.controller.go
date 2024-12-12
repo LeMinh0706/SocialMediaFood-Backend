@@ -63,7 +63,7 @@ func (ac *AccountController) GetAccount(g *gin.Context) {
 func (ac *AccountController) GetMe(g *gin.Context) {
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
 	token := g.GetHeader("Authorization")
-	me, err := ac.service.GetAccountByUserId(g, auth.UserId)
+	me, err := ac.service.GetAccountByUserId(g, auth.Username)
 	if err != nil {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return
@@ -102,7 +102,7 @@ func (ac *AccountController) UpdateAvatar(g *gin.Context) {
 			return
 		}
 	}
-	update, err := ac.service.UpdateAvatar(g, account_id, auth.UserId, file)
+	update, err := ac.service.UpdateAvatar(g, account_id, auth.Username, file)
 	if err != nil {
 		response.ErrorNonKnow(g, 401, err.Error())
 		return
@@ -140,7 +140,7 @@ func (ac *AccountController) UpdateBackGround(g *gin.Context) {
 			return
 		}
 	}
-	update, err := ac.service.UpdateBackground(g, account_id, auth.UserId, file)
+	update, err := ac.service.UpdateBackground(g, account_id, auth.Username, file)
 	if err != nil {
 		response.ErrorNonKnow(g, 401, err.Error())
 		return
@@ -176,7 +176,7 @@ func (ac *AccountController) UpdateName(g *gin.Context) {
 		response.ErrorResponse(g, 40014)
 		return
 	}
-	update, err := ac.service.UpdateName(g, account_id, auth.UserId, req.Fullname)
+	update, err := ac.service.UpdateName(g, account_id, auth.Username, req.Fullname)
 	if err != nil {
 		response.ErrorNonKnow(g, 401, err.Error())
 		return
@@ -198,7 +198,7 @@ func (as *AccountController) AddYourLocation(g *gin.Context) {
 	if !handler.CheckValidPosition(g, lng, lat) {
 		return
 	}
-	location, err := as.service.AddLocation(g, auth.UserId, id, address, lng, lat)
+	location, err := as.service.AddLocation(g, id, auth.Username, address, lng, lat)
 	if err != nil {
 		response.ErrorNonKnow(g, 401, err.Error())
 		return
@@ -257,7 +257,7 @@ func (as *AccountController) AddEmail(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrEmailInvalid)
 		return
 	}
-	err := as.service.AddEmail(g, auth.UserId, req.Email)
+	err := as.service.AddEmail(g, auth.Username, req.Email)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			response.ErrorResponse(g, response.ErrNotFoundUser)
@@ -287,7 +287,7 @@ func (as *AccountController) UpgradeOnwerRequest(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrBadRequest)
 		return
 	}
-	err := as.service.UpgradeOwnerRequest(g, auth.UserId, req.AccountID)
+	err := as.service.UpgradeOwnerRequest(g, req.AccountID, auth.Username)
 	if err != nil {
 		if err.Error() == "ERROR: duplicate key value violates unique constraint \"upgrade_queue_account_id_key\" (SQLSTATE 23505)" {
 			response.ErrorResponse(g, response.ErrVerify)

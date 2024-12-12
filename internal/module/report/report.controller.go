@@ -55,7 +55,7 @@ func (r *ReportController) CreateReport(g *gin.Context) {
 		response.ErrorResponse(g, 40000)
 		return
 	}
-	list, err := r.service.CreateReportPost(g, auth.UserId, req.AccountID, req.PostID, req.IssueID)
+	list, err := r.service.CreateReportPost(g, auth.Username, req.AccountID, req.PostID, req.IssueID)
 	if err != nil {
 		handler.CheckPostStringError(g, err)
 		return
@@ -89,7 +89,7 @@ func (r *ReportController) GetYourReport(g *gin.Context) {
 		return
 	}
 	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
-	list, err := r.service.GetYourReport(g, auth.UserId, account_id, post_id)
+	list, err := r.service.GetYourReport(g, auth.Username, account_id, post_id)
 	if err != nil {
 		handler.CheckPostStringError(g, err)
 		return
