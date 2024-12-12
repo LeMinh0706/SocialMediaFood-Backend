@@ -27,20 +27,26 @@ func (q *Queries) AddEmail(ctx context.Context, arg AddEmailParams) error {
 }
 
 const login = `-- name: Login :one
-SELECT id, username, hash_password FROM users
+SELECT id, username,email, hash_password FROM users
 WHERE username = $1
 `
 
 type LoginRow struct {
-	ID           int64  `json:"id"`
-	Username     string `json:"username"`
-	HashPassword string `json:"hash_password"`
+	ID           int64       `json:"id"`
+	Username     string      `json:"username"`
+	Email        pgtype.Text `json:"email"`
+	HashPassword string      `json:"hash_password"`
 }
 
 func (q *Queries) Login(ctx context.Context, username string) (LoginRow, error) {
 	row := q.db.QueryRow(ctx, login, username)
 	var i LoginRow
-	err := row.Scan(&i.ID, &i.Username, &i.HashPassword)
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Email,
+		&i.HashPassword,
+	)
 	return i, err
 }
 

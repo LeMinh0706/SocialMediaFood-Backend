@@ -63,10 +63,14 @@ func (r *ResetPasswordService) ForgotPassword(ctx context.Context, email string,
 }
 
 // AddRequestPassword implements IResetPasswordService.
-func (r *ResetPasswordService) AddRequestPassword(ctx context.Context, id uuid.UUID, user_id int64, duration time.Duration) error {
-	_, err := r.queries.CreateRequestPassword(ctx, db.CreateRequestPasswordParams{
+func (r *ResetPasswordService) AddRequestPassword(ctx context.Context, id uuid.UUID, username string, duration time.Duration) error {
+	user, err := r.queries.Login(ctx, username)
+	if err != nil {
+		return err
+	}
+	_, err = r.queries.CreateRequestPassword(ctx, db.CreateRequestPasswordParams{
 		ID:        pgtype.UUID{Bytes: id, Valid: true},
-		UserID:    user_id,
+		UserID:    user.ID,
 		ExpiresAt: pgtype.Timestamptz{Time: time.Now().Add(duration), Valid: true},
 	})
 	if err != nil {
@@ -76,7 +80,11 @@ func (r *ResetPasswordService) AddRequestPassword(ctx context.Context, id uuid.U
 }
 
 // ChangePassword implements IResetPasswordService.
-func (r *ResetPasswordService) ChangePassword(ctx context.Context, uuid uuid.UUID, user_id int64, password string) error {
+func (r *ResetPasswordService) ChangePassword(ctx context.Context, uuid uuid.UUID, username string, password string) error {
+	user, err := r.queries.Login(ctx, username)
+	if err != nil {
+		return err
+	}
 	check, err := r.queries.GetRequestByUUID(ctx, pgtype.UUID{Bytes: uuid, Valid: true})
 	if err != nil {
 		return fmt.Errorf("invalid uuid")
@@ -89,7 +97,7 @@ func (r *ResetPasswordService) ChangePassword(ctx context.Context, uuid uuid.UUI
 	if err != nil {
 		return err
 	}
-	_, err = r.queries.UpdatePassword(ctx, db.UpdatePasswordParams{ID: user_id, HashPassword: hash})
+	_, err = r.queries.UpdatePassword(ctx, db.UpdatePasswordParams{ID: user.ID, HashPassword: hash})
 	if err != nil {
 		return err
 	}

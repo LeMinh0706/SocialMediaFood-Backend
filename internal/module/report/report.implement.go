@@ -13,9 +13,9 @@ type ReportService struct {
 }
 
 // ReportPost implements IReportService.
-func (r *ReportService) CreateReportPost(ctx context.Context, user_id int64, account_id int64, post_id int64, issue_id []int32) ([]ReportPostResponse, error) {
+func (r *ReportService) CreateReportPost(ctx context.Context, username string, account_id int64, post_id int64, issue_id []int32) ([]ReportPostResponse, error) {
 	var reports []ReportPostResponse
-	if _, err := r.acc.GetAccountAction(ctx, account_id, user_id); err != nil {
+	if _, err := r.acc.GetAccountAction(ctx, account_id, username); err != nil {
 		return reports, err
 	}
 	for _, element := range issue_id {
@@ -40,9 +40,9 @@ func (r *ReportService) GetListIssue(ctx context.Context) []db.IssuePost {
 }
 
 // GetYourReport implements IReportService.
-func (r *ReportService) GetYourReport(ctx context.Context, user_id int64, account_id int64, post_id int64) ([]ReportResponse, error) {
+func (r *ReportService) GetYourReport(ctx context.Context, username string, account_id int64, post_id int64) ([]ReportResponse, error) {
 	var res []ReportResponse
-	_, err := r.acc.GetAccountAction(ctx, account_id, user_id)
+	_, err := r.acc.GetAccountAction(ctx, account_id, username)
 	if err != nil {
 		return res, err
 	}

@@ -57,13 +57,13 @@ func (uc *UserController) Login(g *gin.Context) {
 	}
 	tokenId, _ := uuid.NewRandom()
 
-	token, err := uc.token.CreateToken(tokenId, user.ID, user.Username, uc.config.AccessTokenDuration)
+	token, err := uc.token.CreateToken(tokenId, user.Username, uc.config.AccessTokenDuration)
 	if err != nil {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return
 	}
 	refreshId, _ := uuid.NewRandom()
-	refesh, err := uc.refesh.CreateToken(refreshId, user.ID, user.Username, uc.config.RefeshTokenDuration)
+	refesh, err := uc.refesh.CreateToken(refreshId, user.Username, uc.config.RefeshTokenDuration)
 	if err != nil {
 		response.ErrorNonKnow(g, 500, err.Error())
 	}
@@ -130,7 +130,7 @@ func (uc *UserController) RefeshToken(g *gin.Context) {
 	}
 	tokenId, _ := uuid.NewRandom()
 
-	token, err := uc.token.CreateToken(tokenId, payload.UserId, payload.Username, uc.config.AccessTokenDuration)
+	token, err := uc.token.CreateToken(tokenId, payload.Username, uc.config.AccessTokenDuration)
 	if err != nil {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return

@@ -37,12 +37,12 @@ func (f *FollowerService) UtilCreateFollow(ctx context.Context, from db.Follower
 }
 
 // FollowRequest implements IFollowerService.
-func (f *FollowerService) FollowRequest(ctx context.Context, user_id int64, from_id int64, to_id int64) (FollowResponse, error) {
+func (f *FollowerService) FollowRequest(ctx context.Context, username string, from_id int64, to_id int64) (FollowResponse, error) {
 	var res FollowResponse
 	if from_id == to_id {
 		return res, fmt.Errorf("can't follow yourself")
 	}
-	_, err := f.account.GetAccountAction(ctx, from_id, user_id)
+	_, err := f.account.GetAccountAction(ctx, from_id, username)
 	if err != nil {
 		return res, err
 	}
@@ -179,8 +179,8 @@ func (f *FollowerService) GetFollowType(ctx context.Context, status string, page
 }
 
 // UpdateStatus implements IFollowerService.
-func (f *FollowerService) UpdateStatus(ctx context.Context, user_id int64, from_id int64, to_id int64) error {
-	_, err := f.account.GetAccountAction(ctx, from_id, user_id)
+func (f *FollowerService) UpdateStatus(ctx context.Context, username string, from_id int64, to_id int64) error {
+	_, err := f.account.GetAccountAction(ctx, from_id, username)
 	if err != nil {
 		return err
 	}
@@ -202,8 +202,8 @@ func (f *FollowerService) UpdateStatus(ctx context.Context, user_id int64, from_
 }
 
 // UnFollow implements IFollowerService.
-func (f *FollowerService) UnFollow(ctx context.Context, user_id int64, from_id int64, to_id int64) error {
-	_, err := f.account.GetAccountAction(ctx, from_id, user_id)
+func (f *FollowerService) UnFollow(ctx context.Context, username string, from_id int64, to_id int64) error {
+	_, err := f.account.GetAccountAction(ctx, from_id, username)
 	if err != nil {
 		return err
 	}

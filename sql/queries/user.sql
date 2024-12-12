@@ -8,7 +8,7 @@ INSERT INTO users(
 ) RETURNING id, username, email, created_at;
 
 -- name: Login :one
-SELECT id, username, hash_password FROM users
+SELECT id, username,email, hash_password FROM users
 WHERE username = $1;
 
 -- name: AddEmail :exec

@@ -44,7 +44,7 @@ func (rc *ReactController) CreateReact(g *gin.Context) {
 	if req.State == 0 {
 		req.State = 1
 	}
-	react, err := rc.service.CreateReact(g, auth.UserId, req.AccountID, req.PostID, req.State)
+	react, err := rc.service.CreateReact(g, auth.Username, req.AccountID, req.PostID, req.State)
 	if err != nil {
 		handler.CheckPostStringError(g, err)
 		return
@@ -105,7 +105,7 @@ func (rc *ReactController) ChangeReactState(g *gin.Context) {
 		response.ErrorResponse(g, 40000)
 		return
 	}
-	update, err := rc.service.ChangeReactState(g, auth.UserId, req.AccountID, req.PostID, req.State)
+	update, err := rc.service.ChangeReactState(g, auth.Username, req.AccountID, req.PostID, req.State)
 	if err != nil {
 		handler.CheckPostStringError(g, err)
 		return
@@ -131,7 +131,7 @@ func (rc *ReactController) UnReaction(g *gin.Context) {
 		response.ErrorResponse(g, 40000)
 		return
 	}
-	err := rc.service.UnReaction(g, auth.UserId, req.AccountID, req.PostID)
+	err := rc.service.UnReaction(g, auth.Username, req.AccountID, req.PostID)
 	if err != nil {
 		handler.CheckPostStringError(g, err)
 		return

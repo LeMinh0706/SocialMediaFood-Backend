@@ -49,7 +49,7 @@ func (n *NotificationController) GetYourNotification(g *gin.Context) {
 	if page == 0 || pageSize == 0 {
 		return
 	}
-	list, err := n.service.GetListNotification(g, auth.UserId, account_id, page, pageSize)
+	list, err := n.service.GetListNotification(g, auth.Username, account_id, page, pageSize)
 	if err != nil {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return
@@ -76,7 +76,7 @@ func (n *NotificationController) SeenYourNotification(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrBadRequestId)
 		return
 	}
-	err = n.service.IsSeen(g, auth.UserId, id)
+	err = n.service.IsSeen(g, auth.Username, id)
 	if err != nil {
 		handler.CheckPostStringError(g, err)
 		return
@@ -103,7 +103,7 @@ func (n *NotificationController) SeenAllNoti(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrBadRequestId)
 		return
 	}
-	err = n.service.IsSeenAll(g, auth.UserId, id)
+	err = n.service.IsSeenAll(g, auth.Username, id)
 	if err != nil {
 		// handler.CheckPostStringError(g, err)
 		response.ErrorNonKnow(g, 500, err.Error())
@@ -131,7 +131,7 @@ func (n *NotificationController) DeleteNotification(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrBadRequestId)
 		return
 	}
-	err = n.service.DeleteNoti(g, auth.UserId, id)
+	err = n.service.DeleteNoti(g, auth.Username, id)
 	if err != nil {
 		handler.CheckPostStringError(g, err)
 		return

@@ -55,12 +55,12 @@ func (n *NotificationService) CreatePostNotification(ctx context.Context, accoun
 }
 
 // DeleteNoti implements INotificationService.
-func (n *NotificationService) DeleteNoti(ctx context.Context, user_id int64, id int64) error {
+func (n *NotificationService) DeleteNoti(ctx context.Context, username string, id int64) error {
 	noti, err := n.queries.GetNotification(ctx, id)
 	if err != nil {
 		return err
 	}
-	_, err = n.acc.GetAccountAction(ctx, noti.AccountID, user_id)
+	_, err = n.acc.GetAccountAction(ctx, noti.AccountID, username)
 	if err != nil {
 		return err
 	}
@@ -72,9 +72,9 @@ func (n *NotificationService) DeleteNoti(ctx context.Context, user_id int64, id 
 }
 
 // GetListNotification implements INotificationService.
-func (n *NotificationService) GetListNotification(ctx context.Context, user_id int64, account_id int64, page int32, pageSize int32) ([]NotificationResponse, error) {
+func (n *NotificationService) GetListNotification(ctx context.Context, username string, account_id int64, page int32, pageSize int32) ([]NotificationResponse, error) {
 	var res []NotificationResponse
-	_, err := n.acc.GetAccountAction(ctx, account_id, user_id)
+	_, err := n.acc.GetAccountAction(ctx, account_id, username)
 	if err != nil {
 		return res, err
 	}
@@ -109,12 +109,12 @@ func (n *NotificationService) GetNotification(ctx context.Context, id int64, use
 }
 
 // IsSeen implements INotificationService.
-func (n *NotificationService) IsSeen(ctx context.Context, user_id int64, id int64) error {
+func (n *NotificationService) IsSeen(ctx context.Context, username string, id int64) error {
 	noti, err := n.queries.GetNotification(ctx, id)
 	if err != nil {
 		return err
 	}
-	_, err = n.acc.GetAccountAction(ctx, noti.AccountID, user_id)
+	_, err = n.acc.GetAccountAction(ctx, noti.AccountID, username)
 	if err != nil {
 		return err
 	}
@@ -127,8 +127,8 @@ func (n *NotificationService) IsSeen(ctx context.Context, user_id int64, id int6
 }
 
 // IsSeenAll implements INotificationService.
-func (n *NotificationService) IsSeenAll(ctx context.Context, user_id int64, account_id int64) error {
-	_, err := n.acc.GetAccountAction(ctx, account_id, user_id)
+func (n *NotificationService) IsSeenAll(ctx context.Context, username string, account_id int64) error {
+	_, err := n.acc.GetAccountAction(ctx, account_id, username)
 	if err != nil {
 		return err
 	}
