@@ -48,12 +48,12 @@ func (rc *ResetPasswordController) ForgotPassword(g *gin.Context) {
 		return
 	}
 	tokenId, _ := uuid.NewRandom()
-	err = rc.service.AddRequestPassword(g, tokenId, user.Username, rc.config.AccessTokenDuration)
+	err = rc.service.AddRequestPassword(g, tokenId, user.Username, rc.config.ResetPass)
 	if err != nil {
 		handler.ResetPasswordErr(g, err)
 		return
 	}
-	token, err := rc.token.CreateToken(tokenId, user.Username, rc.config.AccessTokenDuration)
+	token, err := rc.token.CreateToken(tokenId, user.Username, rc.config.ResetPass)
 	if err != nil {
 		response.ErrorNonKnow(g, 500, err.Error())
 		return
