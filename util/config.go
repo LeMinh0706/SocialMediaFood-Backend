@@ -25,6 +25,7 @@ type Config struct {
 	SMTPUsername        string        `mapstructure:"SMTP_USERNAME"`
 	SMTPPassword        string        `mapstructure:"SMTP_PASSWORD"`
 	APKLink             string        `mapstructure:"APK_LINK"`
+	ResetPass           time.Duration `mapstructure:"RESET_PASS"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
