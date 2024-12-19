@@ -315,3 +315,29 @@ func (as *AccountController) GetUpgradePrice(g *gin.Context) {
 	}
 	response.SuccessResponse(g, 201, res)
 }
+
+// Account godoc
+// @Summary      Create owner account
+// @Description  Create your own store
+// @Tags         Accounts
+// @Accept       json
+// @Produce      json
+// @Param        request body CreateAccountVip true "request"
+// @Security BearerAuth
+// @Success      200  {object}  AccountResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /accounts/create-owner [post]
+func (as *AccountController) CreateAccountVip(g *gin.Context) {
+	var req CreateAccountVip
+	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+	if err := g.ShouldBindJSON(&req); err != nil {
+		response.ErrorResponse(g, response.ErrBadRequest)
+		return
+	}
+	acc, err := as.service.CreateOwner(g, auth.Username, req)
+	if err != nil {
+		handler.CheckPostStringError(g, err)
+		return
+	}
+	response.SuccessResponse(g, 201, acc)
+}

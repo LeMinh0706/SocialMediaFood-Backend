@@ -176,6 +176,86 @@ func (q *Queries) GetPrice(ctx context.Context) (GetPriceRow, error) {
 	return i, err
 }
 
+const isUpgradeAccount = `-- name: IsUpgradeAccount :one
+SELECT accounts.id, accounts.user_id, accounts.fullname, accounts.url_avatar, accounts.url_background_profile, accounts.gender, accounts.country, accounts.language, accounts.address, accounts.is_deleted, accounts.role_id, accounts.is_upgrade, accounts.banned, accounts.introduce FROM accounts 
+JOIN users ON accounts.user_id = users.id
+WHERE users.username = $1 ORDER BY accounts.id LIMIT 1
+`
+
+func (q *Queries) IsUpgradeAccount(ctx context.Context, username string) (Account, error) {
+	row := q.db.QueryRow(ctx, isUpgradeAccount, username)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Fullname,
+		&i.UrlAvatar,
+		&i.UrlBackgroundProfile,
+		&i.Gender,
+		&i.Country,
+		&i.Language,
+		&i.Address,
+		&i.IsDeleted,
+		&i.RoleID,
+		&i.IsUpgrade,
+		&i.Banned,
+		&i.Introduce,
+	)
+	return i, err
+}
+
+const makeOwner = `-- name: MakeOwner :one
+INSERT INTO accounts(
+    user_id,
+    fullname,
+    country,
+    language,
+    role_id,
+    url_avatar,
+    url_background_profile
+) VALUES (
+    $1, $2, $3, $4, 2, $5, $6
+) RETURNING id, user_id, fullname, url_avatar, url_background_profile, gender, country, language, address, is_deleted, role_id, is_upgrade, banned, introduce
+`
+
+type MakeOwnerParams struct {
+	UserID               int64       `json:"user_id"`
+	Fullname             string      `json:"fullname"`
+	Country              pgtype.Text `json:"country"`
+	Language             pgtype.Text `json:"language"`
+	UrlAvatar            string      `json:"url_avatar"`
+	UrlBackgroundProfile string      `json:"url_background_profile"`
+}
+
+func (q *Queries) MakeOwner(ctx context.Context, arg MakeOwnerParams) (Account, error) {
+	row := q.db.QueryRow(ctx, makeOwner,
+		arg.UserID,
+		arg.Fullname,
+		arg.Country,
+		arg.Language,
+		arg.UrlAvatar,
+		arg.UrlBackgroundProfile,
+	)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Fullname,
+		&i.UrlAvatar,
+		&i.UrlBackgroundProfile,
+		&i.Gender,
+		&i.Country,
+		&i.Language,
+		&i.Address,
+		&i.IsDeleted,
+		&i.RoleID,
+		&i.IsUpgrade,
+		&i.Banned,
+		&i.Introduce,
+	)
+	return i, err
+}
+
 const searchingAccounts = `-- name: SearchingAccounts :many
 SELECT id, fullname, url_avatar, url_background_profile, role_id FROM accounts
 WHERE fullname ILIKE '%' || $1 || '%'

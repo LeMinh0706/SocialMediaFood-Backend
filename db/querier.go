@@ -81,8 +81,10 @@ type Querier interface {
 	GetYourReport(ctx context.Context, arg GetYourReportParams) ([]GetYourReportRow, error)
 	GetYourRequest(ctx context.Context, arg GetYourRequestParams) ([]int64, error)
 	IsAdmin(ctx context.Context, userID int64) (int32, error)
+	IsUpgradeAccount(ctx context.Context, username string) (Account, error)
 	ListAccountReact(ctx context.Context, postID int64) ([]int64, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
+	MakeOwner(ctx context.Context, arg MakeOwnerParams) (Account, error)
 	OwnerUpdateQuanity(ctx context.Context, arg OwnerUpdateQuanityParams) (Menu, error)
 	PriceChoosing(ctx context.Context, id int64) error
 	Register(ctx context.Context, arg RegisterParams) (RegisterRow, error)

@@ -20,4 +20,5 @@ type IAccountService interface {
 	UpdateEmail(ctx context.Context, id int64, username, email string) error
 	UpgradeOwnerRequest(ctx context.Context, id int64, username string) error
 	GetUpgradePrice(ctx context.Context) (db.GetChoosePriceRow, error)
+	CreateOwner(ctx context.Context, username string, arg CreateAccountVip) (AccountResponse, error)
 }

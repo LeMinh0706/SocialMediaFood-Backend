@@ -71,3 +71,21 @@ SELECT id,title,benefit, price
 FROM upgrade_price
 WHERE is_choose = TRUE 
 LIMIT 1; 
+
+-- name: MakeOwner :one
+INSERT INTO accounts(
+    user_id,
+    fullname,
+    country,
+    language,
+    role_id,
+    url_avatar,
+    url_background_profile
+) VALUES (
+    $1, $2, $3, $4, 2, $5, $6
+) RETURNING * ;
+
+-- name: IsUpgradeAccount :one
+SELECT accounts.* FROM accounts 
+JOIN users ON accounts.user_id = users.id
+WHERE users.username = $1 ORDER BY accounts.id LIMIT 1;
