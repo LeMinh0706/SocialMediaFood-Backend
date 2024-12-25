@@ -157,6 +157,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/create-owner": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create your own store",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Create owner account",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/account.CreateAccountVip"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/account.AccountResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/accounts/fullname/{id}": {
             "put": {
                 "security": [
@@ -2540,6 +2585,29 @@ const docTemplate = `{
                 },
                 "url_background_profile": {
                     "type": "string"
+                }
+            }
+        },
+        "account.CreateAccountVip": {
+            "type": "object",
+            "properties": {
+                "country": {
+                    "type": "string"
+                },
+                "fullname": {
+                    "type": "string"
+                },
+                "language": {
+                    "type": "string"
+                },
+                "url_avatar": {
+                    "type": "string"
+                },
+                "url_background_profile": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },

@@ -23,6 +23,21 @@ definitions:
       url_background_profile:
         type: string
     type: object
+  account.CreateAccountVip:
+    properties:
+      country:
+        type: string
+      fullname:
+        type: string
+      language:
+        type: string
+      url_avatar:
+        type: string
+      url_background_profile:
+        type: string
+      user_id:
+        type: integer
+    type: object
   account.EmailRequest:
     properties:
       email:
@@ -554,6 +569,34 @@ paths:
       security:
       - BearerAuth: []
       summary: Update Background
+      tags:
+      - Accounts
+  /accounts/create-owner:
+    post:
+      consumes:
+      - application/json
+      description: Create your own store
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/account.CreateAccountVip'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/account.AccountResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Create owner account
       tags:
       - Accounts
   /accounts/fullname/{id}:

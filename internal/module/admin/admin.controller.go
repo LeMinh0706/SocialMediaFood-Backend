@@ -223,12 +223,12 @@ func (a *AdminController) UpgradeReject(g *gin.Context) {
 		response.ErrorResponse(g, response.ErrAccountID)
 		return
 	}
-	acc, err := a.service.UpgradeReject(g, auth.Username, id)
+	err = a.service.UpgradeReject(g, auth.Username, id)
 	if err != nil {
 		handler.AdminErr(g, err)
 		return
 	}
-	response.SuccessResponse(g, 200, acc)
+	response.SuccessResponse(g, 201, nil)
 }
 
 // Admin godoc

@@ -172,8 +172,16 @@ func (a *AdminService) RejectBan(ctx context.Context, username string, post_id i
 }
 
 // UpgradeReject implements IAdminService.
-func (a *AdminService) UpgradeReject(ctx context.Context, username string, account_id int64) (account.AccountResponse, error) {
-	panic("unimplemented")
+func (a *AdminService) UpgradeReject(ctx context.Context, username string, account_id int64) error {
+	err := a.IsAdmin(ctx, username)
+	if err != nil {
+		return err
+	}
+	err = a.queries.UpgradeReject(ctx, account_id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // UpgradeSuccess implements IAdminService.

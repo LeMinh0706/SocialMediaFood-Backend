@@ -12,6 +12,34 @@ type AccountService struct {
 	queries *db.Queries
 }
 
+// CreateOwner implements IAccountService.
+func (a *AccountService) CreateOwner(ctx context.Context, username string, arg CreateAccountVip) (AccountResponse, error) {
+	var res AccountResponse
+	first, err := a.queries.IsUpgradeAccount(ctx, username)
+	if err != nil {
+		return res, err
+	}
+	acc, err := a.GetAccountAction(ctx, first.ID, username)
+	if err != nil {
+		return res, err
+	}
+	if acc.IsUpgrade.Valid && !acc.IsUpgrade.Bool {
+		return res, fmt.Errorf("can't create vip account")
+	}
+	owner, err := a.queries.MakeOwner(ctx, db.MakeOwnerParams{
+		UserID:               acc.UserID,
+		Fullname:             arg.Fullname,
+		Country:              pgtype.Text{String: arg.Country, Valid: true},
+		Language:             pgtype.Text{String: arg.Language, Valid: true},
+		UrlAvatar:            arg.UrlAvatar,
+		UrlBackgroundProfile: arg.UrlBackgroundProfile})
+	if err != nil {
+		return res, err
+	}
+	res = AccountRes(owner)
+	return res, nil
+}
+
 // UpgradeOwnerRequest implements IAccountService.
 func (a *AccountService) UpgradeOwnerRequest(ctx context.Context, id int64, username string) error {
 	acc, err := a.GetAccountAction(ctx, id, username)

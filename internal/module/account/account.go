@@ -6,6 +6,15 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
 )
 
+type CreateAccountVip struct {
+	UserID               int64  `json:"user_id"`
+	Fullname             string `json:"fullname"`
+	Country              string `json:"country"`
+	Language             string `json:"language"`
+	UrlAvatar            string `json:"url_avatar"`
+	UrlBackgroundProfile string `json:"url_background_profile"`
+}
+
 type EmailRequest struct {
 	Email string `json:"email" binding:"required,email"`
 }
