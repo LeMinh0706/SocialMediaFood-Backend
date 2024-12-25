@@ -319,6 +319,15 @@ func (q *Queries) UpgradeOwner(ctx context.Context, id int64) error {
 	return err
 }
 
+const upgradeReject = `-- name: UpgradeReject :exec
+DELETE FROM upgrade_queue WHERE account_id = $1
+`
+
+func (q *Queries) UpgradeReject(ctx context.Context, accountID int64) error {
+	_, err := q.db.Exec(ctx, upgradeReject, accountID)
+	return err
+}
+
 const upgradeStateQueue = `-- name: UpgradeStateQueue :exec
 UPDATE upgrade_queue SET status = 'paid'
 WHERE account_id = $1

@@ -17,5 +17,6 @@ func NewAdminRouter(r *gin.Engine, group *gin.RouterGroup, service IAdminService
 		adminGroup.GET("/upgrade-queue", ac.GetUpgradeQueue)
 		adminGroup.POST("/upgrade-queue/:id", ac.UpgradeSuccess)
 		adminGroup.POST("/price-choosing/:id", ac.PriceChoosing)
+		adminGroup.DELETE("/upgrade-queue/:id", ac.UpgradeReject)
 	}
 }

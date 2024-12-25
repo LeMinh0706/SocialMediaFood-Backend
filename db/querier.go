@@ -107,6 +107,7 @@ type Querier interface {
 	UpdateState(ctx context.Context, arg UpdateStateParams) (ReactPost, error)
 	UpgradeOnwerRequest(ctx context.Context, arg UpgradeOnwerRequestParams) error
 	UpgradeOwner(ctx context.Context, id int64) error
+	UpgradeReject(ctx context.Context, accountID int64) error
 	UpgradeStateQueue(ctx context.Context, accountID int64) error
 	UpgradeSuccess(ctx context.Context, id int64) (int64, error)
 }

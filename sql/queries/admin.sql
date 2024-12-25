@@ -73,3 +73,6 @@ UPDATE upgrade_price SET is_choose = FALSE;
 -- name: PriceChoosing :exec
 UPDATE upgrade_price SET is_choose = TRUE 
 WHERE id = $1;
+
+-- name: UpgradeReject :exec
+DELETE FROM upgrade_queue WHERE account_id = $1;
