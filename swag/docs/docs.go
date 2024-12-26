@@ -1386,6 +1386,11 @@ const docTemplate = `{
         },
         "/menu": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Add food",
                 "consumes": [
                     "application/json"
@@ -1426,6 +1431,11 @@ const docTemplate = `{
         },
         "/menu/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Add food",
                 "consumes": [
                     "application/json"
@@ -2098,6 +2108,48 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/post.PostResponse"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/rating": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create rating",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rating"
+                ],
+                "summary": "Create rating",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/rating.RatingRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Success"
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -3049,6 +3101,23 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "total_like": {
+                    "type": "integer"
+                }
+            }
+        },
+        "rating.RatingRequest": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "from_account_id": {
+                    "type": "integer"
+                },
+                "star": {
+                    "type": "integer"
+                },
+                "to_account_id": {
                     "type": "integer"
                 }
             }

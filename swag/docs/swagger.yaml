@@ -329,6 +329,17 @@ definitions:
       total_like:
         type: integer
     type: object
+  rating.RatingRequest:
+    properties:
+      content:
+        type: string
+      from_account_id:
+        type: integer
+      star:
+        type: integer
+      to_account_id:
+        type: integer
+    type: object
   react.ListReactResponse:
     properties:
       react:
@@ -1351,6 +1362,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
       summary: Add food
       tags:
       - Menu
@@ -1386,6 +1399,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
       summary: Add food
       tags:
       - Menu
@@ -1800,6 +1815,32 @@ paths:
       summary: Delete post
       tags:
       - Posts
+  /rating:
+    post:
+      consumes:
+      - application/json
+      description: Create rating
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/rating.RatingRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Success
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Create rating
+      tags:
+      - Rating
   /react:
     delete:
       consumes:

@@ -28,6 +28,7 @@ func NewMenuController(service IMenuService, token token.Maker) *MenuController 
 // @Accept       json
 // @Produce      json
 // @Param        request body AddFood true "request"
+// @Security BearerAuth
 // @Success      201  {object}  MenuResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /menu [post]
@@ -55,6 +56,7 @@ func (m *MenuController) CreateNewFood(g *gin.Context) {
 // @Param        id path int true "ID"
 // @Param        page query int true "Page"
 // @Param        page_size query int true "Page Size"
+// @Security BearerAuth
 // @Success      201  {object}  MenuResponse
 // @Failure      500  {object}  response.ErrSwaggerJson
 // @Router       /menu/{id} [get]
