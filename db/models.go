@@ -124,6 +124,14 @@ type PostType struct {
 	Name string `json:"name"`
 }
 
+type Rating struct {
+	FromAccountID int64              `json:"from_account_id"`
+	ToAccountID   int64              `json:"to_account_id"`
+	Star          int32              `json:"star"`
+	Content       pgtype.Text        `json:"content"`
+	CreatedAt     pgtype.Timestamptz `json:"created_at"`
+}
+
 type ReactPost struct {
 	AccountID int64 `json:"account_id"`
 	PostID    int64 `json:"post_id"`

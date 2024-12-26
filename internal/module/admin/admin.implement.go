@@ -87,8 +87,16 @@ func (a *AdminService) AddUpgragePrice(ctx context.Context, username string, tit
 }
 
 // BanPost implements IAdminService.
-func (a *AdminService) BanPost(ctx context.Context, username string, post_id int64) (post.PostResponse, error) {
-	panic("unimplemented")
+func (a *AdminService) BanPost(ctx context.Context, username string, post_id int64) error {
+	err := a.IsAdmin(ctx, username)
+	if err != nil {
+		return err
+	}
+	err = a.queries.BanPost(ctx, post_id)
+	if err != nil {
+		return fmt.Errorf("can't ban this post")
+	}
+	return nil
 }
 
 // GetListReportPost implements IAdminService.

@@ -12,6 +12,7 @@ import (
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/menu"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/notification"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/post"
+	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/rating"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/react"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/report"
 	"github.com/LeMinh0706/SocialMediaFood-Backend/internal/module/reset_password"
@@ -43,6 +44,7 @@ func (s *Server) NewRouter() {
 		menu.NewMenuRouter(s.Router, a, fac.MenuService, s.TokenMaker)
 		notification.NewNotificationRouter(s.Router, a, fac.NotificationService, s.TokenMaker)
 		admin.NewAdminRouter(s.Router, a, fac.AdminService, s.TokenMaker)
+		rating.NewRatingRouter(s.Router, a, fac.RatingService, s.TokenMaker)
 	}
 
 	s.Router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

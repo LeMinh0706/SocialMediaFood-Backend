@@ -464,6 +464,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/ban-post/{id}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Only admin can do this",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/price": {
             "get": {
                 "security": [
@@ -558,7 +597,6 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Cái này tạm thời chưa có, cảm ơn vì đã xem",
                 "consumes": [
                     "application/json"
                 ],
@@ -652,7 +690,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Get list report, who report for upgrade in admin dashboard",
+                "description": "Get list report, who report in admin dashboard",
                 "consumes": [
                     "application/json"
                 ],
@@ -798,7 +836,6 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Cái này tạm thời chưa có, cảm ơn vì đã xem",
                 "consumes": [
                     "application/json"
                 ],
@@ -1386,6 +1423,11 @@ const docTemplate = `{
         },
         "/menu": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Add food",
                 "consumes": [
                     "application/json"
@@ -1426,6 +1468,11 @@ const docTemplate = `{
         },
         "/menu/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Add food",
                 "consumes": [
                     "application/json"
@@ -2098,6 +2145,146 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/post.PostResponse"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/rating": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get list rating",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rating"
+                ],
+                "summary": "Get list rating",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Your account id",
+                        "name": "account_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page Size",
+                        "name": "page_size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/rating.ListRating"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create rating",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rating"
+                ],
+                "summary": "Create rating",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/rating.RatingRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrSwaggerJson"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete rating",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rating"
+                ],
+                "summary": "Delete rating",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/rating.DeleteRatingRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -3049,6 +3236,68 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "total_like": {
+                    "type": "integer"
+                }
+            }
+        },
+        "rating.DeleteRatingRequest": {
+            "type": "object",
+            "properties": {
+                "from_account_id": {
+                    "type": "integer"
+                },
+                "to_account_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "rating.ListRating": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "from_account_id": {
+                    "type": "integer"
+                },
+                "fullname": {
+                    "type": "string"
+                },
+                "star": {
+                    "type": "integer"
+                },
+                "to_account_id": {
+                    "type": "integer"
+                },
+                "url_avatar": {
+                    "type": "string"
+                },
+                "url_background_profile": {
+                    "type": "string"
+                }
+            }
+        },
+        "rating.RatingRequest": {
+            "type": "object",
+            "required": [
+                "star"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "from_account_id": {
+                    "type": "integer"
+                },
+                "star": {
+                    "type": "integer",
+                    "maximum": 5,
+                    "minimum": 1
+                },
+                "to_account_id": {
                     "type": "integer"
                 }
             }

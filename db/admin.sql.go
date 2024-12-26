@@ -40,6 +40,16 @@ func (q *Queries) AddUpgradePrice(ctx context.Context, arg AddUpgradePriceParams
 	return i, err
 }
 
+const banPost = `-- name: BanPost :exec
+UPDATE posts SET is_banned = TRUE 
+WHERE id = $1
+`
+
+func (q *Queries) BanPost(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, banPost, id)
+	return err
+}
+
 const getChoosePrice = `-- name: GetChoosePrice :one
 SELECT id, title,benefit,price,created_at FROM upgrade_price
 WHERE is_choose = TRUE
@@ -68,10 +78,11 @@ func (q *Queries) GetChoosePrice(ctx context.Context) (GetChoosePriceRow, error)
 }
 
 const getListPostReport = `-- name: GetListPostReport :many
-SELECT post_id, count(account_id) FROM report_post
+SELECT post_id, COUNT(account_id), MAX(created_at)
+FROM report_post
 GROUP BY post_id
-HAVING count(account_id)>4
-ORDER BY created_at DESC 
+HAVING COUNT(account_id) >= 5
+ORDER BY MAX(created_at) DESC
 LIMIT $1
 OFFSET $2
 `
@@ -82,8 +93,9 @@ type GetListPostReportParams struct {
 }
 
 type GetListPostReportRow struct {
-	PostID int64 `json:"post_id"`
-	Count  int64 `json:"count"`
+	PostID int64       `json:"post_id"`
+	Count  int64       `json:"count"`
+	Max    interface{} `json:"max"`
 }
 
 func (q *Queries) GetListPostReport(ctx context.Context, arg GetListPostReportParams) ([]GetListPostReportRow, error) {
@@ -95,7 +107,7 @@ func (q *Queries) GetListPostReport(ctx context.Context, arg GetListPostReportPa
 	items := []GetListPostReportRow{}
 	for rows.Next() {
 		var i GetListPostReportRow
-		if err := rows.Scan(&i.PostID, &i.Count); err != nil {
+		if err := rows.Scan(&i.PostID, &i.Count, &i.Max); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

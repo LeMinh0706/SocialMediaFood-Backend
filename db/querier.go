@@ -15,6 +15,7 @@ type Querier interface {
 	AddImagePost(ctx context.Context, arg AddImagePostParams) (PostImage, error)
 	AddToMenu(ctx context.Context, arg AddToMenuParams) (Menu, error)
 	AddUpgradePrice(ctx context.Context, arg AddUpgradePriceParams) (UpgradePrice, error)
+	BanPost(ctx context.Context, id int64) error
 	CountComment(ctx context.Context, postTopID pgtype.Int8) (int64, error)
 	CountFollower(ctx context.Context, fromFollow int64) (int64, error)
 	CountFriend(ctx context.Context, fromFollow int64) (int64, error)
@@ -27,6 +28,7 @@ type Querier interface {
 	CreateOwnerBranch(ctx context.Context, arg CreateOwnerBranchParams) (CreateOwnerBranchRow, error)
 	CreatePost(ctx context.Context, arg CreatePostParams) (CreatePostRow, error)
 	CreatePostNoti(ctx context.Context, arg CreatePostNotiParams) (Notification, error)
+	CreateRating(ctx context.Context, arg CreateRatingParams) (Rating, error)
 	CreateReact(ctx context.Context, arg CreateReactParams) (ReactPost, error)
 	CreateReport(ctx context.Context, arg CreateReportParams) (ReportPost, error)
 	CreateRequestPassword(ctx context.Context, arg CreateRequestPasswordParams) (ResetPassword, error)
@@ -37,6 +39,7 @@ type Querier interface {
 	DeleteImagePost(ctx context.Context, id int64) error
 	DeleteNoti(ctx context.Context, id int64) error
 	DeletePost(ctx context.Context, id int64) error
+	DeleteRating(ctx context.Context, arg DeleteRatingParams) error
 	DeleteReact(ctx context.Context, arg DeleteReactParams) error
 	GetAccountById(ctx context.Context, id int64) (GetAccountByIdRow, error)
 	GetAccountByUserId(ctx context.Context, userID int64) ([]int64, error)
@@ -60,6 +63,7 @@ type Querier interface {
 	GetListNoti(ctx context.Context, arg GetListNotiParams) ([]GetListNotiRow, error)
 	GetListPost(ctx context.Context, arg GetListPostParams) ([]int64, error)
 	GetListPostReport(ctx context.Context, arg GetListPostReportParams) ([]GetListPostReportRow, error)
+	GetListRating(ctx context.Context, arg GetListRatingParams) ([]GetListRatingRow, error)
 	GetListReact(ctx context.Context, arg GetListReactParams) ([]int64, error)
 	GetListUpgradePrice(ctx context.Context, arg GetListUpgradePriceParams) ([]UpgradePrice, error)
 	GetLocation(ctx context.Context, accountID int64) ([]GetLocationRow, error)
@@ -102,6 +106,7 @@ type Querier interface {
 	UpdatePassword(ctx context.Context, arg UpdatePasswordParams) (UpdatePasswordRow, error)
 	UpdatePost(ctx context.Context, arg UpdatePostParams) (UpdatePostRow, error)
 	UpdateQuanity(ctx context.Context, arg UpdateQuanityParams) (Menu, error)
+	UpdateRating(ctx context.Context, arg UpdateRatingParams) error
 	UpdateSeen(ctx context.Context, id int64) error
 	UpdateSeenAll(ctx context.Context, accountID int64) error
 	UpdateState(ctx context.Context, arg UpdateStateParams) (ReactPost, error)

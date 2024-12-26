@@ -329,6 +329,47 @@ definitions:
       total_like:
         type: integer
     type: object
+  rating.DeleteRatingRequest:
+    properties:
+      from_account_id:
+        type: integer
+      to_account_id:
+        type: integer
+    type: object
+  rating.ListRating:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      from_account_id:
+        type: integer
+      fullname:
+        type: string
+      star:
+        type: integer
+      to_account_id:
+        type: integer
+      url_avatar:
+        type: string
+      url_background_profile:
+        type: string
+    type: object
+  rating.RatingRequest:
+    properties:
+      content:
+        type: string
+      from_account_id:
+        type: integer
+      star:
+        maximum: 5
+        minimum: 1
+        type: integer
+      to_account_id:
+        type: integer
+    required:
+    - star
+    type: object
   react.ListReactResponse:
     properties:
       react:
@@ -737,6 +778,30 @@ paths:
       summary: Get price to upgrade
       tags:
       - Accounts
+  /admin/ban-post/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Only admin can do this
+      tags:
+      - Admin
   /admin/price:
     get:
       consumes:
@@ -796,7 +861,6 @@ paths:
     post:
       consumes:
       - application/json
-      description: Cái này tạm thời chưa có, cảm ơn vì đã xem
       parameters:
       - description: ID
         in: path
@@ -856,7 +920,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get list report, who report for upgrade in admin dashboard
+      description: Get list report, who report in admin dashboard
       parameters:
       - description: ID
         in: path
@@ -926,7 +990,6 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Cái này tạm thời chưa có, cảm ơn vì đã xem
       parameters:
       - description: ID
         in: path
@@ -1351,6 +1414,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
       summary: Add food
       tags:
       - Menu
@@ -1386,6 +1451,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
       summary: Add food
       tags:
       - Menu
@@ -1800,6 +1867,95 @@ paths:
       summary: Delete post
       tags:
       - Posts
+  /rating:
+    delete:
+      consumes:
+      - application/json
+      description: Delete rating
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/rating.DeleteRatingRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Delete rating
+      tags:
+      - Rating
+    get:
+      consumes:
+      - application/json
+      description: Get list rating
+      parameters:
+      - description: Your account id
+        in: query
+        name: account_id
+        required: true
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/rating.ListRating'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Get list rating
+      tags:
+      - Rating
+    post:
+      consumes:
+      - application/json
+      description: Create rating
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/rating.RatingRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Success
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Create rating
+      tags:
+      - Rating
   /react:
     delete:
       consumes:
