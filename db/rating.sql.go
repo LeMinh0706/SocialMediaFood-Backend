@@ -19,7 +19,7 @@ INSERT INTO rating (
     content
 ) VALUES (
     $1, $2, $3, $4
-) RETURNING from_account_id, to_account_id, star, content, is_deleted, created_at
+) RETURNING from_account_id, to_account_id, star, content, created_at
 `
 
 type CreateRatingParams struct {
@@ -42,15 +42,13 @@ func (q *Queries) CreateRating(ctx context.Context, arg CreateRatingParams) (Rat
 		&i.ToAccountID,
 		&i.Star,
 		&i.Content,
-		&i.IsDeleted,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const deleteRating = `-- name: DeleteRating :exec
-UPDATE rating SET is_deleted = TRUE
-WHERE from_account_id = $1 AND to_account_id = $2
+DELETE FROM rating WHERE from_account_id = $1 AND to_account_id = $2
 `
 
 type DeleteRatingParams struct {
@@ -64,34 +62,48 @@ func (q *Queries) DeleteRating(ctx context.Context, arg DeleteRatingParams) erro
 }
 
 const getListRating = `-- name: GetListRating :many
-SELECT from_account_id, to_account_id, star, content, is_deleted, created_at FROM rating 
-WHERE from_account_id = $1
+SELECT r.from_account_id, r.to_account_id, r.star, r.content, r.created_at, a.fullname, a.url_avatar, a.url_background_profile FROM rating r JOIN accounts a
+ON r.from_account_id = a.id
+WHERE to_account_id = $1
 LIMIT $2
 OFFSET $3
 `
 
 type GetListRatingParams struct {
-	FromAccountID int64 `json:"from_account_id"`
-	Limit         int32 `json:"limit"`
-	Offset        int32 `json:"offset"`
+	ToAccountID int64 `json:"to_account_id"`
+	Limit       int32 `json:"limit"`
+	Offset      int32 `json:"offset"`
 }
 
-func (q *Queries) GetListRating(ctx context.Context, arg GetListRatingParams) ([]Rating, error) {
-	rows, err := q.db.Query(ctx, getListRating, arg.FromAccountID, arg.Limit, arg.Offset)
+type GetListRatingRow struct {
+	FromAccountID        int64              `json:"from_account_id"`
+	ToAccountID          int64              `json:"to_account_id"`
+	Star                 int32              `json:"star"`
+	Content              pgtype.Text        `json:"content"`
+	CreatedAt            pgtype.Timestamptz `json:"created_at"`
+	Fullname             string             `json:"fullname"`
+	UrlAvatar            string             `json:"url_avatar"`
+	UrlBackgroundProfile string             `json:"url_background_profile"`
+}
+
+func (q *Queries) GetListRating(ctx context.Context, arg GetListRatingParams) ([]GetListRatingRow, error) {
+	rows, err := q.db.Query(ctx, getListRating, arg.ToAccountID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Rating{}
+	items := []GetListRatingRow{}
 	for rows.Next() {
-		var i Rating
+		var i GetListRatingRow
 		if err := rows.Scan(
 			&i.FromAccountID,
 			&i.ToAccountID,
 			&i.Star,
 			&i.Content,
-			&i.IsDeleted,
 			&i.CreatedAt,
+			&i.Fullname,
+			&i.UrlAvatar,
+			&i.UrlBackgroundProfile,
 		); err != nil {
 			return nil, err
 		}

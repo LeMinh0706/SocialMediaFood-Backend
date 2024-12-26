@@ -129,7 +129,6 @@ type Rating struct {
 	ToAccountID   int64              `json:"to_account_id"`
 	Star          int32              `json:"star"`
 	Content       pgtype.Text        `json:"content"`
-	IsDeleted     bool               `json:"is_deleted"`
 	CreatedAt     pgtype.Timestamptz `json:"created_at"`
 }
 

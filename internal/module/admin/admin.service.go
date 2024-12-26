@@ -18,6 +18,6 @@ type IAdminService interface {
 	GetListReportPost(ctx context.Context, username string, account_id int64, page, page_size int32) ([]post.PostResponse, error)
 	GetDetailReportPost(ctx context.Context, username string, post_id, account_id int64, page, page_size int32) (ReportDetailResponse, error)
 	ChoosingPrice(ctx context.Context, username string, id int64) error
-	BanPost(ctx context.Context, username string, post_id int64) (post.PostResponse, error)
+	BanPost(ctx context.Context, username string, post_id int64) error
 	RejectBan(ctx context.Context, username string, post_id int64) error
 }

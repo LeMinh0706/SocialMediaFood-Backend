@@ -14,6 +14,20 @@ type RatingService struct {
 	acc     account.IAccountService
 }
 
+// GetListRating implements IRatingService.
+func (r *RatingService) GetListRating(ctx context.Context, account_id int64, page int32, page_size int32) ([]db.GetListRatingRow, error) {
+
+	list, err := r.queries.GetListRating(ctx, db.GetListRatingParams{
+		ToAccountID: account_id,
+		Limit:       page_size,
+		Offset:      (page - 1) * page_size,
+	})
+	if err != nil {
+		return []db.GetListRatingRow{}, err
+	}
+	return list, err
+}
+
 // CreateRating implements IRatingService.
 func (r *RatingService) CreateRating(ctx context.Context, req RatingRequest) error {
 	acc, err := r.queries.GetAccountById(ctx, req.ToAccountID)
@@ -39,12 +53,11 @@ func (r *RatingService) CreateRating(ctx context.Context, req RatingRequest) err
 
 // DeleteRating implements IRatingService.
 func (r *RatingService) DeleteRating(ctx context.Context, from_account_id int64, to_account_id int64) error {
-	panic("unimplemented")
-}
-
-// GetListRating implements IRatingService.
-func (r *RatingService) GetListRating(ctx context.Context, account_id int64, page int32, page_size int32) ([]db.Rating, error) {
-	panic("unimplemented")
+	err := r.queries.DeleteRating(ctx, db.DeleteRatingParams{FromAccountID: from_account_id, ToAccountID: to_account_id})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // UpdateRating implements IRatingService.

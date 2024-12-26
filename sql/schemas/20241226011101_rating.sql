@@ -5,7 +5,6 @@ CREATE TABLE "rating" (
   "to_account_id" bigint NOT NULL,
   "star" int NOT NULL,
   "content" varchar,
-  "is_deleted" bool NOT NULL DEFAULT false,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   PRIMARY KEY ("from_account_id", "to_account_id")
 );

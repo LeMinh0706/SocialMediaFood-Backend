@@ -46,10 +46,11 @@ LIMIT $1
 OFFSET $2;
 
 -- name: GetListPostReport :many
-SELECT post_id, count(account_id) FROM report_post
+SELECT post_id, COUNT(account_id), MAX(created_at)
+FROM report_post
 GROUP BY post_id
-HAVING count(account_id)>4
-ORDER BY created_at DESC 
+HAVING COUNT(account_id) >= 5
+ORDER BY MAX(created_at) DESC
 LIMIT $1
 OFFSET $2;
 
@@ -76,3 +77,7 @@ WHERE id = $1;
 
 -- name: UpgradeReject :exec
 DELETE FROM upgrade_queue WHERE account_id = $1;
+
+-- name: BanPost :exec
+UPDATE posts SET is_banned = TRUE 
+WHERE id = $1;

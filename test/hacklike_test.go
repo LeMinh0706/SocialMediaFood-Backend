@@ -88,3 +88,14 @@ func TestUpgradeQueueHach(t *testing.T) {
 		require.NoError(t, err)
 	}
 }
+
+func TestReport(t *testing.T) {
+	for i := 30; i <= 40; i++ {
+		_, err := testQueries.CreateReport(context.Background(), db.CreateReportParams{
+			AccountID: int64(i),
+			PostID:    283,
+			IssueID:   1,
+		})
+		require.NoError(t, err)
+	}
+}

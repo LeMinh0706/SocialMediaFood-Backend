@@ -15,6 +15,7 @@ type Querier interface {
 	AddImagePost(ctx context.Context, arg AddImagePostParams) (PostImage, error)
 	AddToMenu(ctx context.Context, arg AddToMenuParams) (Menu, error)
 	AddUpgradePrice(ctx context.Context, arg AddUpgradePriceParams) (UpgradePrice, error)
+	BanPost(ctx context.Context, id int64) error
 	CountComment(ctx context.Context, postTopID pgtype.Int8) (int64, error)
 	CountFollower(ctx context.Context, fromFollow int64) (int64, error)
 	CountFriend(ctx context.Context, fromFollow int64) (int64, error)
@@ -62,7 +63,7 @@ type Querier interface {
 	GetListNoti(ctx context.Context, arg GetListNotiParams) ([]GetListNotiRow, error)
 	GetListPost(ctx context.Context, arg GetListPostParams) ([]int64, error)
 	GetListPostReport(ctx context.Context, arg GetListPostReportParams) ([]GetListPostReportRow, error)
-	GetListRating(ctx context.Context, arg GetListRatingParams) ([]Rating, error)
+	GetListRating(ctx context.Context, arg GetListRatingParams) ([]GetListRatingRow, error)
 	GetListReact(ctx context.Context, arg GetListReactParams) ([]int64, error)
 	GetListUpgradePrice(ctx context.Context, arg GetListUpgradePriceParams) ([]UpgradePrice, error)
 	GetLocation(ctx context.Context, accountID int64) ([]GetLocationRow, error)

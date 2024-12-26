@@ -9,15 +9,15 @@ INSERT INTO rating (
 ) RETURNING *;
 
 -- name: DeleteRating :exec
-UPDATE rating SET is_deleted = TRUE
-WHERE from_account_id = $1 AND to_account_id = $2;
+DELETE FROM rating WHERE from_account_id = $1 AND to_account_id = $2;
 
 -- name: UpdateRating :exec
 UPDATE rating SET content = $3, star = $4
 WHERE from_account_id = $1 AND to_account_id = $2;
 
 -- name: GetListRating :many
-SELECT * FROM rating 
-WHERE from_account_id = $1
+SELECT r.*, a.fullname, a.url_avatar, a.url_background_profile FROM rating r JOIN accounts a
+ON r.from_account_id = a.id
+WHERE to_account_id = $1
 LIMIT $2
 OFFSET $3;

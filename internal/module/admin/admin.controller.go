@@ -110,7 +110,7 @@ func (a *AdminController) GetListReportPost(g *gin.Context) {
 
 // Admin godoc
 // @Summary      Only admin can do this
-// @Description	 Get list report, who report for upgrade in admin dashboard
+// @Description	 Get list report, who report in admin dashboard
 // @Tags         Admin
 // @Accept       json
 // @Produce      json
@@ -206,7 +206,7 @@ func (a *AdminController) UpgradeSuccess(g *gin.Context) {
 
 // Admin godoc
 // @Summary      Only admin can do this
-// @Description	 Cái này tạm thời chưa có, cảm ơn vì đã xem
+// @Description
 // @Tags         Admin
 // @Accept       json
 // @Produce      json
@@ -233,7 +233,7 @@ func (a *AdminController) UpgradeReject(g *gin.Context) {
 
 // Admin godoc
 // @Summary      Only admin can do this
-// @Description	 Cái này tạm thời chưa có, cảm ơn vì đã xem
+// @Description
 // @Tags         Admin
 // @Accept       json
 // @Produce      json
@@ -256,4 +256,31 @@ func (a *AdminController) PriceChoosing(g *gin.Context) {
 		return
 	}
 	response.SuccessResponse(g, 200, nil)
+}
+
+// Admin godoc
+// @Summary      Only admin can do this
+// @Description
+// @Tags         Admin
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "ID"
+// @Security BearerAuth
+// @Success      204  "No content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /admin/ban-post/{id} [post]
+func (a *AdminController) BanPost(g *gin.Context) {
+	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+	idStr := g.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, response.ErrBadRequestId)
+		return
+	}
+	err = a.service.BanPost(g, auth.Username, id)
+	if err != nil {
+		handler.AdminErr(g, err)
+		return
+	}
+	response.SuccessResponse(g, 201, nil)
 }
