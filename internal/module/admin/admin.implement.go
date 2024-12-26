@@ -92,6 +92,7 @@ func (a *AdminService) BanPost(ctx context.Context, username string, post_id int
 	if err != nil {
 		return err
 	}
+	go a.queries.DeleteReportPost(ctx, post_id)
 	err = a.queries.BanPost(ctx, post_id)
 	if err != nil {
 		return fmt.Errorf("can't ban this post")
@@ -176,7 +177,15 @@ func (a *AdminService) IsAdmin(ctx context.Context, username string) error {
 
 // RejectBan implements IAdminService.
 func (a *AdminService) RejectBan(ctx context.Context, username string, post_id int64) error {
-	panic("unimplemented")
+	err := a.IsAdmin(ctx, username)
+	if err != nil {
+		return err
+	}
+	err = a.queries.DeleteReportPost(ctx, post_id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // UpgradeReject implements IAdminService.

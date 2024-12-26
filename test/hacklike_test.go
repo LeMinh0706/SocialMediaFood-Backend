@@ -90,7 +90,7 @@ func TestUpgradeQueueHach(t *testing.T) {
 }
 
 func TestReport(t *testing.T) {
-	for i := 30; i <= 40; i++ {
+	for i := 30; i <= 41; i++ {
 		_, err := testQueries.CreateReport(context.Background(), db.CreateReportParams{
 			AccountID: int64(i),
 			PostID:    283,

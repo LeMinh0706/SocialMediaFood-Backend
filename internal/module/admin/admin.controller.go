@@ -284,3 +284,30 @@ func (a *AdminController) BanPost(g *gin.Context) {
 	}
 	response.SuccessResponse(g, 201, nil)
 }
+
+// Admin godoc
+// @Summary      Only admin can do this
+// @Description
+// @Tags         Admin
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "ID"
+// @Security BearerAuth
+// @Success      204  "No content"
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /admin/ban-post/{id} [delete]
+func (a *AdminController) RejectBan(g *gin.Context) {
+	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+	idStr := g.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, response.ErrBadRequestId)
+		return
+	}
+	err = a.service.RejectBan(g, auth.Username, id)
+	if err != nil {
+		handler.AdminErr(g, err)
+		return
+	}
+	response.SuccessResponse(g, 201, nil)
+}

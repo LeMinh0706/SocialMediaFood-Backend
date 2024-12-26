@@ -41,6 +41,7 @@ type Querier interface {
 	DeletePost(ctx context.Context, id int64) error
 	DeleteRating(ctx context.Context, arg DeleteRatingParams) error
 	DeleteReact(ctx context.Context, arg DeleteReactParams) error
+	DeleteReportPost(ctx context.Context, postID int64) error
 	GetAccountById(ctx context.Context, id int64) (GetAccountByIdRow, error)
 	GetAccountByUserId(ctx context.Context, userID int64) ([]int64, error)
 	GetCheckAction(ctx context.Context, userID int64) (ResetPassword, error)

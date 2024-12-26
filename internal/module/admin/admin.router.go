@@ -19,5 +19,6 @@ func NewAdminRouter(r *gin.Engine, group *gin.RouterGroup, service IAdminService
 		adminGroup.POST("/price-choosing/:id", ac.PriceChoosing)
 		adminGroup.DELETE("/upgrade-queue/:id", ac.UpgradeReject)
 		adminGroup.POST("/ban-post/:id", ac.BanPost)
+		adminGroup.DELETE("/ban-post/:id", ac.RejectBan)
 	}
 }

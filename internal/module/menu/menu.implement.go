@@ -2,6 +2,7 @@ package menu
 
 import (
 	"context"
+	"fmt"
 	"math/big"
 
 	"github.com/LeMinh0706/SocialMediaFood-Backend/db"
@@ -15,6 +16,13 @@ type MenuService struct {
 // CreateDish implements IMenuService.
 func (m *MenuService) CreateDish(ctx context.Context, account_id int64, quantity int32, name string, img string, price float64) (db.Menu, error) {
 	// var res MenuResponse
+	a, err := m.queries.GetAccountById(ctx, account_id)
+	if err != nil {
+		return db.Menu{}, err
+	}
+	if a.RoleID != 2 {
+		return db.Menu{}, fmt.Errorf("you're not owner")
+	}
 	dish, err := m.queries.AddToMenu(ctx, db.AddToMenuParams{
 		AccountID: account_id,
 		DishName:  name,
