@@ -81,3 +81,6 @@ DELETE FROM upgrade_queue WHERE account_id = $1;
 -- name: BanPost :exec
 UPDATE posts SET is_banned = TRUE 
 WHERE id = $1;
+
+-- name: DeleteReportPost :exec
+DELETE FROM report_post WHERE post_id = $1;

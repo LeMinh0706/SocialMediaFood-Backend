@@ -50,6 +50,15 @@ func (q *Queries) BanPost(ctx context.Context, id int64) error {
 	return err
 }
 
+const deleteReportPost = `-- name: DeleteReportPost :exec
+DELETE FROM report_post WHERE post_id = $1
+`
+
+func (q *Queries) DeleteReportPost(ctx context.Context, postID int64) error {
+	_, err := q.db.Exec(ctx, deleteReportPost, postID)
+	return err
+}
+
 const getChoosePrice = `-- name: GetChoosePrice :one
 SELECT id, title,benefit,price,created_at FROM upgrade_price
 WHERE is_choose = TRUE

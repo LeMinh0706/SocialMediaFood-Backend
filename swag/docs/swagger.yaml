@@ -779,6 +779,29 @@ paths:
       tags:
       - Accounts
   /admin/ban-post/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Only admin can do this
+      tags:
+      - Admin
     post:
       consumes:
       - application/json
