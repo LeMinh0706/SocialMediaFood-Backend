@@ -21,5 +21,6 @@ func NewPostRouter(r *gin.Engine, group *gin.RouterGroup, service IPostService, 
 		auth.GET(":id", pc.GetPostById)
 		postGroup.GET("/locate", pc.GetPostWithLocation)
 		postGroup.GET("/images", pc.GetListImage)
+		auth.POST("/tx", pc.CreatePostTx)
 	}
 }

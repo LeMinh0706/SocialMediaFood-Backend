@@ -46,7 +46,7 @@ func NewFactory(pq *pgxpool.Pool, config util.Config) (*Factory, error) {
 
 	userService := user.NewUserService(q, store)
 	accountService := account.NewAccountService(q)
-	postService := post.NewPostService(q, accountService)
+	postService := post.NewPostService(q, store, accountService)
 	notificationService := notification.NewNotificationService(q, accountService)
 	commentService := comment.NewCommentService(q, postService, accountService, notificationService)
 	reactService := react.NewReactService(q, accountService, postService, notificationService)

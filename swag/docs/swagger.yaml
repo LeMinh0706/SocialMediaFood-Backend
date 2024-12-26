@@ -1890,6 +1890,52 @@ paths:
       summary: Delete post
       tags:
       - Posts
+  /posts/tx:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create post
+      parameters:
+      - description: Description
+        in: formData
+        name: description
+        type: string
+      - description: Account ID
+        in: formData
+        name: account_id
+        required: true
+        type: string
+      - description: Lng
+        in: formData
+        name: lng
+        type: string
+      - description: Lat
+        in: formData
+        name: lat
+        type: string
+      - collectionFormat: csv
+        description: Images post
+        in: formData
+        items:
+          type: file
+        name: images
+        type: array
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/post.PostResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Create post
+      tags:
+      - Posts
   /rating:
     delete:
       consumes:

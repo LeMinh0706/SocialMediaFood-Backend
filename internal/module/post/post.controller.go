@@ -381,3 +381,65 @@ func (pc *PostController) GetListImage(g *gin.Context) {
 	}
 	response.SuccessResponse(g, 200, list)
 }
+
+// Post godoc
+// @Summary      Create post
+// @Description  Create post
+// @Tags         Posts
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        description formData string false "Description"
+// @Param        account_id formData string true "Account ID"
+// @Param        lng formData string false "Lng"
+// @Param        lat formData string false "Lat"
+// @Param        images formData []file false "Images post"
+// @Security BearerAuth
+// @Success      201  {object}  PostResponse
+// @Failure      500  {object}  response.ErrSwaggerJson
+// @Router       /posts/tx [post]
+func (pc *PostController) CreatePostTx(g *gin.Context) {
+	auth := g.MustGet(middlewares.AuthorizationPayloadKey).(*token.Payload)
+	accStr := g.PostForm("account_id")
+	account_id, err := strconv.ParseInt(accStr, 10, 64)
+	if err != nil {
+		response.ErrorResponse(g, 40004)
+		return
+	}
+	description := g.PostForm("description")
+	lng := g.PostForm("lng")
+	lat := g.PostForm("lat")
+
+	if !handler.CheckValidPosition(g, lng, lat) {
+		return
+	}
+	form, err := g.MultipartForm()
+	if err != nil {
+		response.ErrorResponse(g, 40000)
+		return
+	}
+
+	files := form.File["images"]
+
+	images, code := handler.AddImageFileError(g, 10, files)
+	if code > 40000 {
+		response.ErrorResponse(g, code)
+		return
+	}
+
+	if strings.TrimSpace(description) == "" && len(images) == 0 {
+		response.ErrorResponse(g, 40022)
+		return
+	}
+
+	post, err := pc.service.CreatePostWithTx(g, auth.Username, description, lng, lat, images, account_id)
+	if err != nil {
+		if err.Error() == "not you" {
+			response.ErrorResponse(g, response.ErrYourSelf)
+			return
+		}
+		response.ErrorNonKnow(g, 500, err.Error())
+		return
+	}
+
+	response.SuccessResponse(g, 201, post)
+}

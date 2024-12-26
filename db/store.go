@@ -53,6 +53,35 @@ type RegisterRequest struct {
 	Gender   int32  `json:"gender" binding:"min=0,max=1"`
 }
 
+func (store *Store) CreatePostTx(ctx context.Context, description pgtype.Text, location pgtype.Text, images []string, account_id int64) (CreatePostRow, []PostImage, error) {
+	var create CreatePostRow
+	var imgs []PostImage
+	err := store.execTX(ctx, func(q *Queries) error {
+		var err error
+		create, err = q.CreatePost(ctx, CreatePostParams{
+			PostTypeID:     1,
+			AccountID:      account_id,
+			Description:    description,
+			StGeomfromtext: location,
+		})
+		if err != nil {
+			return err
+		}
+		for _, element := range images {
+			img, err := q.AddImagePost(ctx, AddImagePostParams{
+				UrlImage: element,
+				PostID:   create.ID,
+			})
+			if err != nil {
+				return err
+			}
+			imgs = append(imgs, img)
+		}
+		return nil
+	})
+	return create, imgs, err
+}
+
 func (store *Store) CreateAccountTx(ctx context.Context, arg RegisterRequest) (RegisterRow, error) {
 	var user RegisterRow
 	hash, err := util.HashPassword(arg.Password)
