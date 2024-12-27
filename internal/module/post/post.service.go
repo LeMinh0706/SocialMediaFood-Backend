@@ -8,6 +8,7 @@ import (
 
 type IPostService interface {
 	CreatePost(ctx context.Context, username, description, lng, lat string, images []string, account_id int64) (PostResponse, error)
+	CreatePostWithTx(ctx context.Context, username, description, lng, lat string, images []string, account_id int64) (PostResponse, error)
 	GetPost(ctx context.Context, account_id, id int64) (PostResponse, error)
 	GetListPost(ctx context.Context, page, pageSize int32) ([]PostResponse, error)
 	GetPostInLocate(ctx context.Context, dwithin, account_id int64, lng, lat string, page, pageSize int32) ([]PostResponse, error)
@@ -18,5 +19,6 @@ type IPostService interface {
 	DeletePost(ctx context.Context, username string, id int64) error
 	DeleteImage(ctx context.Context, username string, id int64) error
 	GetListImage(ctx context.Context, page, pageSize int32) ([]db.PostImage, error)
+
 	Backup(ctx context.Context)
 }

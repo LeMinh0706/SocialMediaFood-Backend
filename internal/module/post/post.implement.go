@@ -13,7 +13,44 @@ import (
 
 type PostService struct {
 	queries        *db.Queries
+	store          *db.Store
 	accountService account.IAccountService
+}
+
+// CreatePostWithTx implements IPostService.
+func (p *PostService) CreatePostWithTx(ctx context.Context, username string, description string, lng string, lat string, images []string, account_id int64) (PostResponse, error) {
+	var res PostResponse
+	var wg sync.WaitGroup
+	var location pgtype.Text
+	var acc db.Account
+	var err error
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if lat != "" && lng != "" {
+			location = pgtype.Text{String: fmt.Sprintf("POINT(%s %s)", lng, lat), Valid: true}
+		} else {
+			location = pgtype.Text{Valid: false}
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		acc, err = p.accountService.GetAccountAction(ctx, account_id, username)
+	}()
+	wg.Wait()
+	if err != nil {
+		return res, err
+	}
+
+	descriptionNull := ConvertDescription(description)
+	post, imgs, err := p.store.CreatePostTx(ctx, descriptionNull, location, images, account_id)
+	if err != nil {
+		return res, err
+	}
+	res = PostRes(post, acc, imgs, db.ReactPost{AccountID: account_id, PostID: post.ID, State: 0}, 0, 0)
+	return res, nil
 }
 
 // DeleteImage implements IPostService.
@@ -292,9 +329,10 @@ func (p *PostService) GetPost(ctx context.Context, account_id int64, id int64) (
 	return res, nil
 }
 
-func NewPostService(queries *db.Queries, account account.IAccountService) IPostService {
+func NewPostService(queries *db.Queries, store *db.Store, account account.IAccountService) IPostService {
 	return &PostService{
 		queries:        queries,
+		store:          store,
 		accountService: account,
 	}
 }
